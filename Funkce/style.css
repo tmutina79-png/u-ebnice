@@ -1,0 +1,311 @@
+/* ===== KROKOVACÍ STYL – Učebnice matematiky ===== */
+
+:root {
+  --primary: #2563eb;
+  --primary-light: #dbeafe;
+  --success: #16a34a;
+  --success-light: #dcfce7;
+  --warning: #d97706;
+  --warning-light: #fef3c7;
+  --gray-50: #f9fafb;
+  --gray-100: #f3f4f6;
+  --gray-200: #e5e7eb;
+  --gray-300: #d1d5db;
+  --gray-500: #6b7280;
+  --gray-700: #374151;
+  --gray-900: #111827;
+  --radius: 8px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  line-height: 1.7;
+  color: var(--gray-900);
+  background: var(--gray-50);
+  padding: 2rem 1rem;
+  max-width: 860px;
+  margin: 0 auto;
+}
+
+h1 {
+  font-size: 1.8rem;
+  color: var(--primary);
+  border-bottom: 3px solid var(--primary);
+  padding-bottom: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+h2 {
+  font-size: 1.4rem;
+  color: var(--gray-700);
+  margin: 2rem 0 1rem;
+}
+
+h3 {
+  font-size: 1.1rem;
+  color: var(--gray-700);
+  margin: 1.2rem 0 0.5rem;
+}
+
+/* ===== Příklad (zadání) – collapsible ===== */
+details.exercise {
+  background: #fff;
+  border: 1px solid var(--gray-200);
+  border-left: 4px solid var(--primary);
+  border-radius: var(--radius);
+  padding: 0;
+  margin: 1.2rem 0;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+}
+details.exercise > summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.9rem 1.2rem;
+  cursor: pointer;
+  list-style: none;
+  user-select: none;
+  border-radius: var(--radius);
+  transition: background 0.15s;
+}
+details.exercise > summary:hover {
+  background: var(--gray-50);
+}
+details.exercise > summary::-webkit-details-marker { display: none; }
+details.exercise > summary::before {
+  content: '▶';
+  font-size: 0.7em;
+  color: var(--primary);
+  transition: transform 0.25s;
+  margin-right: 0.6rem;
+  flex-shrink: 0;
+}
+details.exercise[open] > summary::before {
+  transform: rotate(90deg);
+}
+details.exercise[open] > summary {
+  border-bottom: 1px solid var(--gray-200);
+}
+
+.exercise-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  flex: 1;
+}
+
+.exercise-number {
+  font-weight: 700;
+  color: var(--primary);
+  font-size: 1.05rem;
+}
+
+.exercise-source {
+  font-size: 0.75rem;
+  color: var(--gray-500);
+}
+
+.exercise-body {
+  padding: 1rem 1.2rem 0.5rem;
+}
+
+/* ===== Sub-exercise – collapsible ===== */
+details.sub-exercise {
+  margin: 0.4rem 0.8rem 0.4rem 1.2rem;
+  padding: 0;
+  background: #fff;
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+details.sub-exercise > summary {
+  padding: 0.5rem 0.8rem;
+  cursor: pointer;
+  list-style: none;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-weight: 600;
+  color: var(--gray-700);
+  transition: background 0.15s;
+}
+details.sub-exercise > summary:hover {
+  background: var(--gray-50);
+}
+details.sub-exercise > summary::-webkit-details-marker { display: none; }
+details.sub-exercise > summary::before {
+  content: '▶';
+  font-size: 0.6em;
+  color: var(--primary);
+  transition: transform 0.2s;
+  flex-shrink: 0;
+}
+details.sub-exercise[open] > summary::before {
+  transform: rotate(90deg);
+}
+details.sub-exercise[open] > summary {
+  border-bottom: 1px solid var(--gray-200);
+  background: var(--gray-50);
+}
+.sub-exercise-inner {
+  padding: 0.5rem 0.8rem 0.6rem;
+}
+
+.sub-exercise-label {
+  font-weight: 700;
+  color: var(--primary);
+  margin-right: 0.2rem;
+}
+
+/* ===== Krokování (details/summary) ===== */
+.solution-wrapper {
+  margin: 0;
+  padding: 0.4rem 1.2rem 0.8rem;
+}
+
+details.step {
+  background: var(--gray-50);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius);
+  margin: 0.4rem 0;
+  overflow: hidden;
+  transition: border-color 0.2s;
+}
+
+details.step[open] {
+  border-color: var(--primary);
+  background: var(--primary-light);
+}
+
+details.step summary {
+  padding: 0.6rem 1rem;
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--gray-700);
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  user-select: none;
+}
+
+details.step summary::before {
+  content: '▶';
+  font-size: 0.7rem;
+  transition: transform 0.2s;
+  color: var(--primary);
+}
+
+details.step[open] summary::before {
+  transform: rotate(90deg);
+}
+
+details.step summary::-webkit-details-marker { display: none; }
+
+details.step .step-content {
+  padding: 0.5rem 1rem 0.8rem 1rem;
+  border-top: 1px solid var(--gray-200);
+  background: #fff;
+}
+
+/* ===== Výsledek ===== */
+details.result {
+  background: var(--success-light);
+  border: 2px solid var(--success);
+  border-radius: var(--radius);
+  margin: 0.6rem 0 0;
+  overflow: hidden;
+}
+
+details.result summary {
+  padding: 0.6rem 1rem;
+  cursor: pointer;
+  font-weight: 700;
+  color: var(--success);
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  user-select: none;
+}
+
+details.result summary::before {
+  content: '✓';
+  font-size: 1rem;
+}
+
+details.result summary::-webkit-details-marker { display: none; }
+
+details.result .result-content {
+  padding: 0.5rem 1rem 0.8rem;
+  border-top: 1px solid rgba(22,163,74,0.2);
+  background: #fff;
+  font-weight: 600;
+}
+
+/* ===== Tabulky ===== */
+table {
+  border-collapse: collapse;
+  margin: 0.8rem 0;
+  font-size: 0.95rem;
+}
+
+th, td {
+  border: 1px solid var(--gray-300);
+  padding: 0.4rem 0.8rem;
+  text-align: center;
+}
+
+th {
+  background: var(--primary-light);
+  font-weight: 600;
+}
+
+/* ===== Misc ===== */
+.katex { font-size: 1.05em !important; }
+
+.hint {
+  background: var(--warning-light);
+  border-left: 3px solid var(--warning);
+  padding: 0.6rem 1rem;
+  border-radius: var(--radius);
+  margin: 0.5rem 0;
+  font-size: 0.9rem;
+  color: var(--gray-700);
+}
+
+/* figure inside exercises */
+.exercise-figure {
+  text-align: center;
+  margin: 1rem 0;
+  padding: 0.8rem;
+  background: #fff;
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius);
+}
+.exercise-figure svg { max-width: 100%; height: auto; }
+.exercise-figure-caption {
+  font-size: 0.8em;
+  color: var(--gray-500);
+  margin-top: 0.4rem;
+  font-style: italic;
+}
+.exercise-figures-row {
+  display: flex; gap: 0.8rem; flex-wrap: wrap; justify-content: center;
+}
+.exercise-figures-row .exercise-figure { flex: 1; min-width: 180px; }
+
+@media print {
+  details.exercise, details.sub-exercise { border: 1px solid #ccc; }
+  details.exercise > summary::before,
+  details.sub-exercise > summary::before { content: '•'; }
+  details.step, details.result { border: 1px solid #ccc; }
+  details.step .step-content,
+  details.result .result-content { display: block !important; }
+  details.step summary::before { content: '•'; }
+  details.result summary::before { content: '✓'; }
+  body { max-width: 100%; padding: 1rem; }
+}
