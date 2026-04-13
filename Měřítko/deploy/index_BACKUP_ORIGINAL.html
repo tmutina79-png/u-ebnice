@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>📐 Matematika | Studijní portál</title>
+<style>
+/* ============================================================
+   RESET & DESIGN TOKENS  (Teams-inspired Fluent Design)
+   – převzato ze skolni-nastenka.cz
+   ============================================================ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --brand:#444791;--brand-light:#e8ebfa;--brand-dark:#3b3f85;--brand-hover:#5b5fc7;
+  --brand-bg:#f0f1fa;
+  --p50:#eff6ff;--p100:#dbeafe;--p200:#bfdbfe;--p300:#93c5fd;
+  --p500:#3b82f6;--p600:#2563eb;--p700:#1e3a8a;--p900:#0f172a;
+  --g50:#f0fdf4;--g100:#dcfce7;--g500:#22c55e;--g700:#15803d;
+  --a50:#fffbeb;--a100:#fef3c7;--a200:#fde68a;--a500:#f59e0b;--a700:#b45309;
+  --r50:#fef2f2;--r100:#fee2e2;--r500:#ef4444;--r600:#dc2626;
+  --v50:#f5f3ff;--v100:#ede9fe;--v200:#ddd6fe;--v700:#6d28d9;
+  --s50:#f0f9ff;--s100:#e0f2fe;--s200:#bae6fd;--s700:#0369a1;
+  --ro50:#fff1f2;--ro100:#ffe4e6;--ro200:#fecdd3;--ro700:#be123c;
+  --em50:#ecfdf5;--em100:#d1fae5;--em200:#a7f3d0;--em700:#047857;
+  --bg:#f5f5f5;--surface:#fff;--txt:#242424;--txt2:#424242;--muted:#616161;
+  --border:#e0e0e0;--border-subtle:#f0f0f0;
+  --r:8px;--r-lg:12px;
+  --sh:0 1px 2px rgba(0,0,0,.07);
+  --sh-md:0 2px 8px rgba(0,0,0,.08);
+  --sh-lg:0 8px 24px rgba(0,0,0,.12);
+  --rail-w:68px;--header-h:48px;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Segoe UI',ui-sans-serif,system-ui,-apple-system,Roboto,sans-serif;
+  background:var(--bg);color:var(--txt);line-height:1.5;min-height:100vh;overflow:hidden}
+
+/* ============================================================
+   APP SHELL — Teams-style 3-zone layout
+   ============================================================ */
+.app{display:flex;height:100vh;width:100vw}
+
+/* ── LEFT RAIL ── */
+.rail{width:var(--rail-w);background:#292929;display:flex;flex-direction:column;
+  align-items:center;padding:12px 0 16px;gap:4px;flex-shrink:0;z-index:200;transition:.2s}
+.rail.expanded{width:190px;align-items:stretch;padding:12px 10px 16px}
+.rail-top{width:100%;display:flex;align-items:center;justify-content:flex-start;
+  position:relative;padding-left:10px;margin-bottom:6px}
+.rail.expanded .rail-top{justify-content:flex-start;padding-left:4px}
+.rail-toggle{width:30px;height:30px;border:1px solid rgba(255,255,255,.18);
+  border-radius:7px;background:transparent;color:rgba(255,255,255,.7);cursor:pointer;
+  font-size:.9rem;display:flex;align-items:center;justify-content:center;transition:.15s}
+.rail-toggle:hover{background:rgba(255,255,255,.08);color:#fff}
+.rail-btn{width:48px;height:48px;border:none;border-radius:var(--r);background:transparent;
+  color:rgba(255,255,255,.55);cursor:pointer;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:2px;font-size:.58rem;font-weight:600;
+  font-family:inherit;transition:.15s;position:relative;text-decoration:none}
+.rail-btn .rail-icon{font-size:1.25rem;line-height:1}
+.rail-btn .rail-label{display:none}
+.rail.expanded .rail-btn{width:100%;height:40px;flex-direction:row;justify-content:flex-start;
+  gap:10px;padding:0 10px;border-radius:8px;font-size:.78rem}
+.rail.expanded .rail-btn .rail-label{display:inline}
+.rail.expanded .rail-btn .rail-icon{font-size:1.05rem;min-width:18px;text-align:center}
+.rail-btn:hover{background:rgba(255,255,255,.08);color:rgba(255,255,255,.85)}
+.rail-btn.active{color:#fff;background:rgba(255,255,255,.12)}
+.rail-btn.active::before{content:'';position:absolute;left:0;top:12px;bottom:12px;width:3px;
+  border-radius:0 3px 3px 0;background:var(--brand-hover)}
+.rail.expanded .rail-btn.active::before{top:8px;bottom:8px}
+.rail-spacer{flex:1}
+
+/* ── CONTENT ZONE ── */
+.content-zone{flex:1;display:flex;flex-direction:column;min-width:0}
+
+/* ── HEADER BAR ── */
+.header{height:var(--header-h);background:var(--surface);border-bottom:1px solid var(--border);
+  display:flex;align-items:center;padding:0 24px;gap:16px;flex-shrink:0;z-index:100}
+.header-title{font-size:.95rem;font-weight:700;color:var(--txt);display:flex;align-items:center;gap:8px}
+.header-title .ht-emoji{font-size:1.1rem}
+.header-right{margin-left:auto;display:flex;align-items:center;gap:8px}
+.header-badge{font-size:.75rem;font-weight:600;color:var(--muted);background:var(--bg);
+  padding:4px 10px;border-radius:6px;display:flex;align-items:center;gap:5px}
+
+/* ── BREADCRUMB ── */
+.breadcrumb{display:flex;align-items:center;gap:6px;padding:14px 32px 0;font-size:.78rem;color:var(--muted)}
+.breadcrumb a{color:var(--brand);text-decoration:none;font-weight:600;transition:.15s}
+.breadcrumb a:hover{color:var(--brand-dark);text-decoration:underline}
+.breadcrumb .sep{opacity:.4}
+
+/* ── MAIN SCROLLABLE AREA ── */
+.page-scroll{flex:1;overflow-y:auto;background:var(--bg)}
+.page-content{padding:18px 32px 60px;max-width:1100px;margin:0 auto;animation:fadeUp .25s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+/* ── HERO ── */
+.hero{background:linear-gradient(135deg,#3b5bdb 0%,#4472c4 50%,#5b8def 100%);
+  border-radius:var(--r-lg);padding:32px 36px;color:#fff;margin-bottom:28px;position:relative;overflow:hidden}
+.hero::after{content:'';position:absolute;right:-40px;top:-40px;width:200px;height:200px;
+  border-radius:50%;background:rgba(255,255,255,.06)}
+.hero::before{content:'';position:absolute;left:-20px;bottom:-30px;width:120px;height:120px;
+  border-radius:50%;background:rgba(255,255,255,.04)}
+.hero h1{font-size:1.6rem;font-weight:800;margin-bottom:6px;display:flex;align-items:center;gap:10px}
+.hero-sub{font-size:.92rem;opacity:.85;max-width:600px}
+.hero-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.hero-chip{display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,.15);
+  backdrop-filter:blur(4px);font-size:.7rem;font-weight:600;padding:5px 12px;border-radius:8px;
+  color:rgba(255,255,255,.9)}
+
+/* ── SECTION TITLE ── */
+.section-title{font-size:1.08rem;font-weight:700;color:var(--txt);margin-bottom:16px;
+  display:flex;align-items:center;gap:8px}
+.section-title .st-icon{font-size:1.2rem}
+.section-title .st-count{font-size:.65rem;background:var(--p100);color:var(--p700);
+  padding:2px 8px;border-radius:10px;font-weight:700}
+
+/* ── TOPIC CARDS ── */
+.topics-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:18px;margin-bottom:32px}
+
+.topic-card{background:var(--surface);border:1px solid var(--border-subtle);border-radius:var(--r-lg);
+  box-shadow:var(--sh);overflow:hidden;transition:.2s;position:relative}
+.topic-card:hover{box-shadow:var(--sh-md);transform:translateY(-2px)}
+
+.topic-card-accent{height:5px}
+.topic-card-accent.blue{background:linear-gradient(90deg,#4472c4,#5b8def)}
+.topic-card-accent.green{background:linear-gradient(90deg,#16a34a,#4ade80)}
+.topic-card-accent.purple{background:linear-gradient(90deg,#7c3aed,#a78bfa)}
+.topic-card-accent.orange{background:linear-gradient(90deg,#f59e0b,#fbbf24)}
+
+.topic-card-head{display:flex;align-items:center;gap:14px;padding:20px 20px 14px}
+.topic-card-ico{width:52px;height:52px;border-radius:var(--r-lg);display:flex;align-items:center;
+  justify-content:center;font-size:1.6rem;flex-shrink:0}
+.topic-card-ico.ico-blue{background:var(--p100)}
+.topic-card-ico.ico-green{background:var(--g100)}
+.topic-card-ico.ico-purple{background:var(--v100)}
+.topic-card-ico.ico-orange{background:var(--a100)}
+.topic-card-head h3{font-size:1rem;font-weight:700;color:var(--txt);line-height:1.3}
+.topic-card-head h3 small{display:block;font-size:.72rem;font-weight:600;color:var(--muted);margin-top:2px}
+
+.topic-card-body{padding:0 20px 8px}
+.topic-card-body p{font-size:.8rem;color:var(--muted);line-height:1.55}
+
+.topic-card-actions{display:flex;flex-direction:column;gap:6px;padding:10px 20px 18px}
+
+.topic-link{display:flex;align-items:center;gap:10px;padding:11px 14px;border-radius:var(--r);
+  font-size:.82rem;font-weight:600;text-decoration:none;transition:.15s;
+  border:1px solid var(--border-subtle);background:var(--surface);color:var(--txt2)}
+.topic-link:hover{background:var(--brand-bg);border-color:var(--brand-light);color:var(--brand)}
+.topic-link .tl-icon{font-size:1.05rem;flex-shrink:0}
+.topic-link .tl-arrow{margin-left:auto;font-size:.72rem;color:var(--border);transition:.15s}
+.topic-link:hover .tl-arrow{color:var(--brand);transform:translateX(2px)}
+.topic-link .tl-badge{margin-left:auto;font-size:.6rem;font-weight:700;padding:2px 7px;
+  border-radius:6px;background:var(--p50);color:var(--p700);margin-right:6px}
+.topic-link .tl-badge.green{background:var(--g50);color:var(--g700)}
+.topic-link .tl-badge.orange{background:var(--a50);color:var(--a700)}
+
+/* Alert chip on card */
+.topic-alert{position:absolute;top:14px;right:14px;font-size:.58rem;font-weight:700;
+  padding:3px 8px;border-radius:6px;display:inline-flex;align-items:center;gap:3px}
+.topic-alert.warn{background:var(--a100);color:var(--a700);border:1px solid var(--a200)}
+.topic-alert.new{background:var(--g100);color:var(--g700);border:1px solid var(--em200)}
+
+/* ── INFO BAR ── */
+.info-bar{display:flex;align-items:center;gap:12px;padding:14px 18px;border-radius:var(--r-lg);
+  background:var(--p50);border:1px solid var(--p200);margin-bottom:24px;font-size:.8rem;color:var(--p700)}
+.info-bar .ib-icon{font-size:1.1rem;flex-shrink:0}
+
+/* ── QUICK LINKS ── */
+.quick-row{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:28px}
+.qlink{display:inline-flex;align-items:center;gap:7px;padding:8px 16px;
+  background:var(--surface);border:1px solid var(--border-subtle);border-radius:var(--r);
+  box-shadow:var(--sh);font-size:.78rem;font-weight:600;color:var(--txt2);
+  text-decoration:none;transition:.15s;cursor:pointer}
+.qlink:hover{background:var(--brand-bg);border-color:var(--brand-light);color:var(--brand);
+  box-shadow:var(--sh-md)}
+.qlink .ql-icon{font-size:1rem}
+
+/* ── FOOTER ── */
+.app-footer{text-align:center;padding:16px;font-size:.7rem;color:var(--muted);
+  border-top:1px solid var(--border-subtle);background:var(--surface);flex-shrink:0}
+
+/* ── RESPONSIVE ── */
+@media(max-width:900px){
+  .topics-grid{grid-template-columns:1fr}
+  .hero{padding:24px 22px}
+  .hero h1{font-size:1.3rem}
+}
+@media(max-width:768px){
+  .rail{width:56px;padding:8px 0 12px}
+  .rail.expanded{width:56px;padding:8px 0 12px;align-items:center}
+  .rail.expanded .rail-btn{width:40px;height:40px;flex-direction:column;gap:2px;padding:0}
+  .rail.expanded .rail-btn .rail-label{display:none}
+  .rail-toggle{display:none}
+  .rail-btn{width:40px;height:40px;font-size:0}
+  .rail-btn .rail-icon{font-size:1.15rem}
+  .page-content{padding:16px 16px 40px}
+  .breadcrumb{padding:10px 16px 0}
+}
+@media(max-width:540px){
+  .rail{display:none}
+  .header{padding:0 14px}
+  .quick-row{flex-direction:column}
+}
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     APP SHELL
+     ============================================================ -->
+<div class="app">
+
+<!-- ── LEFT RAIL ── -->
+<nav class="rail" id="rail">
+  <div class="rail-top">
+    <button class="rail-toggle" id="railToggle" type="button" title="Rozevřít panel">☰</button>
+  </div>
+  <a class="rail-btn" href="https://skolni-nastenka.cz/" title="Nástěnka">
+    <span class="rail-icon">🏠</span>
+    <span class="rail-label">Domů</span>
+  </a>
+  <a class="rail-btn active" href="#" title="Předměty">
+    <span class="rail-icon">📚</span>
+    <span class="rail-label">Předměty</span>
+  </a>
+  <a class="rail-btn" href="https://skolni-nastenka.cz/" title="Události">
+    <span class="rail-icon">📅</span>
+    <span class="rail-label">Události</span>
+  </a>
+  <a class="rail-btn" href="https://skolni-nastenka.cz/" title="Třídní info">
+    <span class="rail-icon">🏫</span>
+    <span class="rail-label">Třída</span>
+  </a>
+  <a class="rail-btn" href="https://skolni-nastenka.cz/" title="Týdenní rozvrh">
+    <span class="rail-icon">🗓️</span>
+    <span class="rail-label">Rozvrh</span>
+  </a>
+  <div class="rail-spacer"></div>
+</nav>
+
+<!-- ── CONTENT ZONE ── -->
+<div class="content-zone">
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="header-title">
+      <span class="ht-emoji">🎓</span> Studijní portál
+    </div>
+    <div class="header-right">
+      <span class="header-badge">📐 Matematika</span>
+      <span class="header-badge">👤 7.A</span>
+    </div>
+  </header>
+
+  <!-- SCROLLABLE CONTENT -->
+  <div class="page-scroll">
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+      <a href="https://skolni-nastenka.cz/">🏠 Nástěnka</a>
+      <span class="sep">›</span>
+      <a href="https://skolni-nastenka.cz/">📚 Předměty</a>
+      <span class="sep">›</span>
+      <span>📐 Matematika</span>
+    </div>
+
+    <div class="page-content">
+
+      <!-- HERO -->
+      <div class="hero">
+        <h1>📐 Matematika</h1>
+        <div class="hero-sub">Výukové materiály, řešené příklady a cvičení k procvičení. Vyber si téma a začni se učit.</div>
+        <div class="hero-chips">
+          <span class="hero-chip">👨‍🏫 Mgr. Jan Novák</span>
+          <span class="hero-chip">📅 Aktualizováno: <span id="heroDate"></span></span>
+          <span class="hero-chip">📚 3 témata</span>
+        </div>
+      </div>
+
+      <!-- INFO BAR -->
+      <div class="info-bar">
+        <span class="ib-icon">📢</span>
+        <span><strong>Písemka 22. 4.</strong> — Souhrnný test z geometrie (obsah a obvod trojúhelníku, obdélníku, čtverce). Rozsah: vzorce, převody, slovní úlohy. 45 min, kalkulačka povolena.</span>
+      </div>
+
+      <!-- QUICK LINKS -->
+      <div class="quick-row">
+        <a class="qlink" href="https://skolni-nastenka.cz/"><span class="ql-icon">🏠</span> Zpět na nástěnku</a>
+        <a class="qlink" href="../funkce.html"><span class="ql-icon">🎯</span> Přehledová nástěnka – Funkce</a>
+      </div>
+
+      <!-- SECTION: TÉMATA -->
+      <div class="section-title">
+        <span class="st-icon">📖</span> Témata
+        <span class="st-count">3 témata</span>
+      </div>
+
+      <div class="topics-grid">
+
+        <!-- ═══════ TÉMA: Obsah trojúhelníku ═══════ -->
+        <div class="topic-card">
+          <div class="topic-card-accent blue"></div>
+          <span class="topic-alert warn">⚠️ Písemka 22. 4.</span>
+          <div class="topic-card-head">
+            <div class="topic-card-ico ico-blue">📐</div>
+            <h3>Obsah trojúhelníku<small>Geometrie · str. 1–11</small></h3>
+          </div>
+          <div class="topic-card-body">
+            <p>Vzorec S = ½ · a · vₐ, typy trojúhelníků, převody jednotek obsahu, slovní úlohy. Interaktivní materiál s procvičováním.</p>
+          </div>
+          <div class="topic-card-actions">
+            <a class="topic-link" href="https://skolni-nastenka.cz/obsah-trojuhelniku-v3.html">
+              <span class="tl-icon">📖</span> Výukový materiál — teorie + příklady
+              <span class="tl-badge">interaktivní</span>
+              <span class="tl-arrow">→</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- ═══════ TÉMA: Funkce ═══════ -->
+        <div class="topic-card">
+          <div class="topic-card-accent green"></div>
+          <span class="topic-alert new">🆕 Nové</span>
+          <div class="topic-card-head">
+            <div class="topic-card-ico ico-green">📈</div>
+            <h3>Funkce<small>Algebra · str. 12–28</small></h3>
+          </div>
+          <div class="topic-card-body">
+            <p>Pojem funkce, definiční obor, obor hodnot, graf funkce, test svislou přímkou. 23 příkladů s řešením (10 výklad + 13 cvičení).</p>
+          </div>
+          <div class="topic-card-actions">
+            <a class="topic-link" href="01_teorie_funkce.html">
+              <span class="tl-icon">📖</span> Výuka — Teorie
+              <span class="tl-badge">teorie</span>
+              <span class="tl-arrow">→</span>
+            </a>
+            <a class="topic-link" href="02_priklady_vyklad.html">
+              <span class="tl-icon">✏️</span> Příklady — Výklad
+              <span class="tl-badge orange">10 příkladů</span>
+              <span class="tl-arrow">→</span>
+            </a>
+            <a class="topic-link" href="03_cviceni_1.html">
+              <span class="tl-icon">🏋️</span> Cvičení
+              <span class="tl-badge green">13 příkladů</span>
+              <span class="tl-arrow">→</span>
+            </a>
+            <a class="topic-link" href="../funkce.html">
+              <span class="tl-icon">🎯</span> Přehledová nástěnka (vše na jedné stránce)
+              <span class="tl-badge">nástěnka</span>
+              <span class="tl-arrow">→</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- ═══════ TÉMA: Přímá a nepřímá úměrnost ═══════ -->
+        <div class="topic-card">
+          <div class="topic-card-accent purple"></div>
+          <div class="topic-card-head">
+            <div class="topic-card-ico ico-purple">⚖️</div>
+            <h3>Přímá a nepřímá úměrnost<small>Algebra · příklady</small></h3>
+          </div>
+          <div class="topic-card-body">
+            <p>Přímá úměrnost, nepřímá úměrnost, trojčlenka, grafy úměrností. Příklady k procvičení.</p>
+          </div>
+          <div class="topic-card-actions">
+            <a class="topic-link" href="https://skolni-nastenka.cz/prima-neprime-umernost-priklady.html">
+              <span class="tl-icon">🧩</span> Příklady — Přímá a nepřímá úměrnost
+              <span class="tl-badge">příklady</span>
+              <span class="tl-arrow">→</span>
+            </a>
+          </div>
+        </div>
+
+      </div><!-- /topics-grid -->
+
+    </div><!-- /page-content -->
+
+    <!-- Footer -->
+    <div class="app-footer">© 2025 Studijní portál · 7.A</div>
+
+  </div><!-- /page-scroll -->
+</div><!-- /content-zone -->
+</div><!-- /app -->
+
+<!-- KaTeX for math rendering -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});"></script>
+
+<script>
+/* Date */
+const MONTHS = ['ledna','února','března','dubna','května','června',
+                'července','srpna','září','října','listopadu','prosince'];
+const today = new Date();
+document.getElementById('heroDate').textContent =
+  today.getDate() + '. ' + MONTHS[today.getMonth()] + ' ' + today.getFullYear();
+
+/* Rail toggle */
+const railEl = document.getElementById('rail');
+document.getElementById('railToggle').addEventListener('click', function() {
+  railEl.classList.toggle('expanded');
+});
+</script>
+</body>
+</html>

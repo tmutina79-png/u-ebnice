@@ -1,0 +1,54 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Local HTTP Server",
+			"type": "shell",
+			"command": "cd '/Users/tomasmutina/Documents/NPI+workshop+nástěnka/AI/Učebnice' && python3 -m http.server 8081",
+			"isBackground": true,
+			"problemMatcher": []
+		},
+		{
+			"label": "HTTP Server 8082",
+			"type": "shell",
+			"command": "python3 -m http.server 8082 -d '/Users/tomasmutina/Documents/NPI+workshop+nástěnka/AI/Učebnice'",
+			"isBackground": true,
+			"problemMatcher": []
+		},
+		{
+			"label": "Open in Browser",
+			"type": "shell",
+			"command": "open '/Users/tomasmutina/Documents/NPI+workshop+nástěnka/AI/Učebnice/Funkce/04_cviceni_2.html'",
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Git push ucebnice",
+			"type": "shell",
+			"command": "cd '/Users/tomasmutina/Documents/NPI+workshop+nástěnka/AI/Učebnice' && git init && git add Funkce/ && git commit -m 'Přidání materiálů k tématu Funkce' && git branch -M main && git remote add origin https://github.com/tmutina79-png/ucebnice.git && git push -u origin main",
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "git-init",
+			"type": "shell",
+			"command": "cd '/Users/tomasmutina/Documents/NPI+workshop+nástěnka/AI/Učebnice' && git init",
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Git push ucebnice",
+			"type": "shell",
+			"command": "cd '/Users/tomasmutina/Documents/NPI+workshop+nástěnka/AI/Učebnice' && git init && git add Funkce/ && git commit -m 'Přidání materiálů k tématu Funkce' && git branch -M main && git remote add origin https://github.com/tmutina79-png/ucebnice.git && git push -u origin main",
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "git init",
+			"type": "shell",
+			"command": "cd '/Users/tomasmutina/Documents/NPI+workshop+nástěnka/AI/Učebnice' && git init",
+			"isBackground": false,
+			"problemMatcher": []
+		}
+	]
+}

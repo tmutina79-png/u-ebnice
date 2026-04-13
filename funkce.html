@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Funkce jako matematický pojem</title>
+<!-- KaTeX -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});">
+</script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --p50:#eff6ff;  --p100:#dbeafe; --p200:#bfdbfe; --p300:#93c5fd;
+  --p400:#60a5fa; --p500:#3b82f6; --p600:#1e3a5f; --p700:#1e3a8a;
+  --p800:#1e2d5b; --p900:#0f172a;
+  --accent:#2563eb;
+  --success:#16a34a;
+  --bg:#f8fafc; --card:#ffffff;
+  --txt:#0f172a; --muted:#64748b; --border:#e2e8f0;
+  --amber-bg:#fffbeb; --amber-border:#fde68a; --amber-txt:#92400e; --amber-icon:#d97706;
+  --step-bg:#f8fafc; --step-border:#60a5fa; --step-num-bg:#dbeafe; --step-num-txt:#1e40af;
+  --r:18px; --r-sm:14px; --r-xs:8px;
+  --sh:0 1px 3px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.04);
+  --sh-md:0 4px 6px -1px rgba(0,0,0,.07),0 2px 4px -2px rgba(0,0,0,.05);
+}
+html{scroll-behavior:smooth}
+body{font-family:ui-sans-serif,system-ui,-apple-system,'Segoe UI',sans-serif;background:var(--bg);color:var(--txt);line-height:1.625;min-height:100vh;display:flex;flex-direction:column}
+
+/* ===== TOP BAR ===== */
+.topbar{background:var(--p700);color:#fff;position:sticky;top:0;z-index:100;box-shadow:0 2px 10px rgba(0,0,0,.15)}
+.top-main{display:flex;align-items:center;gap:12px;padding:10px 24px}
+.top-main .icon{font-size:1.3rem}
+.top-main h1{font-size:1rem;font-weight:700;letter-spacing:.01em}
+.top-main .spacer{flex:1}
+.top-main .dash-link{font-size:.78rem;font-weight:600;color:var(--p200);text-decoration:none;display:flex;align-items:center;gap:5px;transition:.15s}
+.top-main .dash-link:hover{color:#fff}
+.info-strip{display:flex;align-items:center;gap:6px;padding:0 24px 9px;flex-wrap:wrap}
+.info-chip{display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,.12);backdrop-filter:blur(4px);font-size:.68rem;font-weight:600;padding:4px 10px;border-radius:7px;white-space:nowrap;color:var(--p200)}
+
+/* ===== LAYOUT ===== */
+.app{display:grid;grid-template-columns:1.2fr 1fr;gap:14px;padding:14px;flex:1;min-height:0}
+.col-left{display:flex;flex-direction:column;gap:14px;min-height:0}
+.col-right{display:flex;flex-direction:column;min-height:0}
+
+/* ===== PANELS ===== */
+.panel{background:var(--card);border:1px solid var(--p200);border-radius:var(--r);box-shadow:var(--sh);display:flex;flex-direction:column;overflow:hidden;min-height:0;position:relative;transition:all .25s ease}
+.panel-head{display:flex;align-items:center;gap:8px;padding:12px 16px 10px;border-bottom:1px solid var(--border);flex-shrink:0}
+.panel-head .tag{font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;background:var(--p100);color:var(--p700);padding:3px 8px;border-radius:6px}
+.panel-head h2{font-size:.88rem;font-weight:700;flex:1;color:var(--p800)}
+.btn-fs{margin-left:auto;background:none;border:1.5px solid var(--border);color:var(--muted);width:28px;height:28px;border-radius:7px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.82rem;transition:.2s;flex-shrink:0}
+.btn-fs:hover{border-color:var(--p500);color:var(--p500);background:var(--p50)}
+.panel.fullscreen{position:fixed;inset:0;z-index:200;border-radius:0;margin:0;max-width:none;max-height:none;width:100vw;height:100vh;border:none}
+.panel.fullscreen .btn-fs{background:var(--p100);border-color:var(--p500);color:var(--p700)}
+.panel-body{flex:1;overflow-y:auto;padding:16px 18px;min-height:0}
+.panel-body::-webkit-scrollbar{width:5px}
+.panel-body::-webkit-scrollbar-thumb{background:var(--p200);border-radius:4px}
+
+/* ===== SLIDESHOW ===== */
+.slide-wrap{height:100%;display:flex;flex-direction:column}
+.slide{display:none;flex:1;animation:fadeIn .3s ease}
+.slide.active{display:flex;flex-direction:column;justify-content:center}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.slide h3{font-size:1.15rem;font-weight:700;margin-bottom:10px;color:var(--p700)}
+.slide p,.slide ul{font-size:1rem;color:var(--muted);line-height:1.7}
+.slide ul{padding-left:20px;margin-top:8px}
+.slide ul li{margin-bottom:5px}
+.formula{background:var(--p50);border-left:4px solid var(--p400);padding:14px 18px;border-radius:0 var(--r-xs) var(--r-xs) 0;font-size:1.15rem;font-weight:700;text-align:center;margin:14px 0;color:var(--p700)}
+.slide-controls{display:flex;align-items:center;justify-content:space-between;padding-top:10px;border-top:1px solid var(--border);margin-top:auto;flex-shrink:0}
+.slide-controls button{background:var(--p100);color:var(--p700);border:none;width:34px;height:34px;border-radius:8px;font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.2s}
+.slide-controls button:hover{background:var(--p500);color:#fff}
+.slide-dots{display:flex;gap:6px}
+.slide-dots span{width:8px;height:8px;border-radius:50%;background:var(--border);transition:.2s;cursor:pointer}
+.slide-dots span.active{background:var(--p500);transform:scale(1.2)}
+
+/* ===== FLIP CARDS ===== */
+.fc-wrap{height:100%;display:flex;flex-direction:column}
+.fc-progress{font-size:.72rem;color:var(--muted);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.fc-bar{flex:1;height:6px;background:var(--p100);border-radius:4px;overflow:hidden}
+.fc-bar-fill{height:100%;background:linear-gradient(90deg,var(--p500),var(--accent));border-radius:4px;transition:width .4s ease}
+.fc-card{flex:1;perspective:800px;cursor:pointer;display:flex;align-items:center;justify-content:center;min-height:140px}
+.fc-card-inner{width:100%;height:100%;min-height:140px;position:relative;transition:transform .55s cubic-bezier(.4,.2,.2,1);transform-style:preserve-3d}
+.fc-card.flipped .fc-card-inner{transform:rotateY(180deg)}
+.fc-face{position:absolute;inset:0;backface-visibility:hidden;border-radius:var(--r-sm);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px 22px;text-align:center}
+.fc-front{background:var(--card);border:2px solid var(--p200)}
+.fc-front .fc-emoji{font-size:2rem;margin-bottom:8px}
+.fc-front h3{font-size:1.08rem;font-weight:700;color:var(--p700)}
+.fc-front small{font-size:.72rem;color:var(--muted);margin-top:8px;opacity:.7}
+.fc-back{background:linear-gradient(135deg,var(--p500),var(--accent));color:#fff;transform:rotateY(180deg);font-size:.92rem;line-height:1.6}
+.fc-back strong{display:block;font-size:.96rem;margin-bottom:6px}
+.fc-footer{margin-top:auto;padding-top:10px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.fc-dots{display:flex;gap:5px}
+.fc-dots span{width:8px;height:8px;border-radius:50%;background:var(--border);transition:.2s}
+.fc-dots span.active{background:var(--p500);transform:scale(1.2)}
+.fc-dots span.seen{background:var(--p400);opacity:.45}
+.btn-sm{background:linear-gradient(135deg,var(--p500),var(--accent));color:#fff;border:none;font-size:.78rem;font-weight:600;padding:7px 16px;border-radius:var(--r-xs);cursor:pointer;transition:.2s;box-shadow:0 2px 8px rgba(59,130,246,.15)}
+.btn-sm:hover{box-shadow:0 4px 14px rgba(59,130,246,.25);transform:translateY(-1px)}
+.btn-sm:disabled{opacity:.35;cursor:not-allowed;transform:none;box-shadow:none}
+
+/* ===== EXAMPLES ===== */
+.ex-item{background:var(--card);border:1px solid var(--p200);border-radius:var(--r);padding:0;margin-bottom:10px;box-shadow:var(--sh);transition:all .2s}
+.ex-item:hover{box-shadow:var(--sh-md)}
+.ex-header{display:flex;align-items:center;gap:10px;padding:14px 16px;cursor:pointer;user-select:none;transition:.15s}
+.ex-header:hover{opacity:.85}
+.ex-num{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:var(--p100);color:var(--p700);font-size:.78rem;font-weight:700;flex-shrink:0}
+.ex-task-text{font-size:.9rem;font-weight:600;flex:1;line-height:1.45;color:var(--p800)}
+.ex-check{display:flex;align-items:center;flex-shrink:0}
+.ex-check input{accent-color:var(--p500);width:16px;height:16px;cursor:pointer}
+.ex-body{display:none;padding:0 16px 14px 54px;animation:slideDown .25s ease}
+.ex-item.open .ex-body{display:block}
+@keyframes slideDown{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+.step{display:none;background:var(--step-bg);border-left:4px solid var(--step-border);border-radius:0 var(--r-xs) var(--r-xs) 0;padding:10px 14px;margin-bottom:8px;font-size:.88rem;animation:stepIn .3s ease;color:#334155}
+.step.visible{display:flex;align-items:flex-start;gap:8px}
+@keyframes stepIn{from{opacity:0;transform:translateX(-8px)}to{opacity:1;transform:translateX(0)}}
+.step-num{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:var(--step-num-bg);color:var(--step-num-txt);font-size:.72rem;font-weight:700;flex-shrink:0;margin-top:1px}
+.step-content{flex:1}
+.step-label{font-weight:700;color:var(--step-num-txt);font-size:.68rem;text-transform:uppercase;letter-spacing:.04em;margin-bottom:2px}
+.ex-btns{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
+.btn-hint{display:inline-flex;align-items:center;gap:6px;background:var(--amber-bg);color:var(--amber-txt);border:1.5px solid var(--amber-border);font-size:.8rem;font-weight:600;padding:6px 14px;border-radius:var(--r-xs);cursor:pointer;transition:.2s}
+.btn-hint:hover{background:#fef3c7;border-color:#fbbf24}
+.btn-hint:disabled{opacity:.4;cursor:not-allowed;background:var(--border);border-color:var(--border);color:var(--muted)}
+.btn-step{display:inline-flex;align-items:center;gap:6px;background:var(--p50);color:#1e40af;border:1.5px solid var(--p200);font-size:.8rem;font-weight:600;padding:6px 14px;border-radius:var(--r-xs);cursor:pointer;transition:.2s}
+.btn-step:hover{background:var(--p100);border-color:var(--p400)}
+.btn-step:disabled{opacity:.4;cursor:not-allowed;background:var(--border);border-color:var(--border);color:var(--muted)}
+.btn-collapse{background:none;border:1px solid var(--border);color:var(--muted);font-size:.78rem;padding:6px 14px;border-radius:var(--r-xs);cursor:pointer;transition:.2s}
+.btn-collapse:hover{border-color:var(--p400);color:var(--p700)}
+
+/* ===== PDF BAR ===== */
+.pdf-bar{background:var(--step-bg);border:2px solid var(--border);border-radius:var(--r-sm);padding:16px 18px;margin-top:14px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;flex-shrink:0}
+.pdf-bar .info{flex:1;font-size:.82rem;color:var(--muted)}
+.pdf-bar .info strong{color:var(--p700)}
+.btn-export{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,var(--p500),var(--accent));color:#fff;border:none;font-size:.82rem;font-weight:700;padding:10px 22px;border-radius:10px;cursor:pointer;box-shadow:0 3px 12px rgba(59,130,246,.18);transition:.2s}
+.btn-export:hover{transform:translateY(-1px);box-shadow:0 5px 18px rgba(59,130,246,.28)}
+
+/* ===== PRINT ===== */
+#print-area{display:none}
+@media print{
+  body>*:not(#print-area){display:none!important}
+  #print-area{display:block!important;padding:20px;font-family:ui-sans-serif,system-ui,sans-serif;color:#000}
+  #print-area h2{font-size:1.3rem;margin-bottom:14px;border-bottom:2px solid #333;padding-bottom:6px}
+  #print-area .pe{margin-bottom:20px;padding:14px;border:1px solid #ccc;border-radius:8px;page-break-inside:avoid}
+  #print-area .pe h3{font-size:.95rem;margin-bottom:6px}
+  #print-area .pe p{font-size:.9rem}
+  #print-area .lines{margin-top:10px;border-top:1px dashed #ccc;padding-top:8px}
+  #print-area .lines div{border-bottom:1px solid #ddd;height:26px;margin-bottom:3px}
+}
+
+/* ===== RESPONSIVE ===== */
+@media(max-width:840px){
+  .app{grid-template-columns:1fr}
+  .col-left,.col-right{min-height:auto}
+}
+@media(max-width:480px){
+  .info-strip{padding:0 14px 8px}
+  .top-main{padding:8px 14px}
+  .app{padding:10px}
+}
+</style>
+</head>
+<body>
+
+<!-- ===== TOP BAR ===== -->
+<nav class="topbar">
+  <div class="top-main">
+    <span class="icon">🎓</span>
+    <h1>Funkce jako matematický pojem</h1>
+    <span class="spacer"></span>
+    <a class="dash-link" href="https://skolni-nastenka.cz/">📊 Dashboard</a>
+  </div>
+  <div class="info-strip">
+    <span class="info-chip">📐 Matematika</span>
+    <span class="info-chip">📖 Kapitola 1 – Funkce</span>
+    <span class="info-chip">📄 Učebnice str. 9–28</span>
+  </div>
+</nav>
+
+<!-- ===== MAIN APP ===== -->
+<main class="app">
+
+  <!-- LEFT COLUMN -->
+  <div class="col-left">
+
+    <!-- PANEL 1: PRŮVODCE TEORIÍ -->
+    <section class="panel" style="flex:1">
+      <div class="panel-head">
+        <span class="tag">📖 Teorie</span>
+        <h2>Průvodce tématem</h2>
+        <button class="btn-fs" onclick="toggleFS(this)" title="Celá obrazovka">⛶</button>
+      </div>
+      <div class="panel-body">
+        <div class="slide-wrap">
+
+          <div class="slide active">
+            <h3>Co je závislost veličin?</h3>
+            <p>V matematice má slovo <strong>funkce</strong> specifický význam — je to patrně <strong>nejvýznamnější pojem novověké matematiky</strong>.</p>
+            <ul>
+              <li>Cena jízdenky závisí na <strong>délce trasy</strong></li>
+              <li>Dráha závisí na <strong>době pohybu</strong></li>
+              <li>Výška rtuťového sloupce závisí na <strong>teplotě</strong></li>
+            </ul>
+          </div>
+
+          <div class="slide">
+            <h3>Zápis funkce vzorcem</h3>
+            <p>Funkci zapisujeme jako vztah mezi <strong>nezávisle proměnnou</strong> $x$ a <strong>závisle proměnnou</strong> $y$:</p>
+            <div class="formula">$y = f(x)$</div>
+            <p>Čteme: „ypsilon se rovná ef iks." Písmeno $f$ označuje funkci i vzorec (předpis) pro výpočet.</p>
+          </div>
+
+          <div class="slide">
+            <h3>Funkční hodnota</h3>
+            <p>Pro funkci $f(x) = 2x + 3$:</p>
+            <ul>
+              <li>$f(2) = 2 \cdot 2 + 3 = 7$ — funkce <strong>přiřazuje</strong> číslu 2 číslo 7</li>
+              <li>$f(0) = 2 \cdot 0 + 3 = 3$</li>
+              <li>$f(-3) = 2 \cdot (-3) + 3 = -3$</li>
+            </ul>
+            <p style="margin-top:8px">Číslo 7 je <strong>hodnota funkce $f$ v čísle 2</strong>.</p>
+          </div>
+
+          <div class="slide">
+            <h3>Definiční obor $D$</h3>
+            <p>Množina všech hodnot $x$, pro které je funkce definována.</p>
+            <div class="formula">$y = f(x), \quad x \in D$</div>
+            <ul>
+              <li>$f: y = \frac{1}{x}$ → $D = \mathbb{R} \setminus \{0\}$</li>
+              <li>$f: y = \sqrt{x}$ → $D = \langle 0, +\infty)$</li>
+              <li>$f: y = 2x, \; x \in \{1,2,3\}$ → $D = \{1,2,3\}$</li>
+            </ul>
+          </div>
+
+          <div class="slide">
+            <h3>Způsoby zadání funkce</h3>
+            <p>Funkci můžeme zadat třemi způsoby:</p>
+            <ul>
+              <li><strong>Vzorcem:</strong> $f: y = 2x + 3$</li>
+              <li><strong>Tabulkou:</strong> pro konečnou množinu hodnot $x$</li>
+              <li><strong>Grafem:</strong> průběh teploty, měření apod.</li>
+            </ul>
+            <p style="margin-top:8px">Lze také zapsat: $f: x \mapsto 2x + 3$ (čteme „ef přiřazuje iks hodnotu…")</p>
+          </div>
+
+          <div class="slide">
+            <h3>Co je graf funkce?</h3>
+            <p><strong>Grafem</strong> funkce $y = f(x)$ je množina všech bodů $[x, f(x)]$ v pravoúhlé soustavě souřadnic.</p>
+            <p style="margin-top:8px"><strong>Test svislou přímkou:</strong> Pokud libovolná svislá přímka protne čáru v <strong>nejvýše jednom bodě</strong>, jde o graf funkce.</p>
+            <ul>
+              <li>Stejný vzorec s různým $D$ → různý graf</li>
+              <li>$y=2x$, $x \in \mathbb{R}$ → přímka</li>
+              <li>$y=2x$, $x \in \mathbb{Z}$ → izolované body</li>
+            </ul>
+          </div>
+
+          <div class="slide">
+            <h3>Shrnutí</h3>
+            <ul>
+              <li><strong>Funkce</strong> = každému $x \in D$ přiřazeno <strong>jediné</strong> $y$</li>
+              <li><strong>Definiční obor $D$</strong> = množina přípustných $x$</li>
+              <li><strong>Funkční hodnota</strong> $f(x)$ = výsledek po dosazení</li>
+              <li><strong>Graf</strong> = množina bodů $[x, f(x)]$</li>
+              <li>Zápis: $y = f(x)$, $x \in D$</li>
+            </ul>
+          </div>
+
+          <div class="slide-controls">
+            <button onclick="changeSlide(-1)" aria-label="Předchozí">‹</button>
+            <div class="slide-dots" id="sDots"></div>
+            <button onclick="changeSlide(1)" aria-label="Další">›</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PANEL 2: FLIP CARDS -->
+    <section class="panel" style="flex:1">
+      <div class="panel-head">
+        <span class="tag">🃏 Pojmy</span>
+        <h2>Klíčové pojmy</h2>
+        <button class="btn-fs" onclick="toggleFS(this)" title="Celá obrazovka">⛶</button>
+      </div>
+      <div class="panel-body">
+        <div class="fc-wrap" id="fcWrap"></div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- RIGHT COLUMN: EXAMPLES -->
+  <div class="col-right">
+    <section class="panel" style="flex:1">
+      <div class="panel-head">
+        <span class="tag">🏋️ Praxe</span>
+        <h2>Postupný trénink</h2>
+        <button class="btn-fs" onclick="toggleFS(this)" title="Celá obrazovka">⛶</button>
+      </div>
+      <div class="panel-body">
+        <div id="exList"></div>
+        <div class="pdf-bar">
+          <div class="info">Zaškrtni příklady a vygeneruj si <strong>pracovní list</strong>.</div>
+          <span id="selBadge" style="font-size:.78rem;font-weight:700;color:var(--p700)">Vybráno: 0</span>
+          <button class="btn-export" onclick="generatePrint()">🖨️ Generovat PDF</button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+</main>
+
+<!-- PRINT -->
+<div id="print-area"></div>
+
+<script>
+/* ============================================================
+   FULLSCREEN TOGGLE
+   ============================================================ */
+function toggleFS(btn) {
+  const panel = btn.closest('.panel');
+  panel.classList.toggle('fullscreen');
+  btn.textContent = panel.classList.contains('fullscreen') ? '✕' : '⛶';
+  btn.title = panel.classList.contains('fullscreen') ? 'Zavřít' : 'Celá obrazovka';
+}
+
+/* ============================================================
+   DATA
+   ============================================================ */
+
+/* FLIP CARDS DATA */
+const CARDS = [
+  { emoji:'📈', term:'Funkce', def:'Předpis, který každému číslu x z definičního oboru přiřazuje právě jedno reálné číslo y. Značíme y = f(x).' },
+  { emoji:'📐', term:'Definiční obor (D)', def:'Množina všech hodnot nezávisle proměnné x, pro které je funkce definována. Např. u y = 1/x je D = ℝ \\ {0}.' },
+  { emoji:'🔢', term:'Funkční hodnota f(x)', def:'Číslo y, které funkce přiřadí konkrétní hodnotě x. Říkáme: „hodnota funkce f v čísle x".' },
+  { emoji:'🅧', term:'Nezávisle proměnná (x)', def:'Proměnná, jejíž hodnotu volíme. Někdy se říká „argument funkce".' },
+  { emoji:'🅨', term:'Závisle proměnná (y)', def:'Proměnná, jejíž hodnota se mění v závislosti na x podle předpisu funkce.' },
+  { emoji:'📊', term:'Graf funkce', def:'Množina všech bodů [x, f(x)] v soustavě souřadnic. Ověřujeme testem svislou přímkou – max. 1 průsečík.' },
+  { emoji:'📋', term:'Způsoby zadání', def:'Funkci lze zadat vzorcem (y = 2x+3), tabulkou (konečný D) nebo grafem (odečítáme hodnoty).' },
+  { emoji:'✏️', term:'Zápisy funkce', def:'f: y = 2x + 3 nebo f: x ↦ 2x + 3. Písmena f, g, h… rozlišují různé funkce.' }
+];
+
+/* EXAMPLES */
+const EX = [
+  /* ===== VÝKLAD (str. 12–24): Příklady 1–10 ===== */
+  {id:1,t:'Příklad 1 (V)',q:'Vypočtěte $f(3)$, je-li: a) $y=x+2$, b) $y=2-3x$, c) $y=x^2$, d) $y=3x^2-1$, e) $y=\\frac{1}{x}$, f) $y=\\sqrt{x+1}$.',s:[
+    {l:'a) y = x + 2',v:'$f(3) = 3 + 2 = 5$'},
+    {l:'b) y = 2 − 3x',v:'$f(3) = 2 - 9 = -7$'},
+    {l:'c) y = x²',v:'$f(3) = 3^2 = 9$'},
+    {l:'d) y = 3x² − 1',v:'$f(3) = 27 - 1 = 26$'},
+    {l:'e) y = 1/x',v:'$f(3) = \\frac{1}{3}$'},
+    {l:'f) y = √(x+1)',v:'$f(3) = \\sqrt{4} = 2$'}]},
+
+  {id:2,t:'Příklad 2 (V)',q:'$g(x)=x^2+5$. Vypočtěte $g(0),\\, g(1),\\, g(5),\\, g(-1),\\, g(-5),\\, g(\\tfrac{1}{2}),\\, g(-\\tfrac{1}{2}),\\, g(-\\sqrt{2})$.',s:[
+    {l:'a) g(0)',v:'$0^2+5 = 5$'},
+    {l:'b) g(1)',v:'$1+5 = 6$'},
+    {l:'c) g(5)',v:'$25+5 = 30$'},
+    {l:'d) g(−1)',v:'$1+5 = 6$'},
+    {l:'e) g(−5)',v:'$25+5 = 30$'},
+    {l:'f) g(½)',v:'$\\frac{1}{4}+5 = \\frac{21}{4}$'},
+    {l:'g) g(−½)',v:'$\\frac{1}{4}+5 = \\frac{21}{4}$'},
+    {l:'h) g(−√2)',v:'$2+5 = 7$'}]},
+
+  {id:3,t:'Příklad 3 (V)',q:'$f(x)=3x+5$. Určete $x$, kde $f(x)=8,\\; 0,\\; -2,\\; \\tfrac{1}{2}$.',s:[
+    {l:'a) f(x) = 8',v:'$3x+5=8 \\Rightarrow x=1$'},
+    {l:'b) f(x) = 0',v:'$3x+5=0 \\Rightarrow x=-\\frac{5}{3}$'},
+    {l:'c) f(x) = −2',v:'$3x+5=-2 \\Rightarrow x=-\\frac{7}{3}$'},
+    {l:'d) f(x) = ½',v:'$3x+5=\\frac{1}{2} \\Rightarrow x=-\\frac{3}{2}$'}]},
+
+  {id:4,t:'Příklad 4 (V)',q:'Doplňte tabulku pro $f: y = 4 - 3x$.',s:[
+    {l:'Dosadíme x',v:'$f(-1)=7,\\; f(0)=4,\\; f(1)=1$'},
+    {l:'Zjistíme x',v:'$f(x)=-1 \\Rightarrow x=\\frac{5}{3}$; &ensp; $f(x)=0 \\Rightarrow x=\\frac{4}{3}$'},
+    {l:'Výsledek',v:'$x$: $-1,\\; \\frac{5}{3},\\; 0,\\; \\frac{4}{3},\\; 1$ &ensp;→&ensp; $f(x)$: $7,\\; -1,\\; 4,\\; 0,\\; 1$'}]},
+
+  {id:5,t:'Příklad 5 (V)',q:'Zapište vzorcem: čtverec o straně $x$ metrů má obvod $y$ centimetrů.',s:[
+    {l:'Úvaha',v:'Strana $x$ m $= 100x$ cm. Obvod $= 4 \\cdot 100x$'},
+    {l:'Výsledek',v:'$f: y = 400x$'}]},
+
+  {id:6,t:'Příklad 6 (V)',q:'Určete $D(f)$: a) $\\frac{2}{x+3}$, b) $\\frac{1}{2-x}$, c) $\\frac{1}{2x+1}$, d) $\\frac{x^2-1}{(x-2)^2}$, e) $\\frac{1}{5x^2+6x}$, f) $\\frac{3x-4}{x^2-5x+6}$, g) $\\sqrt{x-7}$, h) $\\sqrt{8-3x}$.',s:[
+    {l:'a) 2/(x+3)',v:'$x \\neq -3 \\Rightarrow D = \\mathbb{R} \\setminus \\{-3\\}$'},
+    {l:'b) 1/(2−x)',v:'$x \\neq 2 \\Rightarrow D = \\mathbb{R} \\setminus \\{2\\}$'},
+    {l:'c) 1/(2x+1)',v:'$x \\neq -\\frac{1}{2} \\Rightarrow D = \\mathbb{R} \\setminus \\{-\\frac{1}{2}\\}$'},
+    {l:'d) (x²−1)/(x−2)²',v:'$(x-2)^2 \\neq 0 \\Rightarrow D = \\mathbb{R} \\setminus \\{2\\}$'},
+    {l:'e) 1/(5x²+6x)',v:'$x(5x+6) \\neq 0 \\Rightarrow D = \\mathbb{R} \\setminus \\{0,\\, -\\frac{6}{5}\\}$'},
+    {l:'f) (3x−4)/(x²−5x+6)',v:'$(x-2)(x-3) \\neq 0 \\Rightarrow D = \\mathbb{R} \\setminus \\{2,\\, 3\\}$'},
+    {l:'g) √(x−7)',v:'$x - 7 \\geq 0 \\Rightarrow D = \\langle 7, +\\infty)$'},
+    {l:'h) √(8−3x)',v:'$8 - 3x \\geq 0 \\Rightarrow D = (-\\infty, \\frac{8}{3} \\rangle$'}]},
+
+  {id:7,t:'Příklad 7 (V)',q:'Rozhodněte, zda jde o graf funkce: a) rostoucí křivka, b) ležatá parabola.',s:[
+    {l:'a) Křivka',v:'Každá svislá přímka protne křivku v nejvýše 1 bodě → ✅ ANO, je to funkce.'},
+    {l:'b) Ležatá parabola',v:'Svislá přímka $x = -2$ protne parabolu ve 2 bodech → ❌ NE, není to funkce.'}]},
+
+  {id:8,t:'Příklad 8 (V)',q:'Rozhodněte, zda tabulka zadává funkci: a) $x$: $2, -2, \\sqrt{4}, 0$; &ensp; b) $x$: $4, 5, 6, 7$.',s:[
+    {l:'a) Tabulka se √4',v:'$\\sqrt{4}=2$ → $x=2$ se vyskytuje 2× s různými $y$ → ❌ NE, nezadává funkci'},
+    {l:'b) Tabulka s opakujícím se y',v:'Každé $x$ je jedinečné, $y$ se smí opakovat → ✅ ANO, zadává funkci'}]},
+
+  {id:9,t:'Příklad 9 (V)',q:'Nakreslete graf: a) $y=\\frac{1}{2}x+1$, &ensp; b) $y=x^2-x+2$; &ensp; $x \\in \\{-2,-1,0,1,2\\}$.',s:[
+    {l:'a) Výpočet',v:'$f(-2)=0,\\; f(-1)=\\frac{1}{2},\\; f(0)=1,\\; f(1)=\\frac{3}{2},\\; f(2)=2$'},
+    {l:'a) Graf',v:'5 bodů ležících na přímce'},
+    {l:'b) Výpočet',v:'$f(-2)=8,\\; f(-1)=4,\\; f(0)=2,\\; f(1)=2,\\; f(2)=4$'},
+    {l:'b) Graf',v:'5 bodů tvořících parabolický tvar'}]},
+
+  {id:10,t:'Příklad 10 (V)',q:'Z grafu funkce vyčtěte definiční obor (pozor na různá měřítka a posunuté osy).',s:[
+    {l:'a) Různá měřítka',v:'$D(f) = \\langle -0{,}3;\\; 0{,}1 \\rangle$ (plné body na obou koncích)'},
+    {l:'b) Posunuté osy',v:'$D(f) = (10;\\; 30 \\rangle$ (prázdný kroužek vlevo, plný vpravo)'}]},
+
+  /* ===== CVIČENÍ (str. 25–28): Příklady 11–23 ===== */
+  {id:11,t:'Příklad 11 (C)',q:'Zapište vzorcem $y=f(x)$: a) čtverec o straně $x$ mm → obsah $y$ mm², b) trojnásobek $x$ + 7, c) pětinásobek $x^2$.',s:[
+    {l:'a) Obsah čtverce',v:'$f: y = x^2$'},
+    {l:'b) Trojnásobek + 7',v:'$f: y = 3x + 7$'},
+    {l:'c) Pětinásobek x²',v:'$f: y = 5x^2$'}]},
+
+  {id:12,t:'Příklad 12 (C)',q:'$f: y = 7x - 1$. Vypočtěte hodnotu pro $x = 40,\\, 13,\\, 7,\\, -1,\\, \\frac{1}{7},\\, -\\frac{1}{7},\\, \\frac{1}{3},\\, -\\frac{1}{3}$.',s:[
+    {l:'a) f(40)',v:'$7 \\cdot 40 - 1 = 279$'},
+    {l:'b) f(13)',v:'$7 \\cdot 13 - 1 = 90$'},
+    {l:'c) f(7)',v:'$7 \\cdot 7 - 1 = 48$'},
+    {l:'d) f(−1)',v:'$7 \\cdot (-1) - 1 = -8$'},
+    {l:'e) f(1/7)',v:'$7 \\cdot \\frac{1}{7} - 1 = 0$'},
+    {l:'f) f(−1/7)',v:'$7 \\cdot (-\\frac{1}{7}) - 1 = -2$'},
+    {l:'g) f(1/3)',v:'$\\frac{7}{3} - 1 = \\frac{4}{3}$'},
+    {l:'h) f(−1/3)',v:'$-\\frac{7}{3} - 1 = -\\frac{10}{3}$'}]},
+
+  {id:13,t:'Příklad 13 (C)',q:'$f: y = \\frac{5-x}{x+2}$. Určete hodnoty pro $x \\in \\{0,\\, 5,\\, 10,\\, -1,\\, -5,\\, -7\\}$.',s:[
+    {l:'x = 0',v:'$f(0) = \\frac{5}{2} = 2{,}5$'},
+    {l:'x = 5',v:'$f(5) = \\frac{0}{7} = 0$'},
+    {l:'x = 10',v:'$f(10) = -\\frac{5}{12}$'},
+    {l:'x = −1',v:'$f(-1) = \\frac{6}{1} = 6$'},
+    {l:'x = −5',v:'$f(-5) = -\\frac{10}{3}$'},
+    {l:'x = −7',v:'$f(-7) = -\\frac{12}{5}$'}]},
+
+  {id:14,t:'Příklad 14 (C)',q:'$g: y = 7 - 5x$. Zjistěte $x$ pro $g(x) = -8,\\; 5,\\; 12,\\; 22$.',s:[
+    {l:'a) g(x) = −8',v:'$7 - 5x = -8 \\Rightarrow x = 3$'},
+    {l:'b) g(x) = 5',v:'$7 - 5x = 5 \\Rightarrow x = \\frac{2}{5}$'},
+    {l:'c) g(x) = 12',v:'$7 - 5x = 12 \\Rightarrow x = -1$'},
+    {l:'d) g(x) = 22',v:'$7 - 5x = 22 \\Rightarrow x = -3$'}]},
+
+  {id:15,t:'Příklad 15 (C)',q:'Zapište definiční obor funkce dané tabulkou: a) $x$: 0,9; 0,8; 0,7; 0,6; 0,4 &ensp; b) $x$: −8; −4; −1; 3.',s:[
+    {l:'a) Tabulka',v:'$D = \\{0{,}4;\\; 0{,}6;\\; 0{,}7;\\; 0{,}8;\\; 0{,}9\\}$'},
+    {l:'b) Tabulka',v:'$D = \\{-8;\\; -4;\\; -1;\\; 3\\}$'}]},
+
+  {id:16,t:'Příklad 16 (C)',q:'Určete vzorec a $D(f)$ pro závislost objemu krychle $y$ (cm³) na délce hrany $x$ (cm).',s:[
+    {l:'Vzorec',v:'Objem krychle: $V = x^3$ cm³'},
+    {l:'Definiční obor',v:'$x > 0$, tedy $D = (0, +\\infty)$'},
+    {l:'Výsledek',v:'$f: y = x^3,\\; x \\in (0, +\\infty)$'}]},
+
+  {id:17,t:'Příklad 17 (C)',q:'Určete $D(f)$: a) $5x-6$, b) $\\frac{5x}{5x-6}$, c) $\\frac{5x-6}{1}$, d) $\\frac{5x}{6x-5}$, e) $\\frac{1}{5x-6}$, f) $\\frac{6}{1-5x}$.',s:[
+    {l:'a) y = 5x − 6',v:'$D = \\mathbb{R}$'},
+    {l:'b) 5x/(5x−6)',v:'$5x - 6 \\neq 0 \\Rightarrow D = \\mathbb{R} \\setminus \\{\\frac{6}{5}\\}$'},
+    {l:'c) (5x−6)/1',v:'$D = \\mathbb{R}$ (jmenovatel je 1)'},
+    {l:'d) 5x/(6x−5)',v:'$6x - 5 \\neq 0 \\Rightarrow D = \\mathbb{R} \\setminus \\{\\frac{5}{6}\\}$'},
+    {l:'e) 1/(5x−6)',v:'$5x - 6 \\neq 0 \\Rightarrow D = \\mathbb{R} \\setminus \\{\\frac{6}{5}\\}$'},
+    {l:'f) 6/(1−5x)',v:'$1 - 5x \\neq 0 \\Rightarrow D = \\mathbb{R} \\setminus \\{\\frac{1}{5}\\}$'}]},
+
+  {id:18,t:'Příklad 18 (C)',q:'Určete $D(f)$: a) $\\sqrt{x}$, b) $\\sqrt{x+2}$, c) $\\sqrt{x}+2$, d) $\\sqrt{2x-1}$, e) $\\sqrt{2x}-1$, f) $\\sqrt{4-5x}$.',s:[
+    {l:'a) √x',v:'$x \\geq 0 \\Rightarrow D = \\langle 0, +\\infty)$'},
+    {l:'b) √(x+2)',v:'$x + 2 \\geq 0 \\Rightarrow D = \\langle -2, +\\infty)$'},
+    {l:'c) √x + 2',v:'$x \\geq 0 \\Rightarrow D = \\langle 0, +\\infty)$'},
+    {l:'d) √(2x−1)',v:'$2x - 1 \\geq 0 \\Rightarrow D = \\langle \\frac{1}{2}, +\\infty)$'},
+    {l:'e) √(2x) − 1',v:'$2x \\geq 0 \\Rightarrow D = \\langle 0, +\\infty)$'},
+    {l:'f) √(4−5x)',v:'$4 - 5x \\geq 0 \\Rightarrow D = (-\\infty, \\frac{4}{5} \\rangle$'}]},
+
+  {id:19,t:'Příklad 19 (C)',q:'Která $x$ nepatří do $D$? a) $\\frac{x^2}{x+2}$, b) $\\frac{1}{x^2+9x}$, c) $\\frac{1}{5x(x-1)}$, d) $\\frac{3x}{25-4x^2}$, e) $\\frac{x}{x^2+3x-10}$, f) $\\frac{5-2x}{x^3-5x^2+6x}$.',s:[
+    {l:'a) x²/(x+2)',v:'$x + 2 = 0 \\Rightarrow x = -2$ nepatří do $D$'},
+    {l:'b) 1/(x²+9x)',v:'$x(x+9) = 0 \\Rightarrow x = 0$ a $x = -9$ nepatří'},
+    {l:'c) 1/[5x(x−1)]',v:'$x = 0$ a $x = 1$ nepatří'},
+    {l:'d) 3x/(25−4x²)',v:'$(5-2x)(5+2x) = 0 \\Rightarrow x = \\pm\\frac{5}{2}$ nepatří'},
+    {l:'e) x/(x²+3x−10)',v:'$(x+5)(x-2) = 0 \\Rightarrow x = -5$ a $x = 2$ nepatří'},
+    {l:'f) (5−2x)/(x³−5x²+6x)',v:'$x(x-2)(x-3) = 0 \\Rightarrow x = 0,\\; 2,\\; 3$ nepatří'}]},
+
+  {id:20,t:'Příklad 20 (C)',q:'Rozhodněte, zda na obrázku je graf funkce: a) parabola, b) kružnice, c) esovitá křivka, d) svislá přímka.',s:[
+    {l:'a) Parabola',v:'Každá svislá přímka → max 1 průsečík → ✅ ANO, je to graf funkce'},
+    {l:'b) Kružnice',v:'Svislá přímka středem → 2 průsečíky → ❌ NE, není to graf funkce'},
+    {l:'c) Esovitá křivka',v:'Každá svislá přímka → max 1 průsečík → ✅ ANO, je to graf funkce'},
+    {l:'d) Svislá přímka',v:'Jednomu $x$ odpovídá nekonečně hodnot $y$ → ❌ NE, není to graf funkce'}]},
+
+  {id:21,t:'Příklad 21 (C)',q:'Z grafu vyčtěte $D(f)$ (pozor na posunuté osy, různá měřítka a koncové body).',s:[
+    {l:'a) Posunuté osy, vodorovná čára',v:'$D(f) = \\langle -0{,}2;\\; 0{,}35 \\rangle$ (oba konce plné)'},
+    {l:'b) Různá měřítka, vlnová křivka',v:'$D(f) = \\langle -4;\\; 3)$ (vlevo plný, vpravo prázdný)'},
+    {l:'c) Posunuté osy, stoupající křivka',v:'$D(f) = \\langle -0{,}3;\\; 0{,}4)$ (vlevo plný, vpravo prázdný)'},
+    {l:'d) Dvě větve grafu',v:'$D(f) = (-100;\\; 0) \\cup \\langle 0;\\; 75 \\rangle$'}]},
+
+  {id:22,t:'Příklad 22 (C)',q:'Nakreslete graf: a) $y = x^2 - 3x$, $x \\in \\{-1, -\\frac{1}{2}, 0, 1, 3\\}$; &ensp; b) $y = \\frac{3x-1}{x+1}$, $x \\in \\{-2, 1, 2, 4, 7\\}$; &ensp; c) $y = x^2+2$, $x \\in \\{-5, -3, -1, 0, 4, 5\\}$.',s:[
+    {l:'a) Výpočet',v:'$f(-1)=4,\\; f(-\\frac{1}{2})=\\frac{7}{4},\\; f(0)=0,\\; f(1)=-2,\\; f(3)=0$'},
+    {l:'a) Graf',v:'5 izolovaných bodů funkce $y = x^2 - 3x$'},
+    {l:'b) Výpočet',v:'$f(-2)=7,\\; f(1)=1,\\; f(2)=\\frac{5}{3},\\; f(4)=\\frac{11}{5},\\; f(7)=\\frac{5}{2}$'},
+    {l:'b) Graf',v:'5 izolovaných bodů funkce $y = \\frac{3x-1}{x+1}$'},
+    {l:'c) Výpočet',v:'$f(-5)=27,\\; f(-3)=11,\\; f(-1)=3,\\; f(0)=2,\\; f(4)=18,\\; f(5)=27$'},
+    {l:'c) Graf',v:'6 izolovaných bodů funkce $y = x^2 + 2$'}]},
+
+  {id:23,t:'Příklad 23 (C)',q:'Po částech lineární funkce (body (−4;2)○, (−3;2), (3;−4), (4;4), (5;4)●). Určete: a) $D(f)$, b) průsečíky s osou $x$, c) hodnoty $f$ pro vybraná $x$, d) průsečík s osou $y$, e) pro která celá $x$ nabývá $f$ daných hodnot, f) kde je $f < 0$.',s:[
+    {l:'a) Definiční obor',v:'$D(f) = (-4;\\, 5\\rangle$'},
+    {l:'b) Průsečíky s osou x',v:'$[-1;\\, 0]$ a $[\\frac{7}{2};\\, 0]$'},
+    {l:'c) Hodnoty funkce',v:'$f(-3)=2,\\; f(-1)=0,\\; f(0)=-1,\\; f(1)=-2,\\; f(4)=4,\\; f(5)=4$'},
+    {l:'d) Průsečík s osou y',v:'$[0;\\, -1]$'},
+    {l:'e) Celá x pro dané hodnoty',v:'$f(x)=2 \\Rightarrow x=-3$; &ensp; $f(x)=1 \\Rightarrow x=-2$; &ensp; $f(x)=-1 \\Rightarrow x=0$; &ensp; $f(x)=-2 \\Rightarrow x=1$; &ensp; $f(x)=-3 \\Rightarrow x=2$'},
+    {l:'f) Záporné hodnoty f',v:'Celá čísla $x \\in \\{0,\\, 1,\\, 2,\\, 3\\}$'}]}
+];
+
+/* ============================================================
+   1) SLIDESHOW
+   ============================================================ */
+const slides = document.querySelectorAll('.slide');
+const dotsC = document.getElementById('sDots');
+let cur = 0;
+slides.forEach((_, i) => {
+  const d = document.createElement('span');
+  if (!i) d.classList.add('active');
+  d.onclick = () => goSlide(i);
+  dotsC.appendChild(d);
+});
+function goSlide(i) {
+  slides[cur].classList.remove('active');
+  dotsC.children[cur].classList.remove('active');
+  cur = (i + slides.length) % slides.length;
+  slides[cur].classList.add('active');
+  dotsC.children[cur].classList.add('active');
+}
+function changeSlide(d) { goSlide(cur + d); }
+
+/* ============================================================
+   2) FLIP CARDS
+   ============================================================ */
+const fcWrap = document.getElementById('fcWrap');
+let fcIdx = 0;
+const fcSeen = new Set();
+
+function renderCard() {
+  const c = CARDS[fcIdx];
+  const pct = Math.round(((fcIdx + 1) / CARDS.length) * 100);
+  let dotsHTML = '';
+  CARDS.forEach((_, i) => {
+    const cls = i === fcIdx ? 'active' : fcSeen.has(i) ? 'seen' : '';
+    dotsHTML += `<span class="${cls}"></span>`;
+  });
+  fcWrap.innerHTML = `
+    <div class="fc-progress">
+      <span>${fcIdx + 1} / ${CARDS.length}</span>
+      <div class="fc-bar"><div class="fc-bar-fill" style="width:${pct}%"></div></div>
+    </div>
+    <div class="fc-card" id="fcCard" onclick="this.classList.toggle('flipped');fcSeen.add(fcIdx);updateFcNav()">
+      <div class="fc-card-inner">
+        <div class="fc-face fc-front">
+          <span class="fc-emoji">${c.emoji}</span>
+          <h3>${c.term}</h3>
+          <small>klikni pro otočení</small>
+        </div>
+        <div class="fc-face fc-back">
+          <strong>${c.term}</strong>
+          ${c.def}
+        </div>
+      </div>
+    </div>
+    <div class="fc-footer">
+      <button class="btn-sm" ${fcIdx === 0 ? 'disabled' : ''} onclick="fcIdx--;renderCard()">← Zpět</button>
+      <div class="fc-dots">${dotsHTML}</div>
+      <button class="btn-sm" id="fcNext" ${!fcSeen.has(fcIdx) ? 'disabled' : ''}
+        onclick="if(fcIdx<CARDS.length-1){fcIdx++;renderCard()}">${fcIdx === CARDS.length - 1 ? '✅ Hotovo' : 'Další →'}</button>
+    </div>`;
+  // Re-render math in the new card
+  if (typeof renderMathInElement === 'function') {
+    renderMathInElement(fcWrap, {delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});
+  }
+}
+
+function updateFcNav() {
+  const btn = document.getElementById('fcNext');
+  if (btn && fcSeen.has(fcIdx)) btn.disabled = false;
+  const dots = fcWrap.querySelectorAll('.fc-dots span');
+  dots.forEach((d, i) => {
+    d.className = i === fcIdx ? 'active' : fcSeen.has(i) ? 'seen' : '';
+  });
+}
+
+renderCard();
+
+/* ============================================================
+   3) EXAMPLES
+   ============================================================ */
+const listEl = document.getElementById('exList');
+const sc = {};
+
+EX.forEach(ex => {
+  sc[ex.id] = 0;
+  let stH = '';
+  ex.s.forEach((s, i) => {
+    stH += `<div class="step" data-step="${i}">
+      <span class="step-num">${i + 1}</span>
+      <div class="step-content">
+        <div class="step-label">${s.l}</div>
+        ${s.v}
+      </div>
+    </div>`;
+  });
+
+  const item = document.createElement('div');
+  item.className = 'ex-item';
+  item.dataset.id = ex.id;
+  item.innerHTML = `
+    <div class="ex-header" onclick="toggleEx(this)">
+      <span class="ex-num">${ex.id}</span>
+      <span class="ex-task-text">${ex.q}</span>
+      <label class="ex-check" onclick="event.stopPropagation()"><input type="checkbox" data-eid="${ex.id}" onchange="upCount()"></label>
+    </div>
+    <div class="ex-body">
+      <div class="steps-wrap">${stH}</div>
+      <div class="ex-btns">
+        <button class="btn-step" onclick="reveal(this,${ex.id})">👁️ Další krok</button>
+        <button class="btn-collapse" onclick="collapseEx(this,${ex.id})">↩️ Zabalit</button>
+      </div>
+    </div>`;
+  listEl.appendChild(item);
+});
+
+// Re-render math inside dynamically-created exercises
+if (typeof renderMathInElement === 'function') {
+  renderMathInElement(listEl, {delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});
+}
+
+function toggleEx(header) {
+  header.closest('.ex-item').classList.toggle('open');
+}
+
+function reveal(btn, id) {
+  const card = btn.closest('.ex-body');
+  const steps = card.querySelectorAll('.step');
+  const i = sc[id];
+  if (i < steps.length) { steps[i].classList.add('visible'); sc[id]++; }
+  if (sc[id] >= steps.length) { btn.disabled = true; btn.textContent = '✅ Hotovo'; }
+}
+
+function collapseEx(btn, id) {
+  const item = btn.closest('.ex-item');
+  item.querySelectorAll('.step').forEach(s => s.classList.remove('visible'));
+  sc[id] = 0;
+  const stepBtn = item.querySelector('.btn-step');
+  stepBtn.disabled = false;
+  stepBtn.textContent = '👁️ Další krok';
+  item.classList.remove('open');
+}
+
+/* ============================================================
+   4) EXPORT
+   ============================================================ */
+function upCount() {
+  const n = document.querySelectorAll('#exList input:checked').length;
+  document.getElementById('selBadge').textContent = 'Vybráno: ' + n;
+}
+
+function generatePrint() {
+  const ch = document.querySelectorAll('#exList input:checked');
+  if (!ch.length) { alert('Zaškrtni alespoň jeden příklad.'); return; }
+  const a = document.getElementById('print-area');
+  let h = '<h2>📐 Moje příklady — Funkce</h2>';
+  ch.forEach(cb => {
+    const ex = EX.find(e => e.id == cb.dataset.eid);
+    h += `<div class="pe"><h3>${ex.t}</h3><p>${ex.q}</p><div class="lines"><div></div><div></div><div></div><div></div><div></div><div></div></div></div>`;
+  });
+  a.innerHTML = h;
+  setTimeout(() => window.print(), 150);
+}
+</script>
+</body>
+</html>

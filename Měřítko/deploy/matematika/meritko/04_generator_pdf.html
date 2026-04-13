@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Měřítko mapy – Generátor PDF</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});"></script>
+  <style>
+    /* ===== Selector-specific styles ===== */
+    .generator-panel {
+      background: #fff;
+      border: 2px solid var(--primary);
+      border-radius: var(--radius);
+      padding: 1.2rem 1.5rem;
+      margin: 1.5rem 0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+    }
+    .generator-panel h2 {
+      margin: 0 0 0.8rem;
+      font-size: 1.1rem;
+      color: var(--primary);
+    }
+    .generator-options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+      align-items: center;
+      margin-bottom: 0.8rem;
+    }
+    .generator-options label {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.9rem;
+      cursor: pointer;
+      padding: 0.3rem 0.6rem;
+      background: var(--gray-100);
+      border-radius: 6px;
+      border: 1px solid var(--gray-200);
+      transition: background 0.15s;
+    }
+    .generator-options label:hover {
+      background: var(--primary-light);
+    }
+    .generator-options input[type="checkbox"] {
+      accent-color: var(--primary);
+      width: 16px;
+      height: 16px;
+    }
+    .generator-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      align-items: center;
+    }
+    .generator-actions button {
+      padding: 0.5rem 1.2rem;
+      border: none;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn-pdf {
+      background: #dc2626;
+      color: #fff;
+    }
+    .btn-pdf:hover { background: #b91c1c; }
+    .btn-select-all {
+      background: var(--primary);
+      color: #fff;
+    }
+    .btn-select-all:hover { background: #1d4ed8; }
+    .btn-deselect {
+      background: var(--gray-500);
+      color: #fff;
+    }
+    .btn-deselect:hover { background: var(--gray-700); }
+    .counter {
+      font-size: 0.85rem;
+      color: var(--gray-500);
+      margin-left: 0.5rem;
+    }
+
+    /* ===== Exercise cards in selector mode ===== */
+    .exercise-card {
+      background: #fff;
+      border: 2px solid var(--gray-200);
+      border-left: 4px solid var(--gray-300);
+      border-radius: var(--radius);
+      padding: 0;
+      margin: 0.8rem 0;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+      transition: border-color 0.2s, box-shadow 0.2s;
+      overflow: hidden;
+    }
+    .exercise-card.selected {
+      border-color: var(--primary);
+      border-left-color: var(--primary);
+      box-shadow: 0 2px 8px rgba(37,99,235,0.15);
+    }
+    .exercise-card-header {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      padding: 0.8rem 1rem;
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.15s;
+    }
+    .exercise-card-header:hover {
+      background: var(--gray-50);
+    }
+    .exercise-card-header input[type="checkbox"] {
+      accent-color: var(--primary);
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+    }
+    .exercise-card-title {
+      font-weight: 700;
+      color: var(--primary);
+      font-size: 1rem;
+    }
+    .exercise-card-source {
+      font-size: 0.75rem;
+      color: var(--gray-500);
+      margin-left: auto;
+    }
+    .exercise-card-body {
+      padding: 0 1rem 0.8rem 3rem;
+      color: var(--gray-700);
+      font-size: 0.95rem;
+      border-top: 1px solid var(--gray-100);
+    }
+
+    /* ===== Section heading ===== */
+    .section-heading {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      margin: 1.8rem 0 0.5rem;
+      padding: 0.5rem 0;
+      border-bottom: 2px solid var(--gray-200);
+    }
+    .section-heading h2 {
+      margin: 0;
+      font-size: 1.2rem;
+    }
+    .section-select-all {
+      font-size: 0.8rem;
+      color: var(--primary);
+      cursor: pointer;
+      text-decoration: underline;
+      background: none;
+      border: none;
+      padding: 0;
+    }
+
+    /* ===== Print view ===== */
+    #print-area {
+      display: none;
+    }
+
+    @media print {
+      body > *:not(#print-area) {
+        display: none !important;
+      }
+      #print-area {
+        display: block !important;
+        font-size: 10px;
+        line-height: 1.5;
+      }
+      #print-area .exercise {
+        break-inside: avoid;
+        border: 1px solid #ccc;
+        border-left: 3px solid var(--primary);
+        border-radius: var(--radius);
+        padding: 0.5rem 0.7rem;
+        margin: 0.5rem 0;
+        page-break-inside: avoid;
+      }
+      #print-area .exercise-number {
+        font-weight: 700;
+        color: var(--primary);
+        font-size: 0.75rem;
+      }
+      #print-area .exercise-source {
+        font-size: 0.55rem;
+        color: var(--gray-500);
+        float: right;
+      }
+      #print-area .exercise-body {
+        margin-top: 0.3rem;
+        font-size: 0.7rem;
+      }
+      #print-area .exercise-body table {
+        font-size: 0.65rem;
+      }
+      #print-area .exercise-body th,
+      #print-area .exercise-body td {
+        padding: 0.2rem 0.4rem;
+      }
+      #print-area .solution-section {
+        margin-top: 0.5rem;
+        padding-top: 0.3rem;
+        border-top: 1px dashed var(--gray-300);
+      }
+      #print-area .solution-section h4 {
+        color: var(--primary);
+        font-size: 0.65rem;
+        margin-bottom: 0.2rem;
+      }
+      #print-area .step-print {
+        background: var(--gray-50);
+        border: 1px solid var(--gray-200);
+        border-radius: 4px;
+        padding: 0.2rem 0.5rem;
+        margin: 0.2rem 0;
+        font-size: 0.65rem;
+      }
+      #print-area .result-print {
+        background: var(--success-light);
+        border: 1px solid var(--success);
+        border-radius: 4px;
+        padding: 0.2rem 0.5rem;
+        margin: 0.3rem 0 0;
+        font-weight: 600;
+        font-size: 0.65rem;
+      }
+      #print-area .blank-space {
+        border: 1px dashed var(--gray-300);
+        border-radius: 4px;
+        min-height: 70px;
+        margin-top: 0.3rem;
+        position: relative;
+      }
+      #print-area .blank-space::after {
+        content: 'Místo pro výpočet';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: var(--gray-300);
+        font-size: 0.55rem;
+        font-style: italic;
+      }
+      #print-area h1 {
+        font-size: 1rem;
+        border-bottom: 2px solid #000;
+        color: #000;
+        margin-bottom: 0.2rem;
+        padding-bottom: 0.2rem;
+      }
+      #print-area .print-header-info {
+        font-size: 0.55rem;
+        color: var(--gray-500);
+        margin-bottom: 0.6rem;
+      }
+      #print-area .name-date {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 0.6rem;
+        font-size: 0.65rem;
+      }
+      #print-area .name-date span {
+        border-bottom: 1px solid #000;
+        min-width: 150px;
+        display: inline-block;
+      }
+      #print-area p {
+        margin: 0.2rem 0;
+      }
+      body { padding: 0.5cm; max-width: 100%; }
+      .katex { font-size: 0.7em !important; }
+    }
+  </style>
+</head>
+<body>
+
+<h1>📏 Měřítko mapy – Generátor PDF</h1>
+
+<div class="nav-links">
+  <a href="../index.html" style="background:#374151">← Matematika</a>
+  <a href="01_teorie_meritko.html">📖 Teorie</a>
+  <a href="02_priklady_vyklad.html">✏️ Příklady — Výklad</a>
+  <a href="03_cviceni_1.html">🏋️ Cvičení</a>
+  <a href="04_generator_pdf.html" class="active">🖨️ Generátor PDF</a>
+</div>
+
+<!-- ===== OVLÁDACÍ PANEL ===== -->
+<div class="generator-panel" id="generatorPanel">
+  <h2>🖨️ Vyberte příklady pro PDF</h2>
+  <div class="generator-options">
+    <label><input type="checkbox" id="opt-solutions" checked> Zahrnout řešení (kroky)</label>
+    <label><input type="checkbox" id="opt-results" checked> Zahrnout výsledky</label>
+    <label><input type="checkbox" id="opt-blank"> Prázdné místo na výpočet</label>
+    <label><input type="checkbox" id="opt-name"> Jméno + datum (hlavička)</label>
+  </div>
+  <div class="generator-actions">
+    <button class="btn-select-all" onclick="selectAll(true)">☑️ Vybrat vše</button>
+    <button class="btn-deselect" onclick="selectAll(false)">☐ Zrušit výběr</button>
+    <button class="btn-pdf" onclick="generatePDF()">📄 Vygenerovat PDF</button>
+    <span class="counter" id="counter">Vybráno: 0 příkladů</span>
+  </div>
+</div>
+
+<!-- ===== PŘÍKLADY Z VÝKLADU (PS 1) ===== -->
+<div class="section-heading">
+  <h2>✏️ Příklady z výkladu (PS 1)</h2>
+  <button class="section-select-all" onclick="toggleSection('ps1')">vybrat/zrušit sekci</button>
+</div>
+
+<!-- PS1 – Příklad 1 -->
+<div class="exercise-card" data-section="ps1" data-id="ps1-1">
+  <div class="exercise-card-header" onclick="toggleCard(this)">
+    <input type="checkbox" class="ex-check" onclick="event.stopPropagation(); updateCounter();">
+    <span class="exercise-card-title">Příklad 1 – Tabulka (5 podúloh)</span>
+    <span class="exercise-card-source">PS 1</span>
+  </div>
+  <div class="exercise-card-body">
+    <p>Dopočítejte chybějící údaje v tabulce:</p>
+    <table>
+      <tr><th>Měřítko mapy</th><th>Vzdálenost na mapě</th><th>Vzdálenost ve skutečnosti</th></tr>
+      <tr><td>1 : 50 000 000</td><td>5 cm</td><td>?</td></tr>
+      <tr><td>1 : 450 000</td><td>?</td><td>2 800 km</td></tr>
+      <tr><td>?</td><td>11,5 cm</td><td>3 450 km</td></tr>
+      <tr><td>1 : 25 000</td><td>?</td><td>800 m</td></tr>
+      <tr><td>1 : 10 000</td><td>2,7 dm</td><td>?</td></tr>
+    </table>
+    <!-- hidden solutions data -->
+    <div class="solution-data" style="display:none">
+      <div class="sd-step">a) $\text{skutečnost} = 5 \times 50\,000\,000 = 250\,000\,000 \text{ cm} = 2\,500 \text{ km}$</div>
+      <div class="sd-step">b) $2\,800 \text{ km} = 280\,000\,000 \text{ cm}$; $\text{mapa} = 280\,000\,000 \div 450\,000 \approx 622{,}2 \text{ cm}$</div>
+      <div class="sd-step">c) $3\,450 \text{ km} = 345\,000\,000 \text{ cm}$; $M = 345\,000\,000 \div 11{,}5 = 30\,000\,000$ → $1 : 30\,000\,000$</div>
+      <div class="sd-step">d) $800 \text{ m} = 80\,000 \text{ cm}$; $\text{mapa} = 80\,000 \div 25\,000 = 3{,}2 \text{ cm}$</div>
+      <div class="sd-step">e) $2{,}7 \text{ dm} = 27 \text{ cm}$; $\text{skutečnost} = 27 \times 10\,000 = 270\,000 \text{ cm} = 2{,}7 \text{ km}$</div>
+      <div class="sd-result">a) 2 500 km &nbsp; b) 622,2 cm &nbsp; c) 1 : 30 000 000 &nbsp; d) 3,2 cm &nbsp; e) 2,7 km</div>
+    </div>
+  </div>
+</div>
+
+<!-- PS1 – Příklad 2 -->
+<div class="exercise-card" data-section="ps1" data-id="ps1-2">
+  <div class="exercise-card-header" onclick="toggleCard(this)">
+    <input type="checkbox" class="ex-check" onclick="event.stopPropagation(); updateCounter();">
+    <span class="exercise-card-title">Příklad 2 – Praha–Mar. Lázně (4 podúlohy)</span>
+    <span class="exercise-card-source">PS 1</span>
+  </div>
+  <div class="exercise-card-body">
+    <p>Skutečná vzdálenost mezi Prahou a Mariánskými Lázněmi je $160$ km.</p>
+    <p><strong>a)</strong> Urči měřítko na mapách, na kterých je vzdálenost 16 cm, 9,15 cm a 4,2 cm.</p>
+    <p><strong>b)</strong> Jaké by muselo být měřítko mapy, aby na ní byla vzdálenost přesně 12,3 cm?</p>
+    <div class="solution-data" style="display:none">
+      <div class="sd-step">Převod: $160 \text{ km} = 16\,000\,000 \text{ cm}$</div>
+      <div class="sd-step">a₁) $M = 16\,000\,000 \div 16 = 1\,000\,000$ → $1 : 1\,000\,000$</div>
+      <div class="sd-step">a₂) $M = 16\,000\,000 \div 9{,}15 \approx 1\,748\,634$ → $1 : 1\,748\,634$</div>
+      <div class="sd-step">a₃) $M = 16\,000\,000 \div 4{,}2 \approx 3\,809\,524$ → $1 : 3\,809\,524$</div>
+      <div class="sd-step">b) $M = 16\,000\,000 \div 12{,}3 \approx 1\,300\,813$ → $1 : 1\,300\,813$</div>
+      <div class="sd-result">a) $1:1\,000\,000$; $1:1\,748\,634$; $1:3\,809\,524$ &nbsp; b) $1:1\,300\,813$</div>
+    </div>
+  </div>
+</div>
+
+<!-- PS1 – Příklad 3 -->
+<div class="exercise-card" data-section="ps1" data-id="ps1-3">
+  <div class="exercise-card-header" onclick="toggleCard(this)">
+    <input type="checkbox" class="ex-check" onclick="event.stopPropagation(); updateCounter();">
+    <span class="exercise-card-title">Příklad 3 – Model letadla</span>
+    <span class="exercise-card-source">PS 1</span>
+  </div>
+  <div class="exercise-card-body">
+    <p>Jak veliké bylo skutečné letadlo, když jeho model v měřítku $1:72$ byl $9{,}2$ cm dlouhý a rozpětí křídel bylo $10{,}9$ cm?</p>
+    <div class="solution-data" style="display:none">
+      <div class="sd-step">Délka: $9{,}2 \times 72 = 662{,}4 \text{ cm} = 6{,}624 \text{ m}$</div>
+      <div class="sd-step">Rozpětí: $10{,}9 \times 72 = 784{,}8 \text{ cm} = 7{,}848 \text{ m}$</div>
+      <div class="sd-result">Délka $\approx 6{,}6$ m, rozpětí $\approx 7{,}8$ m</div>
+    </div>
+  </div>
+</div>
+
+<!-- PS1 – Příklad 4 -->
+<div class="exercise-card" data-section="ps1" data-id="ps1-4">
+  <div class="exercise-card-header" onclick="toggleCard(this)">
+    <input type="checkbox" class="ex-check" onclick="event.stopPropagation(); updateCounter();">
+    <span class="exercise-card-title">Příklad 4 – Rozloha Chomutova</span>
+    <span class="exercise-card-source">PS 1</span>
+  </div>
+  <div class="exercise-card-body">
+    <p>Město Chomutov má na mapě tvar obdélníku o stranách přibližně $3 \times 4$ cm. Jaká je rozloha města, když víme, že použité měřítko bylo $1 : 190\,000$?</p>
+    <div class="solution-data" style="display:none">
+      <div class="sd-step">$a = 3 \times 190\,000 = 570\,000 \text{ cm} = 5{,}7 \text{ km}$</div>
+      <div class="sd-step">$b = 4 \times 190\,000 = 760\,000 \text{ cm} = 7{,}6 \text{ km}$</div>
+      <div class="sd-step">$S = 5{,}7 \times 7{,}6 = 43{,}32 \text{ km}^2$</div>
+      <div class="sd-result">$S \approx 43{,}32 \text{ km}^2$</div>
+    </div>
+  </div>
+</div>
+
+<!-- PS1 – Příklad 5 -->
+<div class="exercise-card" data-section="ps1" data-id="ps1-5">
+  <div class="exercise-card-header" onclick="toggleCard(this)">
+    <input type="checkbox" class="ex-check" onclick="event.stopPropagation(); updateCounter();">
+    <span class="exercise-card-title">Příklad 5 – Dvě části výletu</span>
+    <span class="exercise-card-source">PS 1</span>
+  </div>
+  <div class="exercise-card-body">
+    <p>Jak dlouhá bude trasa celého výletu, když z bodu A do bodu B je vzdálenost na mapě $14{,}2$ cm při měřítku $1 : 50\,000$ a z bodu B do bodu C je to $37$ cm při měřítku $1 : 25\,000$?</p>
+    <div class="solution-data" style="display:none">
+      <div class="sd-step">$s_1 = 14{,}2 \times 50\,000 = 710\,000 \text{ cm} = 7{,}1 \text{ km}$</div>
+      <div class="sd-step">$s_2 = 37 \times 25\,000 = 925\,000 \text{ cm} = 9{,}25 \text{ km}$</div>
+      <div class="sd-step">$s = 7{,}1 + 9{,}25 = 16{,}35 \text{ km}$</div>
+      <div class="sd-result">Celková trasa je $16{,}35$ km</div>
+    </div>
+  </div>
+</div>
+
+<!-- PS1 – Příklad 6 -->
+<div class="exercise-card" data-section="ps1" data-id="ps1-6">
+  <div class="exercise-card-header" onclick="toggleCard(this)">
+    <input type="checkbox" class="ex-check" onclick="event.stopPropagation(); updateCounter();">
+    <span class="exercise-card-title">Příklad 6 – Chodec Praha–Prčice</span>
+    <span class="exercise-card-source">PS 1</span>
+  </div>
+  <div class="exercise-card-body">
+    <p>Jak dlouho bude trvat, než se chodec dostane z Prahy do Prčic, při průměrné rychlosti $6$ km/h, když víme, že trasa je dlouhá $15{,}8$ cm při měřítku mapy $1 : 380\,000$?</p>
+    <div class="solution-data" style="display:none">
+      <div class="sd-step">$s = 15{,}8 \times 380\,000 = 6\,004\,000 \text{ cm} = 60{,}04 \text{ km}$</div>
+      <div class="sd-step">$t = 60{,}04 \div 6 \approx 10 \text{ h}$</div>
+      <div class="sd-result">Cesta bude trvat přibližně $10$ hodin.</div>
+    </div>
+  </div>
+</div>
+
+<!-- PS1 – Příklad 7 -->
+<div class="exercise-card" data-section="ps1" data-id="ps1-7">
+  <div class="exercise-card-header" onclick="toggleCard(this)">
+    <input type="checkbox" class="ex-check" onclick="event.stopPropagation(); updateCounter();">
+    <span class="exercise-card-title">Příklad 7 – Katastrální mapa, pozemek</span>
+    <span class="exercise-card-source">PS 1</span>
+  </div>
+  <div class="exercise-card-body">
+    <p>Zdeněk vyhledával na katastrální mapě v měřítku $1 : 2\,000$ pozemek čtvercového půdorysu o výměře přibližně $1\,200 \text{ m}^2$. Jakou by měl mít hledaný čtverec stranu na mapě, aby nebyl daný pozemek o více jak $200 \text{ m}^2$ větší nebo menší?</p>
+    <div class="solution-data" style="display:none">
+      <div class="sd-step">Rozmezí plochy: $1\,000 \text{ m}^2$ až $1\,400 \text{ m}^2$</div>
+      <div class="sd-step">Strany: $\sqrt{1000} \approx 31{,}62 \text{ m}$; $\sqrt{1400} \approx 37{,}42 \text{ m}$</div>
+      <div class="sd-step">Na mapě: $31{,}62 \text{ m} \div 2000 \approx 1{,}58 \text{ cm}$; $37{,}42 \text{ m} \div 2000 \approx 1{,}87 \text{ cm}$</div>
+      <div class="sd-result">Strana na mapě: $1{,}58$ cm až $1{,}87$ cm</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== CVIČENÍ (PS 2) ===== -->
+<div class="section-heading">
+  <h2>🏋️ Cvičení (PS 2)</h2>
+  <button class="section-select-all" onclick="toggleSection('ps2')">vybrat/zrušit sekci</button>
+</div>
+
+<!-- PS2 – Příklad 1 -->
+<div class="exercise-card" data-section="ps2" data-id="ps2-1">
+  <div class="exercise-card-header" onclick="toggleCard(this)">
+    <input type="checkbox" class="ex-check" onclick="event.stopPropagation(); updateCounter();">
+    <span class="exercise-card-title">Příklad 1 – Převody jednotek (6 podúloh)</span>
+    <span class="exercise-card-source">PS 2</span>
+  </div>
+  <div class="exercise-card-body">
+    <p>Převeďte jednotky délky:</p>
+    <p>a) $74\,000$ cm = ? m &nbsp;&nbsp; b) $25$ m = ? cm &nbsp;&nbsp; c) $230\,000$ cm = ? m</p>
+    <p>d) $5{,}3$ km = ? cm &nbsp;&nbsp; e) $840\,000$ cm = ? km &nbsp;&nbsp; f) $0{,}9$ km = ? cm</p>
+    <div class="solution-data" style="display:none">
+      <div class="sd-step">a) $74\,000 \div 100 = 740$ m</div>
+      <div class="sd-step">b) $25 \times 100 = 2\,500$ cm</div>
+      <div class="sd-step">c) $230\,000 \div 100 = 2\,300$ m</div>
+      <div class="sd-step">d) $5{,}3 \times 100\,000 = 530\,000$ cm</div>
+      <div class="sd-step">e) $840\,000 \div 100\,000 = 8{,}4$ km</div>
+      <div class="sd-step">f) $0{,}9 \times 100\,000 = 90\,000$ cm</div>
+      <div class="sd-result">a) 740 m &nbsp; b) 2 500 cm &nbsp; c) 2 300 m &nbsp; d) 530 000 cm &nbsp; e) 8,4 km &nbsp; f) 90 000 cm</div>
+    </div>
+  </div>
+</div>
+
+<!-- PS2 – Příklad 2 -->
+<div class="exercise-card" data-section="ps2" data-id="ps2-2">
+  <div class="exercise-card-header" onclick="toggleCard(this)">
+    <input type="checkbox" class="ex-check" onclick="event.stopPropagation(); updateCounter();">
+    <span class="exercise-card-title">Příklad 2 – Určení měřítka (3 podúlohy)</span>
+    <span class="exercise-card-source">PS 2</span>
+  </div>
+  <div class="exercise-card-body">
+    <p>Určete měřítko mapy:</p>
+    <p><strong>a)</strong> 5 cm na mapě představuje 1,6 km ve skutečnosti.</p>
+    <p><strong>b)</strong> 2,5 cm na mapě představuje 12,5 km ve skutečnosti.</p>
+    <p><strong>c)</strong> 5,5 cm na mapě představuje 16,5 km ve skutečnosti.</p>
+    <div class="solution-data" style="display:none">
+      <div class="sd-step">a) $1{,}6 \text{ km} = 160\,000 \text{ cm}$; $M = 160\,000 \div 5 = 32\,000$ → $1 : 32\,000$</div>
+      <div class="sd-step">b) $12{,}5 \text{ km} = 1\,250\,000 \text{ cm}$; $M = 1\,250\,000 \div 2{,}5 = 500\,000$ → $1 : 500\,000$</div>
+      <div class="sd-step">c) $16{,}5 \text{ km} = 1\,650\,000 \text{ cm}$; $M = 1\,650\,000 \div 5{,}5 = 300\,000$ → $1 : 300\,000$</div>
+      <div class="sd-result">a) $1:32\,000$ &nbsp; b) $1:500\,000$ &nbsp; c) $1:300\,000$</div>
+    </div>
+  </div>
+</div>
+
+<!-- PS2 – Příklad 3 -->
+<div class="exercise-card" data-section="ps2" data-id="ps2-3">
+  <div class="exercise-card-header" onclick="toggleCard(this)">
+    <input type="checkbox" class="ex-check" onclick="event.stopPropagation(); updateCounter();">
+    <span class="exercise-card-title">Příklad 3 – Skutečná vzdálenost (3 podúlohy)</span>
+    <span class="exercise-card-source">PS 2</span>
+  </div>
+  <div class="exercise-card-body">
+    <p>Určete skutečnou vzdálenost:</p>
+    <p><strong>a)</strong> Měřítko $1 : 50\,000$, na mapě $7$ cm.</p>
+    <p><strong>b)</strong> Měřítko $1 : 85\,000$, na mapě $3$ cm.</p>
+    <p><strong>c)</strong> Měřítko $1 : 200\,000$, na mapě $4{,}2$ cm.</p>
+    <div class="solution-data" style="display:none">
+      <div class="sd-step">a) $7 \times 50\,000 = 350\,000 \text{ cm} = 3{,}5 \text{ km}$</div>
+      <div class="sd-step">b) $3 \times 85\,000 = 255\,000 \text{ cm} = 2{,}55 \text{ km}$</div>
+      <div class="sd-step">c) $4{,}2 \times 200\,000 = 840\,000 \text{ cm} = 8{,}4 \text{ km}$</div>
+      <div class="sd-result">a) 3,5 km &nbsp; b) 2,55 km &nbsp; c) 8,4 km</div>
+    </div>
+  </div>
+</div>
+
+<!-- PS2 – Příklad 4 -->
+<div class="exercise-card" data-section="ps2" data-id="ps2-4">
+  <div class="exercise-card-header" onclick="toggleCard(this)">
+    <input type="checkbox" class="ex-check" onclick="event.stopPropagation(); updateCounter();">
+    <span class="exercise-card-title">Příklad 4 – Vzdálenost na mapě (3 podúlohy)</span>
+    <span class="exercise-card-source">PS 2</span>
+  </div>
+  <div class="exercise-card-body">
+    <p>Určete vzdálenost na mapě:</p>
+    <p><strong>a)</strong> Skutečná vzdálenost $40$ km, měřítko $1 : 200\,000$.</p>
+    <p><strong>b)</strong> Skutečná vzdálenost $3{,}5$ km, měřítko $1 : 70\,000$.</p>
+    <p><strong>c)</strong> Skutečná vzdálenost $810$ m, měřítko $1 : 30\,000$.</p>
+    <div class="solution-data" style="display:none">
+      <div class="sd-step">a) $40 \text{ km} = 4\,000\,000 \text{ cm}$; $\text{mapa} = 4\,000\,000 \div 200\,000 = 20 \text{ cm}$</div>
+      <div class="sd-step">b) $3{,}5 \text{ km} = 350\,000 \text{ cm}$; $\text{mapa} = 350\,000 \div 70\,000 = 5 \text{ cm}$</div>
+      <div class="sd-step">c) $810 \text{ m} = 81\,000 \text{ cm}$; $\text{mapa} = 81\,000 \div 30\,000 = 2{,}7 \text{ cm}$</div>
+      <div class="sd-result">a) 20 cm &nbsp; b) 5 cm &nbsp; c) 2,7 cm</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== HIDDEN PRINT AREA ===== -->
+<div id="print-area"></div>
+
+<script>
+// Toggle individual card
+function toggleCard(header) {
+  const cb = header.querySelector('.ex-check');
+  cb.checked = !cb.checked;
+  updateCounter();
+}
+
+// Update counter and visual state
+function updateCounter() {
+  const cards = document.querySelectorAll('.exercise-card');
+  let count = 0;
+  cards.forEach(card => {
+    const checked = card.querySelector('.ex-check').checked;
+    card.classList.toggle('selected', checked);
+    if (checked) count++;
+  });
+  document.getElementById('counter').textContent = `Vybráno: ${count} příkladů`;
+}
+
+// Select / deselect all
+function selectAll(state) {
+  document.querySelectorAll('.ex-check').forEach(cb => cb.checked = state);
+  updateCounter();
+}
+
+// Toggle section
+function toggleSection(section) {
+  const cards = document.querySelectorAll(`.exercise-card[data-section="${section}"]`);
+  const allChecked = [...cards].every(c => c.querySelector('.ex-check').checked);
+  cards.forEach(c => c.querySelector('.ex-check').checked = !allChecked);
+  updateCounter();
+}
+
+// Generate print view and trigger print
+function generatePDF() {
+  const selected = document.querySelectorAll('.exercise-card.selected');
+  if (selected.length === 0) {
+    alert('Vyberte alespoň jeden příklad!');
+    return;
+  }
+
+  const showSolutions = document.getElementById('opt-solutions').checked;
+  const showResults = document.getElementById('opt-results').checked;
+  const showBlank = document.getElementById('opt-blank').checked;
+  const showNameDate = document.getElementById('opt-name').checked;
+
+  let html = '<h1>📏 Měřítko mapy – Pracovní list</h1>';
+
+  if (showNameDate) {
+    html += `<div class="name-date">
+      <div>Jméno: <span>&nbsp;</span></div>
+      <div>Datum: <span>&nbsp;</span></div>
+      <div>Třída: <span>&nbsp;</span></div>
+    </div>`;
+  }
+
+  html += `<div class="print-header-info">${selected.length} příkladů</div>`;
+
+  let num = 1;
+  selected.forEach(card => {
+    const title = card.querySelector('.exercise-card-title').textContent;
+    const source = card.querySelector('.exercise-card-source').textContent;
+    const bodyEl = card.querySelector('.exercise-card-body');
+    const solData = bodyEl.querySelector('.solution-data');
+
+    // Get task HTML (without the hidden solution-data)
+    let taskHTML = '';
+    for (const child of bodyEl.children) {
+      if (!child.classList.contains('solution-data')) {
+        taskHTML += child.outerHTML;
+      }
+    }
+
+    html += `<div class="exercise">`;
+    html += `<span class="exercise-number">Příklad ${num}</span>`;
+    html += `<span class="exercise-source">${source}</span>`;
+    html += `<div class="exercise-body">${taskHTML}</div>`;
+
+    if (showBlank) {
+      html += `<div class="blank-space"></div>`;
+    }
+
+    if (solData && (showSolutions || showResults)) {
+      html += `<div class="solution-section">`;
+      if (showSolutions) {
+        html += `<h4>Řešení:</h4>`;
+        solData.querySelectorAll('.sd-step').forEach(step => {
+          html += `<div class="step-print">${step.innerHTML}</div>`;
+        });
+      }
+      if (showResults) {
+        solData.querySelectorAll('.sd-result').forEach(res => {
+          html += `<div class="result-print">✓ ${res.innerHTML}</div>`;
+        });
+      }
+      html += `</div>`;
+    }
+
+    html += `</div>`;
+    num++;
+  });
+
+  const printArea = document.getElementById('print-area');
+  printArea.innerHTML = html;
+
+  // Re-render KaTeX in the print area
+  if (window.renderMathInElement) {
+    renderMathInElement(printArea, {
+      delimiters: [
+        {left: '$$', right: '$$', display: true},
+        {left: '$', right: '$', display: false}
+      ]
+    });
+  }
+
+  // Slight delay so KaTeX finishes rendering
+  setTimeout(() => window.print(), 300);
+}
+</script>
+
+</body>
+</html>

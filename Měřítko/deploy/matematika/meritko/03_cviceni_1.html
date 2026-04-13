@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Měřítko mapy – Cvičení</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});"></script>
+</head>
+<body>
+
+<h1>📏 Měřítko mapy – Cvičení</h1>
+
+<div class="nav-links">
+  <a href="../index.html" style="background:#374151">← Matematika</a>
+  <a href="01_teorie_meritko.html">📖 Teorie</a>
+  <a href="02_priklady_vyklad.html">✏️ Příklady — Výklad</a>
+  <a href="03_cviceni_1.html" class="active">🏋️ Cvičení</a>
+  <a href="04_generator_pdf.html">🖨️ Generátor PDF</a>
+  <button class="pdf-btn" onclick="window.print()">📄 Uložit do PDF</button>
+</div>
+
+<div class="controls">
+  <button onclick="document.querySelectorAll('details').forEach(d=>d.open=true)">📖 Zobrazit vše</button>
+  <button onclick="document.querySelectorAll('details').forEach(d=>d.open=false)">🔒 Skrýt vše</button>
+</div>
+
+<!-- ══════════════════════════════════════════════════ -->
+<!-- PŘÍKLAD 1 — Převody jednotek délky -->
+<!-- ══════════════════════════════════════════════════ -->
+<details class="exercise">
+  <summary>
+    <div class="exercise-header">
+      <span class="exercise-number">Příklad 1</span>
+      <span class="exercise-source">PS 2</span>
+    </div>
+  </summary>
+  <div class="exercise-body">
+    <p>Převeďte jednotky délky:</p>
+    <p>a) $74\,000$ cm = ? m &nbsp;&nbsp; b) $25$ m = ? cm &nbsp;&nbsp; c) $230\,000$ cm = ? m</p>
+    <p>d) $5{,}3$ km = ? cm &nbsp;&nbsp; e) $840\,000$ cm = ? km &nbsp;&nbsp; f) $0{,}9$ km = ? cm</p>
+  </div>
+
+  <details class="sub-exercise">
+    <summary><span class="sub-exercise-label">a)</span> $74\,000$ cm = ? m</summary>
+    <div class="sub-exercise-inner">
+      <details class="step">
+        <summary>Krok 1 – Převod</summary>
+        <div class="step-content">
+          <p>$1 \text{ m} = 100 \text{ cm}$, tedy dělíme stem.</p>
+          <p>$74\,000 \div 100 = 740$</p>
+        </div>
+      </details>
+      <details class="result">
+        <summary>Výsledek</summary>
+        <div class="result-content">$74\,000 \text{ cm} = \mathbf{740 \text{ m}}$</div>
+      </details>
+    </div>
+  </details>
+
+  <details class="sub-exercise">
+    <summary><span class="sub-exercise-label">b)</span> $25$ m = ? cm</summary>
+    <div class="sub-exercise-inner">
+      <details class="step">
+        <summary>Krok 1 – Převod</summary>
+        <div class="step-content">
+          <p>$25 \times 100 = 2\,500$</p>
+        </div>
+      </details>
+      <details class="result">
+        <summary>Výsledek</summary>
+        <div class="result-content">$25 \text{ m} = \mathbf{2\,500 \text{ cm}}$</div>
+      </details>
+    </div>
+  </details>
+
+  <details class="sub-exercise">
+    <summary><span class="sub-exercise-label">c)</span> $230\,000$ cm = ? m</summary>
+    <div class="sub-exercise-inner">
+      <details class="step">
+        <summary>Krok 1 – Převod</summary>
+        <div class="step-content">
+          <p>$230\,000 \div 100 = 2\,300$</p>
+        </div>
+      </details>
+      <details class="result">
+        <summary>Výsledek</summary>
+        <div class="result-content">$230\,000 \text{ cm} = \mathbf{2\,300 \text{ m}}$</div>
+      </details>
+    </div>
+  </details>
+
+  <details class="sub-exercise">
+    <summary><span class="sub-exercise-label">d)</span> $5{,}3$ km = ? cm</summary>
+    <div class="sub-exercise-inner">
+      <details class="step">
+        <summary>Krok 1 – Převod</summary>
+        <div class="step-content">
+          <p>$1 \text{ km} = 100\,000 \text{ cm}$</p>
+          <p>$5{,}3 \times 100\,000 = 530\,000$</p>
+        </div>
+      </details>
+      <details class="result">
+        <summary>Výsledek</summary>
+        <div class="result-content">$5{,}3 \text{ km} = \mathbf{530\,000 \text{ cm}}$</div>
+      </details>
+    </div>
+  </details>
+
+  <details class="sub-exercise">
+    <summary><span class="sub-exercise-label">e)</span> $840\,000$ cm = ? km</summary>
+    <div class="sub-exercise-inner">
+      <details class="step">
+        <summary>Krok 1 – Převod</summary>
+        <div class="step-content">
+          <p>$840\,000 \div 100\,000 = 8{,}4$</p>
+        </div>
+      </details>
+      <details class="result">
+        <summary>Výsledek</summary>
+        <div class="result-content">$840\,000 \text{ cm} = \mathbf{8{,}4 \text{ km}}$</div>
+      </details>
+    </div>
+  </details>
+
+  <details class="sub-exercise">
+    <summary><span class="sub-exercise-label">f)</span> $0{,}9$ km = ? cm</summary>
+    <div class="sub-exercise-inner">
+      <details class="step">
+        <summary>Krok 1 – Převod</summary>
+        <div class="step-content">
+          <p>$0{,}9 \times 100\,000 = 90\,000$</p>
+        </div>
+      </details>
+      <details class="result">
+        <summary>Výsledek</summary>
+        <div class="result-content">$0{,}9 \text{ km} = \mathbf{90\,000 \text{ cm}}$</div>
+      </details>
+    </div>
+  </details>
+</details>
+
+<!-- ══════════════════════════════════════════════════ -->
+<!-- PŘÍKLAD 2 — Určení měřítka -->
+<!-- ══════════════════════════════════════════════════ -->
+<details class="exercise">
+  <summary>
+    <div class="exercise-header">
+      <span class="exercise-number">Příklad 2</span>
+      <span class="exercise-source">PS 2</span>
+    </div>
+  </summary>
+  <div class="exercise-body">
+    <p>Určete měřítko mapy:</p>
+  </div>
+
+  <!-- 2a -->
+  <details class="sub-exercise">
+    <summary><span class="sub-exercise-label">a)</span> 5 cm na mapě = 1,6 km ve skutečnosti</summary>
+    <div class="sub-exercise-inner">
+      <details class="step">
+        <summary>Krok 1 – Převod na stejné jednotky</summary>
+        <div class="step-content">
+          <p>Vzdálenost na mapě: $5 \text{ cm}$</p>
+          <p>Vzdálenost ve skutečnosti: $1{,}6 \text{ km} = 1{,}6 \times 100\,000 = 160\,000 \text{ cm}$</p>
+        </div>
+      </details>
+      <details class="step">
+        <summary>Krok 2 – Výpočet měřítka</summary>
+        <div class="step-content">
+          <p>$\text{měřítko} = \dfrac{5}{160\,000} = \dfrac{1}{32\,000}$</p>
+        </div>
+      </details>
+      <details class="result">
+        <summary>Výsledek</summary>
+        <div class="result-content">
+          <p>Měřítko mapy je $\mathbf{1 : 32\,000}$.</p>
+        </div>
+      </details>
+    </div>
+  </details>
+
+  <!-- 2b -->
+  <details class="sub-exercise">
+    <summary><span class="sub-exercise-label">b)</span> 2,5 cm na mapě = 12,5 km ve skutečnosti</summary>
+    <div class="sub-exercise-inner">
+      <details class="step">
+        <summary>Krok 1 – Převod na cm</summary>
+        <div class="step-content">
+          <p>$12{,}5 \text{ km} = 12{,}5 \times 100\,000 = 1\,250\,000 \text{ cm}$</p>
+        </div>
+      </details>
+      <details class="step">
+        <summary>Krok 2 – Výpočet měřítka</summary>
+        <div class="step-content">
+          <p>$M = \dfrac{1\,250\,000}{2{,}5} = 500\,000$</p>
+        </div>
+      </details>
+      <details class="result">
+        <summary>Výsledek</summary>
+        <div class="result-content">
+          <p>Měřítko mapy je $\mathbf{1 : 500\,000}$.</p>
+        </div>
+      </details>
+    </div>
+  </details>
+
+  <!-- 2c -->
+  <details class="sub-exercise">
+    <summary><span class="sub-exercise-label">c)</span> 5,5 cm na mapě = 16,5 km ve skutečnosti</summary>
+    <div class="sub-exercise-inner">
+      <details class="step">
+        <summary>Krok 1 – Převod na cm</summary>
+        <div class="step-content">
+          <p>$16{,}5 \text{ km} = 16{,}5 \times 100\,000 = 1\,650\,000 \text{ cm}$</p>
+        </div>
+      </details>
+      <details class="step">
+        <summary>Krok 2 – Výpočet měřítka</summary>
+        <div class="step-content">
+          <p>$M = \dfrac{1\,650\,000}{5{,}5} = 300\,000$</p>
+        </div>
+      </details>
+      <details class="result">
+        <summary>Výsledek</summary>
+        <div class="result-content">
+          <p>Měřítko mapy je $\mathbf{1 : 300\,000}$.</p>
+        </div>
+      </details>
+    </div>
+  </details>
+</details>
+
+<!-- ══════════════════════════════════════════════════ -->
+<!-- PŘÍKLAD 3 — Vzdálenost ve skutečnosti -->
+<!-- ══════════════════════════════════════════════════ -->
+<details class="exercise">
+  <summary>
+    <div class="exercise-header">
+      <span class="exercise-number">Příklad 3</span>
+      <span class="exercise-source">PS 2</span>
+    </div>
+  </summary>
+  <div class="exercise-body">
+    <p>Určete skutečnou vzdálenost:</p>
+  </div>
+
+  <!-- 3a -->
+  <details class="sub-exercise">
+    <summary><span class="sub-exercise-label">a)</span> Měřítko 1 : 50 000, na mapě 7 cm</summary>
+    <div class="sub-exercise-inner">
+      <details class="step">
+        <summary>Krok 1 – Zápis údajů</summary>
+        <div class="step-content">
+          <p>Vzdálenost na mapě: $7 \text{ cm}$</p>
+          <p>Měřítko: $1 : 50\,000$</p>
+        </div>
+      </details>
+      <details class="step">
+        <summary>Krok 2 – Výpočet</summary>
+        <div class="step-content">
+          <p>$\text{skutečnost} = 7 \times 50\,000 = 350\,000 \text{ cm}$</p>
+        </div>
+      </details>
+      <details class="step">
+        <summary>Krok 3 – Převod</summary>
+        <div class="step-content">
+          <p>$350\,000 \text{ cm} = 3\,500 \text{ m} = 3{,}5 \text{ km}$</p>
+        </div>
+      </details>
+      <details class="result">
+        <summary>Výsledek</summary>
+        <div class="result-content">
+          <p>Skutečná vzdálenost je $\mathbf{3{,}5 \text{ km}}$.</p>
+        </div>
+      </details>
+    </div>
+  </details>
+
+  <!-- 3b -->
+  <details class="sub-exercise">
+    <summary><span class="sub-exercise-label">b)</span> Měřítko 1 : 85 000, na mapě 3 cm</summary>
+    <div class="sub-exercise-inner">
+      <details class="step">
+        <summary>Krok 1 – Výpočet</summary>
+        <div class="step-content">
+          <p>$\text{skutečnost} = 3 \times 85\,000 = 255\,000 \text{ cm}$</p>
+        </div>
+      </details>
+      <details class="step">
+        <summary>Krok 2 – Převod</summary>
+        <div class="step-content">
+          <p>$255\,000 \text{ cm} = 2\,550 \text{ m} = 2{,}55 \text{ km}$</p>
+        </div>
+      </details>
+      <details class="result">
+        <summary>Výsledek</summary>
+        <div class="result-content">
+          <p>Skutečná vzdálenost dvou vesnic je $\mathbf{2{,}55 \text{ km}}$.</p>
+        </div>
+      </details>
+    </div>
+  </details>
+
+  <!-- 3c -->
+  <details class="sub-exercise">
+    <summary><span class="sub-exercise-label">c)</span> Měřítko 1 : 200 000, na mapě 4,2 cm</summary>
+    <div class="sub-exercise-inner">
+      <details class="step">
+        <summary>Krok 1 – Výpočet</summary>
+        <div class="step-content">
+          <p>$\text{skutečnost} = 4{,}2 \times 200\,000 = 840\,000 \text{ cm}$</p>
+        </div>
+      </details>
+      <details class="step">
+        <summary>Krok 2 – Převod</summary>
+        <div class="step-content">
+          <p>$840\,000 \text{ cm} = 8\,400 \text{ m} = 8{,}4 \text{ km}$</p>
+        </div>
+      </details>
+      <details class="result">
+        <summary>Výsledek</summary>
+        <div class="result-content">
+          <p>Skutečná vzdálenost dvou rozhleden je $\mathbf{8{,}4 \text{ km}}$.</p>
+        </div>
+      </details>
+    </div>
+  </details>
+</details>
+
+<!-- ══════════════════════════════════════════════════ -->
+<!-- PŘÍKLAD 4 — Vzdálenost na mapě -->
+<!-- ══════════════════════════════════════════════════ -->
+<details class="exercise">
+  <summary>
+    <div class="exercise-header">
+      <span class="exercise-number">Příklad 4</span>
+      <span class="exercise-source">PS 2</span>
+    </div>
+  </summary>
+  <div class="exercise-body">
+    <p>Určete vzdálenost na mapě:</p>
+  </div>
+
+  <!-- 4a -->
+  <details class="sub-exercise">
+    <summary><span class="sub-exercise-label">a)</span> Skutečnost 40 km, měřítko 1 : 200 000</summary>
+    <div class="sub-exercise-inner">
+      <details class="step">
+        <summary>Krok 1 – Převod na cm</summary>
+        <div class="step-content">
+          <p>$40 \text{ km} = 40 \times 100\,000 = 4\,000\,000 \text{ cm}$</p>
+        </div>
+      </details>
+      <details class="step">
+        <summary>Krok 2 – Výpočet</summary>
+        <div class="step-content">
+          <p>$\text{mapa} = \dfrac{4\,000\,000}{200\,000} = 20 \text{ cm}$</p>
+        </div>
+      </details>
+      <details class="result">
+        <summary>Výsledek</summary>
+        <div class="result-content">
+          <p>Vzdálenost na mapě je $\mathbf{20 \text{ cm}}$.</p>
+        </div>
+      </details>
+    </div>
+  </details>
+
+  <!-- 4b -->
+  <details class="sub-exercise">
+    <summary><span class="sub-exercise-label">b)</span> Skutečnost 3,5 km, měřítko 1 : 70 000</summary>
+    <div class="sub-exercise-inner">
+      <details class="step">
+        <summary>Krok 1 – Převod na cm</summary>
+        <div class="step-content">
+          <p>$3{,}5 \text{ km} = 3{,}5 \times 100\,000 = 350\,000 \text{ cm}$</p>
+        </div>
+      </details>
+      <details class="step">
+        <summary>Krok 2 – Výpočet</summary>
+        <div class="step-content">
+          <p>$\text{mapa} = \dfrac{350\,000}{70\,000} = 5 \text{ cm}$</p>
+        </div>
+      </details>
+      <details class="result">
+        <summary>Výsledek</summary>
+        <div class="result-content">
+          <p>Vzdálenost odpočívadel na mapě je $\mathbf{5 \text{ cm}}$.</p>
+        </div>
+      </details>
+    </div>
+  </details>
+
+  <!-- 4c -->
+  <details class="sub-exercise">
+    <summary><span class="sub-exercise-label">c)</span> Skutečnost 810 m, měřítko 1 : 30 000</summary>
+    <div class="sub-exercise-inner">
+      <details class="step">
+        <summary>Krok 1 – Převod na cm</summary>
+        <div class="step-content">
+          <p>$810 \text{ m} = 810 \times 100 = 81\,000 \text{ cm}$</p>
+        </div>
+      </details>
+      <details class="step">
+        <summary>Krok 2 – Výpočet</summary>
+        <div class="step-content">
+          <p>$\text{mapa} = \dfrac{81\,000}{30\,000} = 2{,}7 \text{ cm}$</p>
+        </div>
+      </details>
+      <details class="result">
+        <summary>Výsledek</summary>
+        <div class="result-content">
+          <p>Vzdálenost zastávek na mapě je $\mathbf{2{,}7 \text{ cm}}$.</p>
+        </div>
+      </details>
+    </div>
+  </details>
+</details>
+
+<div class="nav-links">
+  <a href="../index.html" style="background:#374151">← Matematika</a>
+  <a href="01_teorie_meritko.html">📖 Teorie</a>
+  <a href="02_priklady_vyklad.html">✏️ Příklady — Výklad</a>
+  <a href="03_cviceni_1.html" class="active">🏋️ Cvičení</a>
+  <a href="04_generator_pdf.html">🖨️ Generátor PDF</a>
+</div>
+
+</body>
+</html>

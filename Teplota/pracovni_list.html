@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Teplota a měření – Pracovní list</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* ===== Progresivní odemykání ===== */
+    .task { transition: opacity 0.4s, transform 0.4s; }
+    .task.locked {
+      opacity: 0.35;
+      pointer-events: none;
+      user-select: none;
+      position: relative;
+      max-height: 80px;
+      overflow: hidden;
+    }
+    .task.locked::after {
+      content: '🔒 Nejdříve splň předchozí úlohu';
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--gray-500);
+      background: linear-gradient(180deg, rgba(249,250,251,0.4) 0%, rgba(249,250,251,0.95) 70%);
+      border-radius: var(--radius);
+      z-index: 10;
+    }
+    .task.locked .task-body { filter: blur(2px); }
+    .task.unlocked { animation: taskSlideIn 0.5s ease-out; }
+    @keyframes taskSlideIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .task.completed { border-left-color: var(--success); }
+    .task.completed .task-header::after {
+      content: '✅'; margin-left: auto; font-size: 1.2rem;
+    }
+    .btn-next {
+      background: var(--success); color: #fff;
+      margin-top: 0.6rem; font-size: 0.95rem;
+    }
+    .btn-next:hover { background: #15803d; }
+    .btn-next.hidden { display: none; }
+    .progress-bar {
+      background: var(--gray-200); border-radius: 999px;
+      height: 10px; overflow: hidden; margin: 0.3rem 0 0.6rem;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary), var(--success));
+      border-radius: 999px; transition: width 0.5s ease; width: 0%;
+    }
+  </style>
+</head>
+<body>
+
+<h1>🌡️ Teplota a měření
+  <small>Fyzika pro primu – interaktivní pracovní list</small>
+</h1>
+
+<!-- ===== SKÓRE + PROGRES ===== -->
+<div class="score-bar">
+  <div>
+    <span>Skóre: <span class="score-num" id="scoreDisplay">0</span> / <span id="scoreMax">0</span> bodů</span>
+    <span style="margin-left:1rem;font-size:0.85rem;color:var(--gray-500);">Úloha <span id="progressCurrent">1</span> / 7</span>
+  </div>
+  <button onclick="resetAll()">🔄 Začít znovu</button>
+</div>
+<div class="progress-bar"><div class="progress-bar-fill" id="progressBar"></div></div>
+
+<!-- ═══════════ ÚLOHA 1 – ZÁKLADNÍ POJMY ═══════════ -->
+<div class="task" id="task1">
+  <div class="task-header">
+    <span class="task-number">1.</span>
+    <span class="task-title">Základní pojmy</span>
+  </div>
+  <div class="task-body">
+    <p class="task-instructions">Doplň tabulku – ke každé kategorii vyplň správnou hodnotu.</p>
+    <table class="input-table">
+      <thead><tr><th>Veličina</th><th>Značka</th><th>Jednotka</th><th>Měřidlo</th></tr></thead>
+      <tbody><tr>
+        <td>Teplota</td>
+        <td><input type="text" id="t1_znacka" placeholder="?" autocomplete="off"></td>
+        <td><input type="text" id="t1_jednotka" placeholder="?" autocomplete="off"></td>
+        <td><input type="text" id="t1_meridlo" placeholder="?" autocomplete="off"></td>
+      </tr></tbody>
+    </table>
+    <div class="btn-row">
+      <button class="btn btn-check" onclick="checkTask1()">✓ Zkontrolovat</button>
+    </div>
+    <div id="t1_feedback"></div>
+    <button class="btn btn-next hidden" id="next1" onclick="unlockTask(2)">▶ Pokračuj na úlohu 2</button>
+    <details class="solution"><summary>Zobrazit řešení</summary>
+      <div class="solution-content"><strong>Značka:</strong> t &nbsp;|&nbsp; <strong>Jednotka:</strong> °C &nbsp;|&nbsp; <strong>Měřidlo:</strong> teploměr</div>
+    </details>
+  </div>
+</div>
+
+<!-- ═══════════ ÚLOHA 2 – TEPLOTA VE TŘÍDĚ ═══════════ -->
+<div class="task locked" id="task2">
+  <div class="task-header">
+    <span class="task-number">2.</span>
+    <span class="task-title">Teplota ve třídě</span>
+  </div>
+  <div class="task-body">
+    <p class="task-instructions">Podívej se na teploměr ve třídě a zapiš údaje.</p>
+    <div class="field-row"><label>Nejmenší dílek:</label><input type="text" id="t2_dilek" placeholder="např. 1 °C" autocomplete="off"></div>
+    <div class="field-row"><label>Rozsah:</label><input type="text" id="t2_rozsah" placeholder="např. −30 °C až 50 °C" autocomplete="off"></div>
+    <div class="field-row"><label>Aktuální teplota:</label><input type="text" id="t2_teplota" placeholder="např. 22 °C" autocomplete="off"></div>
+    <p style="margin-top:0.6rem;font-size:0.85rem;color:var(--gray-500);">ℹ️ Praktická úloha – učitel zkontroluje.</p>
+    <div class="btn-row">
+      <button class="btn btn-check" onclick="checkTask2()">✓ Hotovo</button>
+    </div>
+    <div id="t2_feedback"></div>
+    <button class="btn btn-next hidden" id="next2" onclick="unlockTask(3)">▶ Pokračuj na úlohu 3</button>
+  </div>
+</div>
+
+<!-- ═══════════ ÚLOHA 3 – POČETNÍ DETEKTIVKA ═══════════ -->
+<div class="task locked" id="task3">
+  <div class="task-header">
+    <span class="task-number">3.</span>
+    <span class="task-title">Početní detektivka</span>
+  </div>
+  <div class="task-body">
+    <div class="calc-problem">
+      <p><strong>A)</strong> Ráno bylo <strong>8 °C pod nulou</strong>. Přes den teplota stoupla o <strong>14 °C</strong>. Jakou teplotu naměříme odpoledne?</p>
+      <div class="answer-row">
+        <label>Odpověď:</label>
+        <input type="number" id="t3a_answer" placeholder="?" autocomplete="off">
+        <span class="unit">°C</span>
+      </div>
+      <details class="solution"><summary>Postup</summary><div class="solution-content">−8 + 14 = <strong>6 °C</strong></div></details>
+    </div>
+    <div class="calc-problem">
+      <p><strong>B)</strong> Teplota klesla z <strong>12,5 °C</strong> na <strong>−3,5 °C</strong>. O kolik stupňů se ochladilo?</p>
+      <div class="answer-row">
+        <label>Odpověď:</label>
+        <input type="number" id="t3b_answer" placeholder="?" autocomplete="off">
+        <span class="unit">°C</span>
+      </div>
+      <details class="solution"><summary>Postup</summary><div class="solution-content">12,5 − (−3,5) = <strong>16 °C</strong></div></details>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-check" onclick="checkTask3()">✓ Zkontrolovat</button>
+    </div>
+    <div id="t3_feedback"></div>
+    <button class="btn btn-next hidden" id="next3" onclick="unlockTask(4)">▶ Pokračuj na úlohu 4</button>
+  </div>
+</div>
+
+<!-- ═══════════ ÚLOHA 4 – DOKRESLI HLADINU ═══════════ -->
+<div class="task locked" id="task4">
+  <div class="task-header">
+    <span class="task-number">4.</span>
+    <span class="task-title">Dokresli hladinu kapaliny</span>
+  </div>
+  <div class="task-body">
+    <p class="task-instructions">Klikni na teploměr a nastav hladinu kapaliny na správnou teplotu.</p>
+    <div class="thermometers-row" id="thermometersRow"></div>
+    <div class="btn-row">
+      <button class="btn btn-check" onclick="checkTask4()">✓ Zkontrolovat</button>
+    </div>
+    <div id="t4_feedback"></div>
+    <button class="btn btn-next hidden" id="next4" onclick="unlockTask(5)">▶ Pokračuj na úlohu 5</button>
+  </div>
+</div>
+
+<!-- ═══════════ ÚLOHA 5 – TEPLOTNÍ REKORDY ═══════════ -->
+<div class="task locked" id="task5">
+  <div class="task-header">
+    <span class="task-number">5.</span>
+    <span class="task-title">Teplotní rekordy: seřaď od nejnižší po nejvyšší</span>
+  </div>
+  <div class="task-body">
+    <p class="task-instructions">Napiš čísla 1 až 5 (1 = největší mráz, 5 = největší horko).</p>
+    <ul class="sort-list">
+      <li class="sort-item"><input type="number" class="sort-input" id="t5_slunce" min="1" max="5" autocomplete="off"><span class="sort-temp">5 500 °C</span><span class="sort-desc">— povrch Slunce</span></li>
+      <li class="sort-item"><input type="number" class="sort-input" id="t5_antarktida" min="1" max="5" autocomplete="off"><span class="sort-temp">−89 °C</span><span class="sort-desc">— rekord Antarktida</span></li>
+      <li class="sort-item"><input type="number" class="sort-input" id="t5_nula" min="1" max="5" autocomplete="off"><span class="sort-temp">−273 °C</span><span class="sort-desc">— absolutní nula</span></li>
+      <li class="sort-item"><input type="number" class="sort-input" id="t5_sahara" min="1" max="5" autocomplete="off"><span class="sort-temp">58 °C</span><span class="sort-desc">— Sahara (Libye)</span></li>
+      <li class="sort-item"><input type="number" class="sort-input" id="t5_rtut" min="1" max="5" autocomplete="off"><span class="sort-temp">−39 °C</span><span class="sort-desc">— tuhnutí rtuti</span></li>
+    </ul>
+    <div class="btn-row">
+      <button class="btn btn-check" onclick="checkTask5()">✓ Zkontrolovat</button>
+    </div>
+    <div id="t5_feedback"></div>
+    <button class="btn btn-next hidden" id="next5" onclick="unlockTask(6)">▶ Pokračuj na úlohu 6</button>
+    <details class="solution"><summary>Zobrazit řešení</summary>
+      <div class="solution-content">1→−273 °C | 2→−89 °C | 3→−39 °C | 4→58 °C | 5→5 500 °C</div>
+    </details>
+  </div>
+</div>
+
+<!-- ═══════════ ÚLOHA 6 – ODHADNI TEPLOTU ═══════════ -->
+<div class="task locked" id="task6">
+  <div class="task-header">
+    <span class="task-number">6.</span>
+    <span class="task-title">Odhadni správnou teplotu</span>
+  </div>
+  <div class="task-body">
+    <p class="task-instructions">Odhadni a zapiš hodnotu (jednotku doplníme za tebe).</p>
+    <div class="estimate-grid">
+      <div class="estimate-item"><span class="emoji">☕</span><label>Horký čaj:</label><input type="number" id="t6_caj" placeholder="?" autocomplete="off"><span class="unit">°C</span></div>
+      <div class="estimate-item"><span class="emoji">🧊</span><label>Uvnitř mrazáku:</label><input type="number" id="t6_mrazak" placeholder="?" autocomplete="off"><span class="unit">°C</span></div>
+      <div class="estimate-item"><span class="emoji">🛁</span><label>Příjemná koupel:</label><input type="number" id="t6_koupel" placeholder="?" autocomplete="off"><span class="unit">°C</span></div>
+      <div class="estimate-item"><span class="emoji">🥶</span><label>Voda s ledem:</label><input type="number" id="t6_led" placeholder="?" autocomplete="off"><span class="unit">°C</span></div>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-check" onclick="checkTask6()">✓ Zkontrolovat</button>
+    </div>
+    <div id="t6_feedback"></div>
+    <button class="btn btn-next hidden" id="next6" onclick="unlockTask(7)">▶ Pokračuj na úlohu 7</button>
+    <details class="solution"><summary>Zobrazit řešení</summary>
+      <div class="solution-content">☕ 60–80 °C | 🧊 −18 °C | 🛁 37–40 °C | 🥶 0 °C</div>
+    </details>
+  </div>
+</div>
+
+<!-- ═══════════ ÚLOHA 7 – BLESKOVÝ KVÍZ ═══════════ -->
+<div class="task locked" id="task7">
+  <div class="task-header">
+    <span class="task-number">7.</span>
+    <span class="task-title">Bleskový kvíz</span>
+  </div>
+  <div class="task-body">
+    <p class="task-instructions">Odpověz ANO nebo NE.</p>
+    <div class="quiz-list">
+      <div class="quiz-item" data-correct="ano" id="q7_1">
+        <span class="quiz-question">Kapalina se teplem roztahuje?</span>
+        <div class="quiz-buttons">
+          <button onclick="answerQuiz('q7_1','ano')">ANO</button>
+          <button onclick="answerQuiz('q7_1','ne')">NE</button>
+        </div>
+        <div class="quiz-feedback"></div>
+      </div>
+      <div class="quiz-item" data-correct="ne" id="q7_2">
+        <span class="quiz-question">Teploměr dáváme na slunce?</span>
+        <div class="quiz-buttons">
+          <button onclick="answerQuiz('q7_2','ano')">ANO</button>
+          <button onclick="answerQuiz('q7_2','ne')">NE</button>
+        </div>
+        <div class="quiz-feedback"></div>
+      </div>
+      <div class="quiz-item" data-correct="ne" id="q7_3">
+        <span class="quiz-question">Při měření se teploměr dotýká dna nádoby?</span>
+        <div class="quiz-buttons">
+          <button onclick="answerQuiz('q7_3','ano')">ANO</button>
+          <button onclick="answerQuiz('q7_3','ne')">NE</button>
+        </div>
+        <div class="quiz-feedback"></div>
+      </div>
+    </div>
+    <div id="t7_feedback"></div>
+  </div>
+</div>
+
+<!-- ===== GRATULACE ===== -->
+<div class="task" id="congratulations" style="display:none;border-left-color:var(--success);text-align:center;">
+  <div class="task-body" style="padding:2rem;">
+    <div style="font-size:3rem;margin-bottom:0.5rem;">🎉🏆🎉</div>
+    <h2 style="color:var(--success);margin:0;">Výborně, všechny úlohy splněny!</h2>
+    <p style="margin-top:0.6rem;font-size:1.1rem;">Konečné skóre: <strong id="finalScore"></strong> bodů</p>
+  </div>
+</div>
+
+<!-- ═══════════ JAVASCRIPT ═══════════ -->
+<script>
+const TOTAL_TASKS = 7;
+let score = 0;
+const maxScoreMap = {task1:3, task2:1, task3:2, task4:4, task5:5, task6:4, task7:3};
+const totalMax = Object.values(maxScoreMap).reduce((a,b)=>a+b,0);
+const earnedMap = {};
+const taskCompleted = {};
+document.getElementById('scoreMax').textContent = totalMax;
+
+function updateScore(){
+  score = Object.values(earnedMap).reduce((a,b)=>a+b,0);
+  document.getElementById('scoreDisplay').textContent = score;
+}
+function updateProgress(){
+  const done = Object.keys(taskCompleted).length;
+  document.getElementById('progressCurrent').textContent = Math.min(done+1, TOTAL_TASKS);
+  document.getElementById('progressBar').style.width = ((done/TOTAL_TASKS)*100)+'%';
+}
+function setFeedback(id, correct, total){
+  const el = document.getElementById(id);
+  if(correct===total) el.innerHTML=`<div class="feedback-msg success">✅ Výborně! ${correct}/${total} správně.</div>`;
+  else if(correct>0) el.innerHTML=`<div class="feedback-msg partial">⚠️ Máš ${correct}/${total} správně. Oprav zbytek.</div>`;
+  else el.innerHTML=`<div class="feedback-msg error">❌ Zatím ${correct}/${total}. Zkus znovu!</div>`;
+}
+
+function completeTask(n){
+  if(taskCompleted['task'+n]) return;
+  taskCompleted['task'+n]=true;
+  document.getElementById('task'+n).classList.add('completed');
+  const btn=document.getElementById('next'+n);
+  if(btn) btn.classList.remove('hidden');
+  updateProgress();
+  if(n===TOTAL_TASKS){
+    setTimeout(()=>{
+      const cg=document.getElementById('congratulations');
+      cg.style.display='block';
+      document.getElementById('finalScore').textContent=score+' / '+totalMax;
+      cg.scrollIntoView({behavior:'smooth',block:'center'});
+    },600);
+  }
+}
+function unlockTask(n){
+  const el=document.getElementById('task'+n);
+  if(!el) return;
+  el.classList.remove('locked');
+  el.classList.add('unlocked');
+  setTimeout(()=>el.scrollIntoView({behavior:'smooth',block:'start'}),100);
+  if(n===4) renderThermometers();
+}
+
+// ── ÚLOHA 1 ──
+function checkTask1(){
+  const z=document.getElementById('t1_znacka');
+  const j=document.getElementById('t1_jednotka');
+  const m=document.getElementById('t1_meridlo');
+  let pts=0;
+  if(z.value.trim().toLowerCase()==='t'){z.className='correct';pts++;}else z.className=z.value.trim()?'wrong':'';
+  if(/^(°c|stupeň celsia|stupen celsia|st\.?\s*c|°\s*c)$/i.test(j.value.trim())){j.className='correct';pts++;}else j.className=j.value.trim()?'wrong':'';
+  if(/teplom[eě]r/i.test(m.value.trim())){m.className='correct';pts++;}else m.className=m.value.trim()?'wrong':'';
+  earnedMap.task1=pts; updateScore(); setFeedback('t1_feedback',pts,3);
+  if(pts===3) completeTask(1);
+}
+
+// ── ÚLOHA 2 ──
+function checkTask2(){
+  const d=document.getElementById('t2_dilek').value.trim();
+  const r=document.getElementById('t2_rozsah').value.trim();
+  const t=document.getElementById('t2_teplota').value.trim();
+  if(d&&r&&t){
+    earnedMap.task2=1; updateScore();
+    document.getElementById('t2_feedback').innerHTML='<div class="feedback-msg success">✅ Zaznamenáno. Učitel zkontroluje.</div>';
+    completeTask(2);
+  }else{
+    document.getElementById('t2_feedback').innerHTML='<div class="feedback-msg error">❌ Vyplň všechna tři pole.</div>';
+  }
+}
+
+// ── ÚLOHA 3 ──
+function checkTask3(){
+  const a=document.getElementById('t3a_answer');
+  const b=document.getElementById('t3b_answer');
+  let pts=0;
+  if(parseFloat(a.value)===6){a.className='correct';pts++;}else a.className=a.value?'wrong':'';
+  if(parseFloat(b.value)===16){b.className='correct';pts++;}else b.className=b.value?'wrong':'';
+  earnedMap.task3=pts; updateScore(); setFeedback('t3_feedback',pts,2);
+  if(pts===2) completeTask(3);
+}
+
+// ── ÚLOHA 4 – Teploměry ──
+const thermometers=[
+  {id:'therm1',label:'t = 15 °C',target:15,min:10,max:20,step:2,tolerance:0.5},
+  {id:'therm2',label:'t = −6 °C',target:-6,min:-10,max:10,step:5,tolerance:1},
+  {id:'therm3',label:'t = 8 °C',target:8,min:0,max:20,step:2,tolerance:0.5},
+  {id:'therm4',label:'t = 37,2 °C',target:37.2,min:35,max:42,step:1,tolerance:0.3},
+];
+const TH={w:90,h:220,tubeX:35,tubeW:20,tubeTop:20,tubeBot:170,bulbCY:185,bulbR:16};
+function tempToY(t,min,max){return TH.tubeBot-(t-min)/(max-min)*(TH.tubeBot-TH.tubeTop);}
+function yToTemp(y,min,max){return min+(TH.tubeBot-y)/(TH.tubeBot-TH.tubeTop)*(max-min);}
+const selectedTemps={};
+
+function renderThermometers(){
+  const row=document.getElementById('thermometersRow'); row.innerHTML='';
+  const svgNS='http://www.w3.org/2000/svg';
+  thermometers.forEach(th=>{
+    selectedTemps[th.id]=null;
+    const card=document.createElement('div'); card.className='thermometer-card';
+    const lbl=document.createElement('div'); lbl.className='temp-label'; lbl.textContent=th.label; card.appendChild(lbl);
+
+    const svg=document.createElementNS(svgNS,'svg');
+    svg.setAttribute('viewBox',`0 0 ${TH.w} ${TH.h}`); svg.setAttribute('width','80'); svg.style.cursor='pointer';
+
+    const tube=document.createElementNS(svgNS,'rect');
+    tube.setAttribute('x',TH.tubeX);tube.setAttribute('y',TH.tubeTop);tube.setAttribute('width',TH.tubeW);
+    tube.setAttribute('height',TH.tubeBot-TH.tubeTop);tube.setAttribute('rx',TH.tubeW/2);
+    tube.setAttribute('fill','#f0f9ff');tube.setAttribute('stroke','#94a3b8');tube.setAttribute('stroke-width','1.5');
+    svg.appendChild(tube);
+
+    const mercury=document.createElementNS(svgNS,'rect');
+    mercury.setAttribute('x',TH.tubeX+2);mercury.setAttribute('width',TH.tubeW-4);
+    mercury.setAttribute('y',TH.tubeBot);mercury.setAttribute('height',0);
+    mercury.setAttribute('rx',(TH.tubeW-4)/2);mercury.setAttribute('fill','#ef4444');mercury.id=th.id+'_mercury';
+    svg.appendChild(mercury);
+
+    const bulb=document.createElementNS(svgNS,'circle');
+    bulb.setAttribute('cx',TH.tubeX+TH.tubeW/2);bulb.setAttribute('cy',TH.bulbCY);bulb.setAttribute('r',TH.bulbR);
+    bulb.setAttribute('fill','#ef4444');bulb.setAttribute('stroke','#94a3b8');bulb.setAttribute('stroke-width','1.5');
+    svg.appendChild(bulb);
+
+    for(let val=th.min;val<=th.max;val+=th.step){
+      const y=tempToY(val,th.min,th.max);
+      const tick=document.createElementNS(svgNS,'line');
+      tick.setAttribute('x1',TH.tubeX+TH.tubeW+2);tick.setAttribute('x2',TH.tubeX+TH.tubeW+8);
+      tick.setAttribute('y1',y);tick.setAttribute('y2',y);tick.setAttribute('stroke','#64748b');tick.setAttribute('stroke-width','1');
+      svg.appendChild(tick);
+      const txt=document.createElementNS(svgNS,'text');
+      txt.setAttribute('x',TH.tubeX+TH.tubeW+10);txt.setAttribute('y',y+3);
+      txt.setAttribute('font-size','9');txt.setAttribute('fill','#475569');txt.textContent=val;
+      svg.appendChild(txt);
+    }
+
+    const overlay=document.createElementNS(svgNS,'rect');
+    overlay.setAttribute('x',0);overlay.setAttribute('y',TH.tubeTop);
+    overlay.setAttribute('width',TH.w);overlay.setAttribute('height',TH.tubeBot-TH.tubeTop);
+    overlay.setAttribute('fill','transparent');overlay.style.cursor='pointer';
+
+    function handleClick(e){
+      const rect=svg.getBoundingClientRect();
+      const sc=TH.h/rect.height;
+      const y=Math.max(TH.tubeTop,Math.min(TH.tubeBot,(e.clientY-rect.top)*sc));
+      let temp=yToTemp(y,th.min,th.max);
+      const hs=th.step/2; temp=Math.round(temp/hs)*hs;
+      temp=Math.max(th.min,Math.min(th.max,temp));
+      const sy=tempToY(temp,th.min,th.max);
+      const merc=document.getElementById(th.id+'_mercury');
+      merc.setAttribute('y',sy);merc.setAttribute('height',TH.tubeBot-sy);
+      selectedTemps[th.id]=temp;
+      const disp=document.getElementById(th.id+'_disp');
+      const fmt=Number.isInteger(temp)?temp:temp.toFixed(1).replace('.',',');
+      disp.innerHTML=`Nastaveno: <strong>${fmt} °C</strong>`;
+      merc.setAttribute('fill','#ef4444');
+    }
+    overlay.addEventListener('click',handleClick);
+    let drag=false;
+    overlay.addEventListener('mousedown',e=>{drag=true;handleClick(e);});
+    svg.addEventListener('mousemove',e=>{if(drag)handleClick(e);});
+    document.addEventListener('mouseup',()=>{drag=false;});
+    overlay.addEventListener('touchstart',e=>{e.preventDefault();handleClick(e.touches[0]);});
+    overlay.addEventListener('touchmove',e=>{e.preventDefault();handleClick(e.touches[0]);});
+
+    svg.appendChild(overlay); card.appendChild(svg);
+    const disp=document.createElement('div');disp.className='selected-temp';disp.id=th.id+'_disp';disp.textContent='Klikni na teploměr';
+    card.appendChild(disp); row.appendChild(card);
+  });
+}
+
+function checkTask4(){
+  let pts=0;
+  thermometers.forEach(th=>{
+    const sel=selectedTemps[th.id];
+    const merc=document.getElementById(th.id+'_mercury');
+    if(sel!==null&&Math.abs(sel-th.target)<=th.tolerance){merc.setAttribute('fill','#16a34a');pts++;}
+    else if(sel!==null) merc.setAttribute('fill','#dc2626');
+  });
+  earnedMap.task4=pts; updateScore(); setFeedback('t4_feedback',pts,4);
+  if(pts===4) completeTask(4);
+}
+
+// ── ÚLOHA 5 ──
+function checkTask5(){
+  const correct={t5_slunce:5,t5_antarktida:2,t5_nula:1,t5_sahara:4,t5_rtut:3};
+  let pts=0;
+  for(const[id,val] of Object.entries(correct)){
+    const el=document.getElementById(id);
+    if(parseInt(el.value)===val){el.className='sort-input correct';pts++;}
+    else el.className='sort-input'+(el.value?' wrong':'');
+  }
+  earnedMap.task5=pts; updateScore(); setFeedback('t5_feedback',pts,5);
+  if(pts===5) completeTask(5);
+}
+
+// ── ÚLOHA 6 ──
+function checkTask6(){
+  const ranges={t6_caj:[50,90],t6_mrazak:[-25,-10],t6_koupel:[34,42],t6_led:[-2,3]};
+  let pts=0;
+  for(const[id,[lo,hi]] of Object.entries(ranges)){
+    const el=document.getElementById(id);const v=parseFloat(el.value);
+    if(!isNaN(v)&&v>=lo&&v<=hi){el.className='correct';pts++;}
+    else el.className=el.value?'wrong':'';
+  }
+  earnedMap.task6=pts; updateScore(); setFeedback('t6_feedback',pts,4);
+  if(pts===4) completeTask(6);
+}
+
+// ── ÚLOHA 7 ──
+const quizAnswered={};
+function answerQuiz(qId,answer){
+  const item=document.getElementById(qId);
+  const correct=item.dataset.correct;
+  const buttons=item.querySelectorAll('.quiz-buttons button');
+  const feedback=item.querySelector('.quiz-feedback');
+  buttons.forEach(b=>b.className='');
+  const isCorrect=answer===correct;
+  const btn=answer==='ano'?buttons[0]:buttons[1];
+  btn.className=isCorrect?'selected-correct':'selected-wrong';
+  if(isCorrect){feedback.className='quiz-feedback correct';feedback.textContent='✅ Správně!';quizAnswered[qId]=true;}
+  else{feedback.className='quiz-feedback wrong';feedback.textContent='❌ Špatně – zkus znovu!';quizAnswered[qId]=false;}
+  let pts=0;
+  ['q7_1','q7_2','q7_3'].forEach(id=>{if(quizAnswered[id]===true)pts++;});
+  earnedMap.task7=pts; updateScore();
+  if(pts===3) completeTask(7);
+}
+
+// ── RESET ──
+function resetAll(){
+  document.querySelectorAll('input[type="text"],input[type="number"]').forEach(el=>{
+    el.value='';el.className=el.classList.contains('sort-input')?'sort-input':'';
+  });
+  document.querySelectorAll('[id$="_feedback"]').forEach(el=>el.innerHTML='');
+  document.querySelectorAll('.quiz-buttons button').forEach(b=>b.className='');
+  document.querySelectorAll('.quiz-feedback').forEach(f=>{f.textContent='';f.className='quiz-feedback';});
+  document.querySelectorAll('details.solution').forEach(d=>d.open=false);
+  document.querySelectorAll('.btn-next').forEach(b=>b.classList.add('hidden'));
+  for(let i=2;i<=TOTAL_TASKS;i++){
+    const t=document.getElementById('task'+i);
+    t.classList.add('locked');t.classList.remove('unlocked','completed');
+  }
+  document.getElementById('task1').classList.remove('completed');
+  document.getElementById('congratulations').style.display='none';
+  Object.keys(earnedMap).forEach(k=>delete earnedMap[k]);
+  Object.keys(taskCompleted).forEach(k=>delete taskCompleted[k]);
+  Object.keys(quizAnswered).forEach(k=>delete quizAnswered[k]);
+  score=0; document.getElementById('scoreDisplay').textContent='0';
+  updateProgress(); renderThermometers();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ── INIT ──
+updateProgress(); renderThermometers();
+</script>
+</body>
+</html>

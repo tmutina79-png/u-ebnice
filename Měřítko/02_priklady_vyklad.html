@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Měřítko mapy – Příklady z výkladu</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});"></script>
+</head>
+<body>
+
+<h1>📏 Měřítko mapy – Příklady z výkladu</h1>
+
+<div class="nav-links">
+  <a href="01_teorie_meritko.html">📖 Teorie</a>
+  <a href="02_priklady_vyklad.html" class="active">✏️ Příklady — Výklad</a>
+  <a href="03_cviceni_1.html">🏋️ Cvičení</a>
+  <a href="04_generator_pdf.html">🖨️ Generátor PDF</a>
+  <button class="pdf-btn" onclick="window.print()">📄 Uložit do PDF</button>
+</div>
+
+<div class="controls">
+  <button onclick="document.querySelectorAll('details').forEach(d=>d.open=true)">📖 Zobrazit vše</button>
+  <button onclick="document.querySelectorAll('details').forEach(d=>d.open=false)">🔒 Skrýt vše</button>
+</div>
+
+<!-- ══════════════════════════════════════════════════ -->
+<!-- PŘÍKLAD 1 — Tabulka -->
+<!-- ══════════════════════════════════════════════════ -->
+<details class="exercise">
+  <summary>
+    <div class="exercise-header">
+      <span class="exercise-number">Příklad 1</span>
+      <span class="exercise-source">PS 1</span>
+    </div>
+  </summary>
+  <div class="exercise-body">
+    <p>Dopočítejte chybějící údaje v tabulce:</p>
+    <table>
+      <tr><th>Měřítko mapy</th><th>Vzdálenost na mapě</th><th>Vzdálenost ve skutečnosti</th></tr>
+      <tr><td>1 : 50 000 000</td><td>5 cm</td><td>?</td></tr>
+      <tr><td>1 : 450 000</td><td>?</td><td>2 800 km</td></tr>
+      <tr><td>?</td><td>11,5 cm</td><td>3 450 km</td></tr>
+      <tr><td>1 : 25 000</td><td>?</td><td>800 m</td></tr>
+      <tr><td>1 : 10 000</td><td>2,7 dm</td><td>?</td></tr>
+    </table>
+  </div>
+
+  <!-- Řádek 1 -->
+  <details class="sub-exercise">
+    <summary><span class="sub-exercise-label">a)</span> Měřítko 1 : 50 000 000, mapa = 5 cm, skutečnost = ?</summary>
+    <div class="sub-exercise-inner">
+      <details class="step">
+        <summary>Krok 1 – Vzorec</summary>
+        <div class="step-content">
+          <p>$\text{skutečnost} = \text{mapa} \times M$</p>
+        </div>
+      </details>
+      <details class="step">
+        <summary>Krok 2 – Dosazení</summary>
+        <div class="step-content">
+          <p>$\text{skutečnost} = 5 \text{ cm} \times 50\,000\,000 = 250\,000\,000 \text{ cm}$</p>
+        </div>
+      </details>
+      <details class="step">
+        <summary>Krok 3 – Převod na km</summary>
+        <div class="step-content">
+          <p>$250\,000\,000 \text{ cm} = 2\,500\,000 \text{ m} = 2\,500 \text{ km}$</p>
+        </div>
+      </details>
+      <details class="result">
+        <summary>Výsledek</summary>
+        <div class="result-content">
+          <p>Skutečná vzdálenost je $\mathbf{2\,500 \text{ km}}$.</p>
+        </div>
+      </details>
+    </div>
+  </details>
+
+  <!-- Řádek 2 -->
+  <details class="sub-exercise">
+    <summary><span class="sub-exercise-label">b)</span> Měřítko 1 : 450 000, skutečnost = 2 800 km, mapa = ?</summary>
+    <div class="sub-exercise-inner">
+      <details class="step">
+        <summary>Krok 1 – Převod km na cm</summary>
+        <div class="step-content">
+          <p>$2\,800 \text{ km} = 2\,800 \times 100\,000 \text{ cm} = 280\,000\,000 \text{ cm}$</p>
+        </div>
+      </details>
+      <details class="step">
+        <summary>Krok 2 – Vzorec a dosazení</summary>
+        <div class="step-content">
+          <p>$\text{mapa} = \dfrac{\text{skutečnost}}{M} = \dfrac{280\,000\,000}{450\,000} = 622{,}2 \text{ cm}$</p>
+        </div>
+      </details>
+      <details class="step">
+        <summary>Krok 3 – Převod na m</summary>
+        <div class="step-content">
+          <p>$622{,}2 \text{ cm} \approx 6{,}22 \text{ m}$</p>
+        </div>
+      </details>
+      <details class="result">
+        <summary>Výsledek</summary>
+        <div class="result-content">
+          <p>Vzdálenost na mapě je přibližně $\mathbf{622{,}2 \text{ cm}}$ (cca $6{,}22$ m).</p>
+        </div>
+      </details>
+    </div>
+  </details>
+
+  <!-- Řádek 3 -->
+  <details class="sub-exercise">
+    <summary><span class="sub-exercise-label">c)</span> Mapa = 11,5 cm, skutečnost = 3 450 km, měřítko = ?</summary>
+    <div class="sub-exercise-inner">
+      <details class="step">
+        <summary>Krok 1 – Převod km na cm</summary>
+        <div class="step-content">
+          <p>$3\,450 \text{ km} = 3\,450 \times 100\,000 \text{ cm} = 345\,000\,000 \text{ cm}$</p>
+        </div>
+      </details>
+      <details class="step">
+        <summary>Krok 2 – Výpočet M</summary>
+        <div class="step-content">
+          <p>$M = \dfrac{\text{skutečnost}}{\text{mapa}} = \dfrac{345\,000\,000}{11{,}5} = 30\,000\,000$</p>
+        </div>
+      </details>
+      <details class="result">
+        <summary>Výsledek</summary>
+        <div class="result-content">
+          <p>Měřítko mapy je $\mathbf{1 : 30\,000\,000}$.</p>
+        </div>
+      </details>
+    </div>
+  </details>
+
+  <!-- Řádek 4 -->
+  <details class="sub-exercise">
+    <summary><span class="sub-exercise-label">d)</span> Měřítko 1 : 25 000, skutečnost = 800 m, mapa = ?</summary>
+    <div class="sub-exercise-inner">
+      <details class="step">
+        <summary>Krok 1 – Převod m na cm</summary>
+        <div class="step-content">
+          <p>$800 \text{ m} = 800 \times 100 = 80\,000 \text{ cm}$</p>
+        </div>
+      </details>
+      <details class="step">
+        <summary>Krok 2 – Výpočet</summary>
+        <div class="step-content">
+          <p>$\text{mapa} = \dfrac{80\,000}{25\,000} = 3{,}2 \text{ cm}$</p>
+        </div>
+      </details>
+      <details class="result">
+        <summary>Výsledek</summary>
+        <div class="result-content">
+          <p>Vzdálenost na mapě je $\mathbf{3{,}2 \text{ cm}}$.</p>
+        </div>
+      </details>
+    </div>
+  </details>
+
+  <!-- Řádek 5 -->
+  <details class="sub-exercise">
+    <summary><span class="sub-exercise-label">e)</span> Měřítko 1 : 10 000, mapa = 2,7 dm, skutečnost = ?</summary>
+    <div class="sub-exercise-inner">
+      <details class="step">
+        <summary>Krok 1 – Převod dm na cm</summary>
+        <div class="step-content">
+          <p>$2{,}7 \text{ dm} = 27 \text{ cm}$</p>
+        </div>
+      </details>
+      <details class="step">
+        <summary>Krok 2 – Výpočet</summary>
+        <div class="step-content">
+          <p>$\text{skutečnost} = 27 \times 10\,000 = 270\,000 \text{ cm}$</p>
+        </div>
+      </details>
+      <details class="step">
+        <summary>Krok 3 – Převod na km</summary>
+        <div class="step-content">
+          <p>$270\,000 \text{ cm} = 2\,700 \text{ m} = 2{,}7 \text{ km}$</p>
+        </div>
+      </details>
+      <details class="result">
+        <summary>Výsledek</summary>
+        <div class="result-content">
+          <p>Skutečná vzdálenost je $\mathbf{2{,}7 \text{ km}}$.</p>
+        </div>
+      </details>
+    </div>
+  </details>
+</details>
+
+<!-- ══════════════════════════════════════════════════ -->
+<!-- PŘÍKLAD 2 — Praha – Mariánské Lázně -->
+<!-- ══════════════════════════════════════════════════ -->
+<details class="exercise">
+  <summary>
+    <div class="exercise-header">
+      <span class="exercise-number">Příklad 2</span>
+      <span class="exercise-source">PS 1</span>
+    </div>
+  </summary>
+  <div class="exercise-body">
+    <p>Skutečná vzdálenost mezi Prahou a Mariánskými Lázněmi je 160 km.</p>
+    <p><strong>a)</strong> Urči měřítko na mapách, na kterých je vzdálenost 16 cm, 9,15 cm a 4,2 cm.</p>
+    <p><strong>b)</strong> Jaké by muselo být měřítko mapy, aby na ní byla vzdálenost přesně 12,3 cm?</p>
+  </div>
+
+  <!-- a) 16 cm -->
+  <details class="sub-exercise">
+    <summary><span class="sub-exercise-label">a₁)</span> Mapa = 16 cm</summary>
+    <div class="sub-exercise-inner">
+      <details class="step">
+        <summary>Krok 1 – Převod skutečnosti na cm</summary>
+        <div class="step-content">
+          <p>$160 \text{ km} = 160 \times 100\,000 = 16\,000\,000 \text{ cm}$</p>
+        </div>
+      </details>
+      <details class="step">
+        <summary>Krok 2 – Výpočet M</summary>
+        <div class="step-content">
+          <p>$M = \dfrac{16\,000\,000}{16} = 1\,000\,000$</p>
+        </div>
+      </details>
+      <details class="result">
+        <summary>Výsledek</summary>
+        <div class="result-content">
+          <p>Měřítko je $\mathbf{1 : 1\,000\,000}$.</p>
+        </div>
+      </details>
+    </div>
+  </details>
+
+  <!-- a) 9,15 cm -->
+  <details class="sub-exercise">
+    <summary><span class="sub-exercise-label">a₂)</span> Mapa = 9,15 cm</summary>
+    <div class="sub-exercise-inner">
+      <details class="step">
+        <summary>Krok 1 – Výpočet M</summary>
+        <div class="step-content">
+          <p>$M = \dfrac{16\,000\,000}{9{,}15} \approx 1\,748\,634$</p>
+        </div>
+      </details>
+      <details class="result">
+        <summary>Výsledek</summary>
+        <div class="result-content">
+          <p>Měřítko je přibližně $\mathbf{1 : 1\,748\,634}$.</p>
+        </div>
+      </details>
+    </div>
+  </details>
+
+  <!-- a) 4,2 cm -->
+  <details class="sub-exercise">
+    <summary><span class="sub-exercise-label">a₃)</span> Mapa = 4,2 cm</summary>
+    <div class="sub-exercise-inner">
+      <details class="step">
+        <summary>Krok 1 – Výpočet M</summary>
+        <div class="step-content">
+          <p>$M = \dfrac{16\,000\,000}{4{,}2} \approx 3\,809\,524$</p>
+        </div>
+      </details>
+      <details class="result">
+        <summary>Výsledek</summary>
+        <div class="result-content">
+          <p>Měřítko je přibližně $\mathbf{1 : 3\,809\,524}$.</p>
+        </div>
+      </details>
+    </div>
+  </details>
+
+  <!-- b) 12,3 cm -->
+  <details class="sub-exercise">
+    <summary><span class="sub-exercise-label">b)</span> Mapa = 12,3 cm</summary>
+    <div class="sub-exercise-inner">
+      <details class="step">
+        <summary>Krok 1 – Výpočet M</summary>
+        <div class="step-content">
+          <p>$M = \dfrac{16\,000\,000}{12{,}3} \approx 1\,300\,813$</p>
+        </div>
+      </details>
+      <details class="result">
+        <summary>Výsledek</summary>
+        <div class="result-content">
+          <p>Měřítko by muselo být přibližně $\mathbf{1 : 1\,300\,813}$.</p>
+        </div>
+      </details>
+    </div>
+  </details>
+</details>
+
+<!-- ══════════════════════════════════════════════════ -->
+<!-- PŘÍKLAD 3 — Model letadla -->
+<!-- ══════════════════════════════════════════════════ -->
+<details class="exercise">
+  <summary>
+    <div class="exercise-header">
+      <span class="exercise-number">Příklad 3</span>
+      <span class="exercise-source">PS 1</span>
+    </div>
+  </summary>
+  <div class="exercise-body">
+    <p>Jak veliké bylo skutečné letadlo, když jeho model v měřítku $1 : 72$ byl $9{,}2$ cm dlouhý a rozpětí křídel bylo $10{,}9$ cm?</p>
+  </div>
+  <div class="solution-wrapper">
+    <details class="step">
+      <summary>Krok 1 – Vzorec</summary>
+      <div class="step-content">
+        <p>$\text{skutečnost} = \text{model} \times M$, kde $M = 72$.</p>
+      </div>
+    </details>
+    <details class="step">
+      <summary>Krok 2 – Délka letadla</summary>
+      <div class="step-content">
+        <p>$\text{délka} = 9{,}2 \times 72 = 662{,}4 \text{ cm} = 6{,}624 \text{ m}$</p>
+      </div>
+    </details>
+    <details class="step">
+      <summary>Krok 3 – Rozpětí křídel</summary>
+      <div class="step-content">
+        <p>$\text{rozpětí} = 10{,}9 \times 72 = 784{,}8 \text{ cm} = 7{,}848 \text{ m}$</p>
+      </div>
+    </details>
+    <details class="result">
+      <summary>Výsledek</summary>
+      <div class="result-content">
+        <p>Skutečné letadlo bylo dlouhé $\mathbf{6{,}624 \text{ m}} \approx 6{,}6 \text{ m}$ a mělo rozpětí křídel $\mathbf{7{,}848 \text{ m}} \approx 7{,}8 \text{ m}$.</p>
+      </div>
+    </details>
+  </div>
+</details>
+
+<!-- ══════════════════════════════════════════════════ -->
+<!-- PŘÍKLAD 4 — Rozloha Chomutova -->
+<!-- ══════════════════════════════════════════════════ -->
+<details class="exercise">
+  <summary>
+    <div class="exercise-header">
+      <span class="exercise-number">Příklad 4</span>
+      <span class="exercise-source">PS 1</span>
+    </div>
+  </summary>
+  <div class="exercise-body">
+    <p>Město Chomutov má na mapě tvar obdélníku o stranách přibližně $3 \times 4$ cm. Jaká je rozloha města, když víme, že použité měřítko bylo $1 : 190\,000$?</p>
+  </div>
+  <div class="solution-wrapper">
+    <details class="step">
+      <summary>Krok 1 – Skutečné rozměry</summary>
+      <div class="step-content">
+        <p>Strana $a$: $3 \text{ cm} \times 190\,000 = 570\,000 \text{ cm} = 5\,700 \text{ m} = 5{,}7 \text{ km}$</p>
+        <p>Strana $b$: $4 \text{ cm} \times 190\,000 = 760\,000 \text{ cm} = 7\,600 \text{ m} = 7{,}6 \text{ km}$</p>
+      </div>
+    </details>
+    <details class="step">
+      <summary>Krok 2 – Výpočet plochy</summary>
+      <div class="step-content">
+        <p>$S = a \times b = 5{,}7 \times 7{,}6 = 43{,}32 \text{ km}^2$</p>
+      </div>
+    </details>
+    <details class="result">
+      <summary>Výsledek</summary>
+      <div class="result-content">
+        <p>Rozloha města Chomutov je přibližně $\mathbf{43{,}32 \text{ km}^2}$.</p>
+      </div>
+    </details>
+  </div>
+</details>
+
+<!-- ══════════════════════════════════════════════════ -->
+<!-- PŘÍKLAD 5 — Dvě části výletu -->
+<!-- ══════════════════════════════════════════════════ -->
+<details class="exercise">
+  <summary>
+    <div class="exercise-header">
+      <span class="exercise-number">Příklad 5</span>
+      <span class="exercise-source">PS 1</span>
+    </div>
+  </summary>
+  <div class="exercise-body">
+    <p>Jak dlouhá bude trasa celého výletu, když z bodu A do bodu B je vzdálenost na mapě $14{,}2$ cm při měřítku $1 : 50\,000$ a z bodu B do bodu C je to $37$ cm při měřítku $1 : 25\,000$?</p>
+  </div>
+  <div class="solution-wrapper">
+    <details class="step">
+      <summary>Krok 1 – Úsek A → B</summary>
+      <div class="step-content">
+        <p>$s_1 = 14{,}2 \times 50\,000 = 710\,000 \text{ cm} = 7\,100 \text{ m} = 7{,}1 \text{ km}$</p>
+      </div>
+    </details>
+    <details class="step">
+      <summary>Krok 2 – Úsek B → C</summary>
+      <div class="step-content">
+        <p>$s_2 = 37 \times 25\,000 = 925\,000 \text{ cm} = 9\,250 \text{ m} = 9{,}25 \text{ km}$</p>
+      </div>
+    </details>
+    <details class="step">
+      <summary>Krok 3 – Celková trasa</summary>
+      <div class="step-content">
+        <p>$s = s_1 + s_2 = 7{,}1 + 9{,}25 = 16{,}35 \text{ km}$</p>
+      </div>
+    </details>
+    <details class="result">
+      <summary>Výsledek</summary>
+      <div class="result-content">
+        <p>Celková trasa výletu je $\mathbf{16{,}35 \text{ km}}$.</p>
+      </div>
+    </details>
+  </div>
+</details>
+
+<!-- ══════════════════════════════════════════════════ -->
+<!-- PŘÍKLAD 6 — Chodec Praha–Prčice -->
+<!-- ══════════════════════════════════════════════════ -->
+<details class="exercise">
+  <summary>
+    <div class="exercise-header">
+      <span class="exercise-number">Příklad 6</span>
+      <span class="exercise-source">PS 1</span>
+    </div>
+  </summary>
+  <div class="exercise-body">
+    <p>Jak dlouho bude trvat, než se chodec dostane z Prahy do Prčic, při průměrné rychlosti $6$ km/h, když víme, že trasa je dlouhá $15{,}8$ cm při měřítku mapy $1 : 380\,000$?</p>
+  </div>
+  <div class="solution-wrapper">
+    <details class="step">
+      <summary>Krok 1 – Skutečná vzdálenost</summary>
+      <div class="step-content">
+        <p>$s = 15{,}8 \times 380\,000 = 6\,004\,000 \text{ cm} = 60\,040 \text{ m} = 60{,}04 \text{ km}$</p>
+      </div>
+    </details>
+    <details class="step">
+      <summary>Krok 2 – Výpočet času</summary>
+      <div class="step-content">
+        <p>$t = \dfrac{s}{v} = \dfrac{60{,}04}{6} \approx 10{,}007 \text{ h}$</p>
+      </div>
+    </details>
+    <details class="step">
+      <summary>Krok 3 – Převod na hodiny a minuty</summary>
+      <div class="step-content">
+        <p>$10{,}007 \text{ h} = 10 \text{ h } 0 \text{ min}$ (zaokrouhleno)</p>
+        <p>Přesněji: $0{,}007 \times 60 \approx 0{,}4$ min, tedy prakticky přesně 10 hodin.</p>
+      </div>
+    </details>
+    <details class="result">
+      <summary>Výsledek</summary>
+      <div class="result-content">
+        <p>Cesta bude trvat přibližně $\mathbf{10 \text{ hodin}}$.</p>
+      </div>
+    </details>
+  </div>
+</details>
+
+<!-- ══════════════════════════════════════════════════ -->
+<!-- PŘÍKLAD 7 — Katastrální mapa, čtvercový pozemek -->
+<!-- ══════════════════════════════════════════════════ -->
+<details class="exercise">
+  <summary>
+    <div class="exercise-header">
+      <span class="exercise-number">Příklad 7</span>
+      <span class="exercise-source">PS 1</span>
+    </div>
+  </summary>
+  <div class="exercise-body">
+    <p>Zdeněk vyhledával na katastrální mapě, v měřítku $1 : 2\,000$, pozemek vhodný ke koupi. Představoval si pozemek čtvercového půdorysu o výměře přibližně $1\,200 \text{ m}^2$. Jakou by měl mít hledaný čtverec stranu na mapě, aby nebyl daný pozemek o více jak $200 \text{ m}^2$ větší nebo menší?</p>
+  </div>
+  <div class="solution-wrapper">
+    <details class="step">
+      <summary>Krok 1 – Rozmezí skutečné plochy</summary>
+      <div class="step-content">
+        <p>Minimum: $1\,200 - 200 = 1\,000 \text{ m}^2$</p>
+        <p>Maximum: $1\,200 + 200 = 1\,400 \text{ m}^2$</p>
+      </div>
+    </details>
+    <details class="step">
+      <summary>Krok 2 – Skutečné strany čtverce</summary>
+      <div class="step-content">
+        <p>Pro $S = 1\,000 \text{ m}^2$: $a = \sqrt{1\,000} \approx 31{,}62 \text{ m}$</p>
+        <p>Pro $S = 1\,400 \text{ m}^2$: $a = \sqrt{1\,400} \approx 37{,}42 \text{ m}$</p>
+      </div>
+    </details>
+    <details class="step">
+      <summary>Krok 3 – Převod na cm</summary>
+      <div class="step-content">
+        <p>$31{,}62 \text{ m} = 3\,162 \text{ cm}$</p>
+        <p>$37{,}42 \text{ m} = 3\,742 \text{ cm}$</p>
+      </div>
+    </details>
+    <details class="step">
+      <summary>Krok 4 – Strana na mapě</summary>
+      <div class="step-content">
+        <p>Minimum: $\dfrac{3\,162}{2\,000} \approx 1{,}58 \text{ cm}$</p>
+        <p>Maximum: $\dfrac{3\,742}{2\,000} \approx 1{,}87 \text{ cm}$</p>
+      </div>
+    </details>
+    <details class="result">
+      <summary>Výsledek</summary>
+      <div class="result-content">
+        <p>Strana čtverce na mapě by měla být v rozmezí $\mathbf{1{,}58 \text{ cm}}$ až $\mathbf{1{,}87 \text{ cm}}$.</p>
+      </div>
+    </details>
+  </div>
+</details>
+
+<div class="nav-links">
+  <a href="01_teorie_meritko.html">📖 Teorie</a>
+  <a href="02_priklady_vyklad.html" class="active">✏️ Příklady — Výklad</a>
+  <a href="03_cviceni_1.html">🏋️ Cvičení</a>
+  <a href="04_generator_pdf.html">🖨️ Generátor PDF</a>
+</div>
+
+</body>
+</html>
