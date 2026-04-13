@@ -10,6 +10,24 @@
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
     onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});">
   </script>
+  <style>
+    .exercise-card {
+      background: #fff;
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      padding: 1.2rem 1.4rem 1rem;
+      margin: 1.2rem 0;
+      box-shadow: 0 1px 4px rgba(0,0,0,.06);
+    }
+    .exercise-card-header {
+      display: flex;
+      align-items: baseline;
+      gap: .6rem;
+      margin-bottom: .7rem;
+      border-bottom: 2px solid #e5e7eb;
+      padding-bottom: .5rem;
+    }
+  </style>
 </head>
 <body>
 
@@ -24,13 +42,11 @@
 
 
 <!-- ===================== PŘÍKLAD 1 ===================== -->
-<details class="exercise">
-  <summary>
-    <div class="exercise-header">
-      <span class="exercise-number">Příklad 1</span>
-      <span class="exercise-source">vzorce z popisu</span>
-    </div>
-  </summary>
+<div class="exercise-card">
+  <div class="exercise-card-header">
+    <span class="exercise-number">Příklad 1</span>
+    <span class="exercise-source">vzorce z popisu</span>
+  </div>
   <div class="exercise-body">
     <p>Zapište vzorcem $y = f(x)$ funkci vyjadřující, že</p>
     <p>a) obdélník o délce $x$ cm a šířce $4$ cm má obsah $y$ cm²,</p>
@@ -57,17 +73,15 @@
       </div>
     </details>
   </div>
-</details>
+</div>
 
 
 <!-- ===================== PŘÍKLAD 2 ===================== -->
-<details class="exercise">
-  <summary>
-    <div class="exercise-header">
-      <span class="exercise-number">Příklad 2</span>
-      <span class="exercise-source">hodnoty funkce</span>
-    </div>
-  </summary>
+<div class="exercise-card">
+  <div class="exercise-card-header">
+    <span class="exercise-number">Příklad 2</span>
+    <span class="exercise-source">hodnoty funkce</span>
+  </div>
   <div class="exercise-body">
     <p>Je dána funkce $f: y = 3x + 5$. Vypočtěte její hodnotu v čísle:</p>
     <p>a) $x = 10$ &emsp; b) $x = -4$ &emsp; c) $x = 0$ &emsp; d) $x = -\dfrac{5}{3}$</p>
@@ -111,17 +125,15 @@
       </div>
     </details>
   </div>
-</details>
+</div>
 
 
 <!-- ===================== PŘÍKLAD 3 ===================== -->
-<details class="exercise">
-  <summary>
-    <div class="exercise-header">
-      <span class="exercise-number">Příklad 3</span>
-      <span class="exercise-source">tabulka hodnot</span>
-    </div>
-  </summary>
+<div class="exercise-card">
+  <div class="exercise-card-header">
+    <span class="exercise-number">Příklad 3</span>
+    <span class="exercise-source">tabulka hodnot</span>
+  </div>
   <div class="exercise-body">
     <p>Je dána funkce $f: y = \dfrac{2x + 1}{x - 3}$.</p>
     <p>Určete její hodnoty v číslech $x \in \{-1,\; 0,\; 1,\; 4,\; 7,\; 13\}$ a zapište je do tabulky.</p>
@@ -137,17 +149,15 @@
       </div>
     </details>
   </div>
-</details>
+</div>
 
 
 <!-- ===================== PŘÍKLAD 4 ===================== -->
-<details class="exercise">
-  <summary>
-    <div class="exercise-header">
-      <span class="exercise-number">Příklad 4</span>
-      <span class="exercise-source">hledání $x$</span>
-    </div>
-  </summary>
+<div class="exercise-card">
+  <div class="exercise-card-header">
+    <span class="exercise-number">Příklad 4</span>
+    <span class="exercise-source">hledání $x$</span>
+  </div>
   <div class="exercise-body">
     <p>Je dána funkce $h: y = 4x + 3$. Zjistěte, pro která $x$ platí:</p>
     <p>a) $h(x) = 19$ &emsp; b) $h(x) = -5$ &emsp; c) $h(x) = 0$ &emsp; d) $h(x) = 11$</p>
@@ -178,17 +188,15 @@
       </div>
     </details>
   </div>
-</details>
+</div>
 
 
 <!-- ===================== PŘÍKLAD 5 ===================== -->
-<details class="exercise">
-  <summary>
-    <div class="exercise-header">
-      <span class="exercise-number">Příklad 5</span>
-      <span class="exercise-source">definiční obor z tabulky</span>
-    </div>
-  </summary>
+<div class="exercise-card">
+  <div class="exercise-card-header">
+    <span class="exercise-number">Příklad 5</span>
+    <span class="exercise-source">definiční obor z tabulky</span>
+  </div>
   <div class="exercise-body">
     <p>Zapište definiční obor a obor hodnot funkce, která je dána tabulkou:</p>
     <p><strong>a)</strong></p>
@@ -216,17 +224,15 @@
       </div>
     </details>
   </div>
-</details>
+</div>
 
 
 <!-- ===================== PŘÍKLAD 6 ===================== -->
-<details class="exercise">
-  <summary>
-    <div class="exercise-header">
-      <span class="exercise-number">Příklad 6</span>
-      <span class="exercise-source">vzorec z kontextu</span>
-    </div>
-  </summary>
+<div class="exercise-card">
+  <div class="exercise-card-header">
+    <span class="exercise-number">Příklad 6</span>
+    <span class="exercise-source">vzorec z kontextu</span>
+  </div>
   <div class="exercise-body">
     <p>Určete vzorec a definiční obor funkce, která vyjadřuje závislost:</p>
     <p>a) obsahu $y$ (v cm²) kruhu na jeho poloměru $x$ (v cm),</p>
@@ -246,17 +252,15 @@
       </div>
     </details>
   </div>
-</details>
+</div>
 
 
 <!-- ===================== PŘÍKLAD 7 ===================== -->
-<details class="exercise">
-  <summary>
-    <div class="exercise-header">
-      <span class="exercise-number">Příklad 7</span>
-      <span class="exercise-source">definiční obor – lomené výrazy</span>
-    </div>
-  </summary>
+<div class="exercise-card">
+  <div class="exercise-card-header">
+    <span class="exercise-number">Příklad 7</span>
+    <span class="exercise-source">definiční obor – lomené výrazy</span>
+  </div>
   <div class="exercise-body">
     <p>Určete definiční obor funkce dané vzorcem:</p>
     <p>a) $y = 2x + 9$ &emsp; b) $y = \dfrac{3}{x - 4}$ &emsp; c) $y = \dfrac{x + 1}{2x + 6}$</p>
@@ -300,17 +304,15 @@
       </div>
     </details>
   </div>
-</details>
+</div>
 
 
 <!-- ===================== PŘÍKLAD 8 ===================== -->
-<details class="exercise">
-  <summary>
-    <div class="exercise-header">
-      <span class="exercise-number">Příklad 8</span>
-      <span class="exercise-source">definiční obor – odmocniny</span>
-    </div>
-  </summary>
+<div class="exercise-card">
+  <div class="exercise-card-header">
+    <span class="exercise-number">Příklad 8</span>
+    <span class="exercise-source">definiční obor – odmocniny</span>
+  </div>
   <div class="exercise-body">
     <p>Určete definiční obor funkce:</p>
     <p>a) $f: y = \sqrt{x - 3}$ &emsp; b) $f: y = \sqrt{2x + 8}$ &emsp; c) $f: y = \sqrt{x} - 5$</p>
@@ -354,17 +356,15 @@
       </div>
     </details>
   </div>
-</details>
+</div>
 
 
 <!-- ===================== PŘÍKLAD 9 ===================== -->
-<details class="exercise">
-  <summary>
-    <div class="exercise-header">
-      <span class="exercise-number">Příklad 9</span>
-      <span class="exercise-source">co nepatří do $D$</span>
-    </div>
-  </summary>
+<div class="exercise-card">
+  <div class="exercise-card-header">
+    <span class="exercise-number">Příklad 9</span>
+    <span class="exercise-source">co nepatří do $D$</span>
+  </div>
   <div class="exercise-body">
     <p>Určete, která čísla $x$ nepatří do definičního oboru funkce:</p>
     <p>a) $g: y = \dfrac{4}{x - 7}$ &emsp;
@@ -412,17 +412,15 @@
       </div>
     </details>
   </div>
-</details>
+</div>
 
 
 <!-- ===================== PŘÍKLAD 10 ===================== -->
-<details class="exercise">
-  <summary>
-    <div class="exercise-header">
-      <span class="exercise-number">Příklad 10</span>
-      <span class="exercise-source">graf funkce?</span>
-    </div>
-  </summary>
+<div class="exercise-card">
+  <div class="exercise-card-header">
+    <span class="exercise-number">Příklad 10</span>
+    <span class="exercise-source">graf funkce?</span>
+  </div>
   <div class="exercise-body">
     <p>Rozhodněte, zda na obrázku je graf některé funkce.</p>
     <p class="hint" style="margin-bottom:0.8rem;padding:0.6rem;background:#eff6ff;border-radius:6px;font-size:0.92em;">💡 <strong>Tip:</strong> Použijte test svislou přímkou – každá svislá přímka protne graf funkce v <strong>nejvýše jednom</strong> bodě.</p>
@@ -500,7 +498,7 @@
       </div>
     </details>
   </div>
-</details>
+</div>
 
 
 </body>
