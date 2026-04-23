@@ -298,14 +298,50 @@ th {
 }
 .exercise-figures-row .exercise-figure { flex: 1; min-width: 180px; }
 
+/* ===== Tlačítko Tisknout/PDF ===== */
+.print-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: .45rem;
+  margin: .6rem 0 1.2rem;
+  padding: .5rem 1.1rem;
+  background: #16a34a;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: .95rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  box-shadow: 0 1px 4px rgba(0,0,0,.15);
+  transition: background .15s;
+}
+.print-btn:hover { background: #15803d; }
+
 @media print {
-  details.exercise, details.sub-exercise { border: 1px solid #ccc; }
-  details.exercise > summary::before,
-  details.sub-exercise > summary::before { content: '•'; }
-  details.step, details.result { border: 1px solid #ccc; }
-  details.step .step-content,
-  details.result .result-content { display: block !important; }
-  details.step summary::before { content: '•'; }
-  details.result summary::before { content: '✓'; }
-  body { max-width: 100%; padding: 1rem; }
+  /* Skryj navigaci, tlačítka a interaktivní prvky */
+  .nav-links, .print-bar, .print-btn,
+  .topic-check { display: none !important; }
+
+  body { max-width: 100%; padding: .5cm 1cm; background: #fff; font-size: 11pt; }
+  h1 { font-size: 16pt; border-bottom: 2pt solid #2563eb; }
+
+  /* Rozbali všechny details přes JS před tiskem; fallback přes CSS */
+  details { display: block !important; }
+  details > summary { list-style: none; font-weight: 700; margin-bottom: .2rem; }
+  details > summary::marker,
+  details > summary::-webkit-details-marker { display: none; }
+
+  .exercise-card {
+    border: 1pt solid #ccc;
+    border-radius: 0;
+    box-shadow: none;
+    page-break-inside: avoid;
+    margin: .6rem 0;
+  }
+
+  /* Výsledky – odlišné pozadí */
+  .result-content  { background: #f0fdf4 !important; padding: .3rem .5rem; border-left: 3pt solid #16a34a; }
+  .hint-content    { background: #eff6ff !important; padding: .3rem .5rem; border-left: 3pt solid #2563eb; }
+  .step-content    { display: block !important; }
 }
