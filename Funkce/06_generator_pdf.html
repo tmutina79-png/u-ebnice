@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Funkce – Generátor PDF</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});">
+  </script>
+
+  <style>
+    /* ── generátor panel ── */
+    .generator-panel {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: #fff;
+      border-bottom: 2px solid var(--primary, #2563eb);
+      padding: .8rem 1.2rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: .6rem 1.2rem;
+      align-items: center;
+    }
+    .generator-panel h2 { margin: 0; font-size: 1.05rem; color: var(--primary, #2563eb); }
+    .generator-options { display: flex; flex-wrap: wrap; gap: .4rem .9rem; align-items: center; font-size: .9rem; }
+    .generator-options label { display: flex; align-items: center; gap: .3rem; cursor: pointer; }
+    .generator-actions { display: flex; gap: .5rem; align-items: center; margin-left: auto; flex-wrap: wrap; }
+    .btn-pdf {
+      background: var(--primary, #2563eb); color: #fff;
+      border: none; border-radius: 6px; padding: .45rem 1.1rem;
+      font-size: .92rem; font-weight: 700; cursor: pointer;
+    }
+    .btn-pdf:hover { background: #1d4ed8; }
+    .btn-select-all, .btn-deselect {
+      background: #f3f4f6; color: #374151;
+      border: 1px solid #d1d5db; border-radius: 6px;
+      padding: .35rem .75rem; font-size: .85rem; cursor: pointer;
+    }
+    .btn-select-all:hover, .btn-deselect:hover { background: #e5e7eb; }
+    .counter { font-size: .88rem; color: #6b7280; white-space: nowrap; }
+
+    /* ── sekce ── */
+    .section-heading {
+      margin: 1.8rem 0 .4rem;
+      display: flex;
+      align-items: center;
+      gap: .7rem;
+    }
+    .section-heading h3 { margin: 0; font-size: 1rem; color: #374151; }
+    .section-select-all {
+      font-size: .8rem; color: var(--primary, #2563eb);
+      border: none; background: none; cursor: pointer; padding: 0; text-decoration: underline;
+    }
+
+    /* ── karty příkladů ── */
+    .exercise-card {
+      background: #fff;
+      border: 2px solid #e5e7eb;
+      border-radius: 10px;
+      padding: 1rem 1.2rem;
+      margin: .7rem 0;
+      cursor: pointer;
+      transition: border-color .15s, background .15s;
+    }
+    .exercise-card:hover { border-color: #93c5fd; }
+    .exercise-card.selected {
+      border-color: var(--primary, #2563eb);
+      background: #eff6ff;
+    }
+    .exercise-card-header {
+      display: flex;
+      align-items: center;
+      gap: .7rem;
+    }
+    .exercise-card-header input[type=checkbox] {
+      width: 1.1rem; height: 1.1rem; cursor: pointer; accent-color: var(--primary, #2563eb);
+    }
+    .exercise-card-header .exercise-number { font-weight: 700; font-size: .95rem; }
+    .exercise-card-header .exercise-source {
+      font-size: .78rem; color: #6b7280;
+      background: #f3f4f6; border-radius: 4px; padding: .1rem .45rem;
+    }
+    .exercise-card-body { margin-top: .7rem; font-size: .9rem; }
+    .exercise-card-body table { border-collapse: collapse; font-size: .85rem; margin: .4rem 0; }
+    .exercise-card-body th, .exercise-card-body td {
+      border: 1px solid #d1d5db; padding: .2rem .6rem; text-align: center;
+    }
+    .exercise-card-body th { background: #f9fafb; }
+
+    /* ── skryté solution-data ── */
+    .solution-data { display: none; }
+
+    /* ── tisk ── */
+    #print-area { display: none; }
+
+    @media print {
+      body > *:not(#print-area) { display: none !important; }
+      #print-area { display: block !important; }
+
+      .print-header { text-align: center; margin-bottom: 1.5rem; font-size: .9rem; }
+      .print-header h1 { margin: 0 0 .2rem; font-size: 1.2rem; }
+      .print-name-date {
+        display: flex; justify-content: space-between; margin-bottom: 1.5rem; font-size: .9rem;
+      }
+      .print-name-date span { border-bottom: 1px solid #000; display: inline-block; min-width: 150px; padding-bottom: 2px; }
+
+      .print-exercise { page-break-inside: avoid; margin-bottom: 1.4rem; }
+      .print-exercise-header {
+        display: flex; gap: .5rem; align-items: baseline;
+        border-bottom: 1.5px solid #000; padding-bottom: .25rem; margin-bottom: .5rem;
+      }
+      .print-exercise-number { font-weight: 700; font-size: .95rem; }
+      .print-exercise-source { font-size: .78rem; color: #555; }
+      .print-exercise-body { font-size: .88rem; }
+      .print-exercise-body table { border-collapse: collapse; font-size: .82rem; margin: .3rem 0; }
+      .print-exercise-body th, .print-exercise-body td {
+        border: 1px solid #555; padding: .15rem .5rem; text-align: center;
+      }
+      .print-exercise-body th { background: #eee; }
+
+      .print-solution { margin-top: .5rem; padding: .4rem .7rem; background: #f5f5f5; border-left: 3px solid #555; font-size: .84rem; }
+      .print-solution-title { font-weight: 700; font-size: .8rem; margin-bottom: .25rem; color: #333; }
+      .print-blank { height: 3.5rem; border-bottom: 1px dashed #bbb; margin-top: .5rem; }
+    }
+  </style>
+</head>
+<body>
+
+<h1>📐 Funkce – Generátor PDF</h1>
+
+<div class="nav-links" style="text-align:center;margin:1.5rem 0;padding:0.8rem;background:#f9fafb;border-radius:8px;">
+  <a href="01_teorie_funkce.html"    style="display:inline-block;margin:0 0.5rem;padding:0.4rem 0.8rem;background:#2563eb;color:#fff;text-decoration:none;border-radius:4px;font-weight:600;">📖 Teorie</a>
+  <a href="02_priklady_vyklad.html"  style="display:inline-block;margin:0 0.5rem;padding:0.4rem 0.8rem;background:#2563eb;color:#fff;text-decoration:none;border-radius:4px;font-weight:600;">🧮 Příklady z výkladu</a>
+  <a href="03_cviceni_1.html"        style="display:inline-block;margin:0 0.5rem;padding:0.4rem 0.8rem;background:#2563eb;color:#fff;text-decoration:none;border-radius:4px;font-weight:600;">📝 Cvičení 1</a>
+  <a href="04_cviceni_2.html"        style="display:inline-block;margin:0 0.5rem;padding:0.4rem 0.8rem;background:#2563eb;color:#fff;text-decoration:none;border-radius:4px;font-weight:600;">📝 Cvičení 2</a>
+  <a href="05_cviceni_3.html"        style="display:inline-block;margin:0 0.5rem;padding:0.4rem 0.8rem;background:#2563eb;color:#fff;text-decoration:none;border-radius:4px;font-weight:600;">📝 Cvičení 3</a>
+  <a href="06_generator_pdf.html"    style="display:inline-block;margin:0 0.5rem;padding:0.4rem 0.8rem;background:#374151;color:#fff;text-decoration:none;border-radius:4px;font-weight:600;">🖨️ Generátor PDF</a>
+</div>
+
+<!-- ══════════════════════════════════
+     GENERÁTOR – OVLÁDACÍ PANEL
+══════════════════════════════════ -->
+<div class="generator-panel">
+  <h2>🖨️ Generátor PDF</h2>
+  <div class="generator-options">
+    <label><input type="checkbox" id="opt-steps"> Postup (kroky)</label>
+    <label><input type="checkbox" id="opt-results" checked> Výsledky</label>
+    <label><input type="checkbox" id="opt-blank"> Místo na výpočet</label>
+    <label><input type="checkbox" id="opt-namedate"> Jméno a datum</label>
+  </div>
+  <div class="generator-actions">
+    <span class="counter" id="counter">0 příkladů vybráno</span>
+    <button class="btn-select-all" onclick="selectAll(true)">Vybrat vše</button>
+    <button class="btn-deselect"   onclick="selectAll(false)">Zrušit výběr</button>
+    <button class="btn-pdf"        onclick="generatePDF()">📄 Generovat PDF</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     SEKCE PS1 – PŘÍKLADY Z VÝKLADU
+══════════════════════════════════ -->
+<div class="section-heading">
+  <h3>📚 Příklady z výkladu (02)</h3>
+  <button class="section-select-all" onclick="toggleSection('ps1',true)">Vybrat vše</button>
+  <button class="section-select-all" onclick="toggleSection('ps1',false)">Zrušit</button>
+</div>
+
+<!-- ── PS1-1 ── -->
+<div class="exercise-card" data-section="ps1" data-id="ps1-1" onclick="toggleCard(this)">
+  <div class="exercise-card-header">
+    <input type="checkbox" onclick="event.stopPropagation();toggleCard(this.closest('.exercise-card'))">
+    <span class="exercise-number">Příklad 1</span>
+    <span class="exercise-source">str. 12 · hodnoty funkce</span>
+  </div>
+  <div class="exercise-card-body">
+    <p>Vypočtěte $f(3)$, je-li:</p>
+    <p>a) $f: y = x + 2$ &emsp; b) $f: y = 2 - 3x$ &emsp; c) $f: y = x^2$</p>
+    <p>d) $f: y = 3x^2 - 1$ &emsp; e) $f: y = \dfrac{1}{x}$ &emsp; f) $f: y = \sqrt{x + 1}$</p>
+  </div>
+  <div class="solution-data">
+    <div class="sd-result">a) $f(3) = 5$ &ensp; b) $f(3) = -7$ &ensp; c) $f(3) = 9$ &ensp; d) $f(3) = 26$ &ensp; e) $f(3) = \frac{1}{3}$ &ensp; f) $f(3) = 2$</div>
+  </div>
+</div>
+
+<!-- ── PS1-2 ── -->
+<div class="exercise-card" data-section="ps1" data-id="ps1-2" onclick="toggleCard(this)">
+  <div class="exercise-card-header">
+    <input type="checkbox" onclick="event.stopPropagation();toggleCard(this.closest('.exercise-card'))">
+    <span class="exercise-number">Příklad 2</span>
+    <span class="exercise-source">str. 12 · hodnoty funkce</span>
+  </div>
+  <div class="exercise-card-body">
+    <p>Je dána funkce $g: y = x^2 + 5$. Vypočtěte:</p>
+    <p>a) $g(0)$ &emsp; b) $g(1)$ &emsp; c) $g(5)$ &emsp; d) $g(-1)$ &emsp; e) $g(-5)$</p>
+    <p>f) $g\!\left(\dfrac{1}{2}\right)$ &emsp; g) $g\!\left(-\dfrac{1}{2}\right)$ &emsp; h) $g(-\sqrt{2})$</p>
+  </div>
+  <div class="solution-data">
+    <div class="sd-result">a) $5$ &ensp; b) $6$ &ensp; c) $30$ &ensp; d) $6$ &ensp; e) $30$ &ensp; f) $\frac{21}{4}$ &ensp; g) $\frac{21}{4}$ &ensp; h) $7$</div>
+  </div>
+</div>
+
+<!-- ── PS1-3 ── -->
+<div class="exercise-card" data-section="ps1" data-id="ps1-3" onclick="toggleCard(this)">
+  <div class="exercise-card-header">
+    <input type="checkbox" onclick="event.stopPropagation();toggleCard(this.closest('.exercise-card'))">
+    <span class="exercise-number">Příklad 3</span>
+    <span class="exercise-source">str. 12 · hledání x</span>
+  </div>
+  <div class="exercise-card-body">
+    <p>Je dána funkce $f: y = 3x + 5$. Určete, pro které $x$ platí:</p>
+    <p>a) $f(x) = 8$ &emsp; b) $f(x) = 0$ &emsp; c) $f(x) = -2$ &emsp; d) $f(x) = \dfrac{1}{2}$</p>
+  </div>
+  <div class="solution-data">
+    <div class="sd-step">Dosadíme $f(x) = $ hodnota za $y$ a řešíme rovnici $3x + 5 = $ hodnota.</div>
+    <div class="sd-result">a) $x = 1$ &ensp; b) $x = -\dfrac{5}{3}$ &ensp; c) $x = -\dfrac{7}{3}$ &ensp; d) $x = -\dfrac{3}{2}$</div>
+  </div>
+</div>
+
+<!-- ── PS1-4 ── -->
+<div class="exercise-card" data-section="ps1" data-id="ps1-4" onclick="toggleCard(this)">
+  <div class="exercise-card-header">
+    <input type="checkbox" onclick="event.stopPropagation();toggleCard(this.closest('.exercise-card'))">
+    <span class="exercise-number">Příklad 4</span>
+    <span class="exercise-source">str. 12 · tabulka hodnot</span>
+  </div>
+  <div class="exercise-card-body">
+    <p>Doplňte tabulku pro funkci $f: y = 4 - 3x$.</p>
+    <table>
+      <tr><th>$x$</th><td>$-1$</td><td></td><td>$0$</td><td></td><td>$1$</td></tr>
+      <tr><th>$f(x)$</th><td></td><td>$-1$</td><td></td><td>$0$</td><td></td></tr>
+    </table>
+  </div>
+  <div class="solution-data">
+    <div class="sd-result">
+      <table>
+        <tr><th>$x$</th><td>$-1$</td><td>$\frac{5}{3}$</td><td>$0$</td><td>$\frac{4}{3}$</td><td>$1$</td></tr>
+        <tr><th>$f(x)$</th><td>$7$</td><td>$-1$</td><td>$4$</td><td>$0$</td><td>$1$</td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ── PS1-5 ── -->
+<div class="exercise-card" data-section="ps1" data-id="ps1-5" onclick="toggleCard(this)">
+  <div class="exercise-card-header">
+    <input type="checkbox" onclick="event.stopPropagation();toggleCard(this.closest('.exercise-card'))">
+    <span class="exercise-number">Příklad 5</span>
+    <span class="exercise-source">str. 12 · vzorec funkce</span>
+  </div>
+  <div class="exercise-card-body">
+    <p>Zapište vzorcem $y = f(x)$ funkci $f$ vyjadřující, že čtverec o straně $x$ metrů má obvod $y$ centimetrů.</p>
+  </div>
+  <div class="solution-data">
+    <div class="sd-step">Strana čtverce: $x$ m $= 100x$ cm. Obvod čtverce v cm: $4 \cdot 100x = 400x$.</div>
+    <div class="sd-result">$f: y = 400x$</div>
+  </div>
+</div>
+
+<!-- ── PS1-6 ── -->
+<div class="exercise-card" data-section="ps1" data-id="ps1-6" onclick="toggleCard(this)">
+  <div class="exercise-card-header">
+    <input type="checkbox" onclick="event.stopPropagation();toggleCard(this.closest('.exercise-card'))">
+    <span class="exercise-number">Příklad 6</span>
+    <span class="exercise-source">str. 17 · definiční obor</span>
+  </div>
+  <div class="exercise-card-body">
+    <p>Určete definiční obor funkce:</p>
+    <p>a) $f: y = \dfrac{2}{x + 3}$ &emsp; b) $f: y = \dfrac{1}{2-x}$ &emsp; c) $f: y = \dfrac{1}{2x + 1}$ &emsp; d) $f: y = \dfrac{x^2 - 1}{x^2 - 4x + 4}$</p>
+    <p>e) $f: y = \dfrac{1}{5x^2 + 6x}$ &emsp; f) $f: y = \dfrac{3x - 4}{x^2 - 5x + 6}$ &emsp; g) $f: y = \sqrt{x - 7}$ &emsp; h) $f: y = \sqrt{8 - 3x}$</p>
+  </div>
+  <div class="solution-data">
+    <div class="sd-result">
+      a) $x \neq -3$ &ensp;
+      b) $x \neq 2$ &ensp;
+      c) $x \neq -\frac{1}{2}$ &ensp;
+      d) $x \neq 2$ &ensp;
+      e) $x \neq 0,\; x \neq -\frac{6}{5}$ &ensp;
+      f) $x \neq 2,\; x \neq 3$ &ensp;
+      g) $D = \langle 7, +\infty)$ &ensp;
+      h) $D = \left(-\infty, \frac{8}{3}\right\rangle$
+    </div>
+  </div>
+</div>
+
+<!-- ── PS1-7 ── -->
+<div class="exercise-card" data-section="ps1" data-id="ps1-7" onclick="toggleCard(this)">
+  <div class="exercise-card-header">
+    <input type="checkbox" onclick="event.stopPropagation();toggleCard(this.closest('.exercise-card'))">
+    <span class="exercise-number">Příklad 8</span>
+    <span class="exercise-source">str. 21 · zadává tabulka funkci?</span>
+  </div>
+  <div class="exercise-card-body">
+    <p>Rozhodněte, zda daná tabulka zadává funkci:</p>
+    <p><strong>a)</strong></p>
+    <table>
+      <tr><th>$x$</th><td>$2$</td><td>$-2$</td><td>$\sqrt{4}$</td><td>$0$</td></tr>
+      <tr><th>$y$</th><td>$-1$</td><td>$3$</td><td>$-2$</td><td>$8$</td></tr>
+    </table>
+    <p><strong>b)</strong></p>
+    <table>
+      <tr><th>$x$</th><td>$4$</td><td>$5$</td><td>$6$</td><td>$7$</td></tr>
+      <tr><th>$y$</th><td>$5$</td><td>$8$</td><td>$8$</td><td>$8$</td></tr>
+    </table>
+  </div>
+  <div class="solution-data">
+    <div class="sd-result">a) ❌ NE – $\sqrt{4} = 2$, takže $x = 2$ by mělo dvě různé hodnoty $y$. &ensp; b) ✅ ANO – každé $x$ má právě jednu hodnotu $y$.</div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════
+     SEKCE PS2 – CVIČENÍ 1
+══════════════════════════════════ -->
+<div class="section-heading">
+  <h3>📝 Cvičení 1 (03)</h3>
+  <button class="section-select-all" onclick="toggleSection('ps2',true)">Vybrat vše</button>
+  <button class="section-select-all" onclick="toggleSection('ps2',false)">Zrušit</button>
+</div>
+
+<!-- ── PS2-1 ── -->
+<div class="exercise-card" data-section="ps2" data-id="ps2-1" onclick="toggleCard(this)">
+  <div class="exercise-card-header">
+    <input type="checkbox" onclick="event.stopPropagation();toggleCard(this.closest('.exercise-card'))">
+    <span class="exercise-number">Příklad 1</span>
+    <span class="exercise-source">str. 25 · vzorec funkce</span>
+  </div>
+  <div class="exercise-card-body">
+    <p>Zapište vzorcem $y = f(x)$ funkci vyjadřující, že</p>
+    <p>a) čtverec o straně $x$ mm má obsah $y$ mm²,</p>
+    <p>b) každému reálnému číslu $x$ je přiřazeno číslo $y$ o 7 větší, než je trojnásobek čísla $x$,</p>
+    <p>c) každému reálnému číslu $x$ je přiřazeno číslo $y$, které je pětinásobkem jeho druhé mocniny.</p>
+  </div>
+  <div class="solution-data">
+    <div class="sd-result">a) $f: y = x^2$ &ensp; b) $f: y = 3x + 7$ &ensp; c) $f: y = 5x^2$</div>
+  </div>
+</div>
+
+<!-- ── PS2-2 ── -->
+<div class="exercise-card" data-section="ps2" data-id="ps2-2" onclick="toggleCard(this)">
+  <div class="exercise-card-header">
+    <input type="checkbox" onclick="event.stopPropagation();toggleCard(this.closest('.exercise-card'))">
+    <span class="exercise-number">Příklad 2</span>
+    <span class="exercise-source">str. 25 · hodnoty funkce</span>
+  </div>
+  <div class="exercise-card-body">
+    <p>Je dána funkce $f: y = 7x - 1$. Vypočtěte její hodnotu v čísle:</p>
+    <p>a) $x = 40$ &emsp; b) $x = 13$ &emsp; c) $x = 7$ &emsp; d) $x = -1$</p>
+    <p>e) $x = \dfrac{1}{7}$ &emsp; f) $x = -\dfrac{1}{7}$ &emsp; g) $x = \dfrac{1}{3}$ &emsp; h) $x = -\dfrac{1}{3}$</p>
+  </div>
+  <div class="solution-data">
+    <div class="sd-result">a) $279$ &ensp; b) $90$ &ensp; c) $48$ &ensp; d) $-8$ &ensp; e) $0$ &ensp; f) $-2$ &ensp; g) $\frac{4}{3}$ &ensp; h) $-\frac{10}{3}$</div>
+  </div>
+</div>
+
+<!-- ── PS2-3 ── -->
+<div class="exercise-card" data-section="ps2" data-id="ps2-3" onclick="toggleCard(this)">
+  <div class="exercise-card-header">
+    <input type="checkbox" onclick="event.stopPropagation();toggleCard(this.closest('.exercise-card'))">
+    <span class="exercise-number">Příklad 3</span>
+    <span class="exercise-source">str. 25 · tabulka hodnot</span>
+  </div>
+  <div class="exercise-card-body">
+    <p>Je dána funkce $f: y = \dfrac{5 - x}{x + 2}$.</p>
+    <p>Doplňte tabulku hodnot pro $x \in \{0, 5, 10, -1, -5, -7\}$.</p>
+  </div>
+  <div class="solution-data">
+    <div class="sd-result">
+      <table>
+        <tr><th>$x$</th><td>$0$</td><td>$5$</td><td>$10$</td><td>$-1$</td><td>$-5$</td><td>$-7$</td></tr>
+        <tr><th>$f(x)$</th><td>$\frac{5}{2}$</td><td>$0$</td><td>$-\frac{5}{12}$</td><td>$6$</td><td>$-\frac{10}{3}$</td><td>$-\frac{12}{5}$</td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ── PS2-4 ── -->
+<div class="exercise-card" data-section="ps2" data-id="ps2-4" onclick="toggleCard(this)">
+  <div class="exercise-card-header">
+    <input type="checkbox" onclick="event.stopPropagation();toggleCard(this.closest('.exercise-card'))">
+    <span class="exercise-number">Příklad 4</span>
+    <span class="exercise-source">str. 26 · hledání x</span>
+  </div>
+  <div class="exercise-card-body">
+    <p>Je dána funkce $g: y = 7 - 5x$. Zjistěte, pro která $x$ platí:</p>
+    <p>a) $g(x) = -8$ &emsp; b) $g(x) = 5$ &emsp; c) $g(x) = 12$ &emsp; d) $g(x) = 22$</p>
+  </div>
+  <div class="solution-data">
+    <div class="sd-result">a) $x = 3$ &ensp; b) $x = \frac{2}{5}$ &ensp; c) $x = -1$ &ensp; d) $x = -3$</div>
+  </div>
+</div>
+
+<!-- ── PS2-5 ── -->
+<div class="exercise-card" data-section="ps2" data-id="ps2-5" onclick="toggleCard(this)">
+  <div class="exercise-card-header">
+    <input type="checkbox" onclick="event.stopPropagation();toggleCard(this.closest('.exercise-card'))">
+    <span class="exercise-number">Příklad 5</span>
+    <span class="exercise-source">str. 26 · def. obor z tabulky</span>
+  </div>
+  <div class="exercise-card-body">
+    <p>Zapište definiční obor funkce, která je dána tabulkou:</p>
+    <p><strong>a)</strong></p>
+    <table>
+      <tr><th>$x$</th><td>$0{,}9$</td><td>$0{,}8$</td><td>$0{,}7$</td><td>$0{,}6$</td><td>$0{,}4$</td></tr>
+      <tr><th>$y$</th><td>$7$</td><td>$6$</td><td>$4$</td><td>$4$</td><td>$6$</td></tr>
+    </table>
+    <p><strong>b)</strong></p>
+    <table>
+      <tr><th>$x$</th><td>$-8$</td><td>$-4$</td><td>$-1$</td><td>$3$</td></tr>
+      <tr><th>$y$</th><td>$7$</td><td>$16$</td><td>$-8$</td><td>$-2$</td></tr>
+    </table>
+  </div>
+  <div class="solution-data">
+    <div class="sd-result">a) $D = \{0{,}4;\; 0{,}6;\; 0{,}7;\; 0{,}8;\; 0{,}9\}$ &ensp; b) $D = \{-8;\; -4;\; -1;\; 3\}$</div>
+  </div>
+</div>
+
+<!-- ── PS2-6 ── -->
+<div class="exercise-card" data-section="ps2" data-id="ps2-6" onclick="toggleCard(this)">
+  <div class="exercise-card-header">
+    <input type="checkbox" onclick="event.stopPropagation();toggleCard(this.closest('.exercise-card'))">
+    <span class="exercise-number">Příklad 6</span>
+    <span class="exercise-source">str. 26 · vzorec z kontextu</span>
+  </div>
+  <div class="exercise-card-body">
+    <p>Určete vzorec a definiční obor funkce, která určuje závislost hodnoty $y$ objemu krychle (v cm³) na hodnotě $x$ délky její hrany (v cm).</p>
+  </div>
+  <div class="solution-data">
+    <div class="sd-step">Objem krychle o hraně $x$ cm: $V = x^3$ cm³. Délka hrany musí být kladná: $x > 0$.</div>
+    <div class="sd-result">$f: y = x^3, \quad x \in (0, +\infty)$</div>
+  </div>
+</div>
+
+<!-- ── PS2-7 ── -->
+<div class="exercise-card" data-section="ps2" data-id="ps2-7" onclick="toggleCard(this)">
+  <div class="exercise-card-header">
+    <input type="checkbox" onclick="event.stopPropagation();toggleCard(this.closest('.exercise-card'))">
+    <span class="exercise-number">Příklad 7</span>
+    <span class="exercise-source">str. 26 · def. obor – zlomky</span>
+  </div>
+  <div class="exercise-card-body">
+    <p>Určete definiční obor funkce dané vzorcem:</p>
+    <p>a) $y = 5x - 6$ &emsp; b) $y = \dfrac{5x}{5x - 6}$ &emsp; c) $y = \dfrac{5x - 6}{1}$</p>
+    <p>d) $y = \dfrac{5x}{6x - 5}$ &emsp; e) $y = \dfrac{1}{5x - 6}$ &emsp; f) $y = \dfrac{6}{1 - 5x}$</p>
+  </div>
+  <div class="solution-data">
+    <div class="sd-result">
+      a) $D = \mathbb{R}$ &ensp;
+      b) $D = \mathbb{R} \setminus \left\{\frac{6}{5}\right\}$ &ensp;
+      c) $D = \mathbb{R}$ &ensp;
+      d) $D = \mathbb{R} \setminus \left\{\frac{5}{6}\right\}$ &ensp;
+      e) $D = \mathbb{R} \setminus \left\{\frac{6}{5}\right\}$ &ensp;
+      f) $D = \mathbb{R} \setminus \left\{\frac{1}{5}\right\}$
+    </div>
+  </div>
+</div>
+
+<!-- ── PS2-8 ── -->
+<div class="exercise-card" data-section="ps2" data-id="ps2-8" onclick="toggleCard(this)">
+  <div class="exercise-card-header">
+    <input type="checkbox" onclick="event.stopPropagation();toggleCard(this.closest('.exercise-card'))">
+    <span class="exercise-number">Příklad 8</span>
+    <span class="exercise-source">str. 26 · def. obor – odmocniny</span>
+  </div>
+  <div class="exercise-card-body">
+    <p>Určete definiční obor funkce:</p>
+    <p>a) $f: y = \sqrt{x}$ &emsp; b) $f: y = \sqrt{x + 2}$ &emsp; c) $f: y = \sqrt{x} + 2$</p>
+    <p>d) $f: y = \sqrt{2x - 1}$ &emsp; e) $f: y = \sqrt{2x} - 1$ &emsp; f) $f: y = \sqrt{4 - 5x}$</p>
+  </div>
+  <div class="solution-data">
+    <div class="sd-result">
+      a) $D = \langle 0, +\infty)$ &ensp;
+      b) $D = \langle -2, +\infty)$ &ensp;
+      c) $D = \langle 0, +\infty)$ &ensp;
+      d) $D = \left\langle \frac{1}{2}, +\infty\right)$ &ensp;
+      e) $D = \langle 0, +\infty)$ &ensp;
+      f) $D = \left(-\infty, \frac{4}{5}\right\rangle$
+    </div>
+  </div>
+</div>
+
+<!-- ── PS2-9 ── -->
+<div class="exercise-card" data-section="ps2" data-id="ps2-9" onclick="toggleCard(this)">
+  <div class="exercise-card-header">
+    <input type="checkbox" onclick="event.stopPropagation();toggleCard(this.closest('.exercise-card'))">
+    <span class="exercise-number">Příklad 9</span>
+    <span class="exercise-source">str. 26 · co nepatří do D</span>
+  </div>
+  <div class="exercise-card-body">
+    <p>Určete, která čísla $x$ nepatří do definičního oboru funkce:</p>
+    <p>a) $g: y = \dfrac{x^2}{x + 2}$ &emsp;
+       b) $g: y = \dfrac{1}{x^2 + 9x}$ &emsp;
+       c) $g: y = \dfrac{1}{5x(x - 1)}$</p>
+    <p>d) $g: y = \dfrac{3x}{25 - 4x^2}$ &emsp;
+       e) $g: y = \dfrac{x}{x^2 + 3x - 10}$ &emsp;
+       f) $g: y = \dfrac{5 - 2x}{x^3 - 5x^2 + 6x}$</p>
+  </div>
+  <div class="solution-data">
+    <div class="sd-result">
+      a) $x = -2$ &ensp;
+      b) $x = 0,\; x = -9$ &ensp;
+      c) $x = 0,\; x = 1$ &ensp;
+      d) $x = \pm\frac{5}{2}$ &ensp;
+      e) $x = -5,\; x = 2$ &ensp;
+      f) $x = 0,\; x = 2,\; x = 3$
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════
+     SEKCE PS3 – CVIČENÍ 2
+══════════════════════════════════ -->
+<div class="section-heading">
+  <h3>📝 Cvičení 2 (04)</h3>
+  <button class="section-select-all" onclick="toggleSection('ps3',true)">Vybrat vše</button>
+  <button class="section-select-all" onclick="toggleSection('ps3',false)">Zrušit</button>
+</div>
+
+<!-- ── PS3-1 ── -->
+<div class="exercise-card" data-section="ps3" data-id="ps3-1" onclick="toggleCard(this)">
+  <div class="exercise-card-header">
+    <input type="checkbox" onclick="event.stopPropagation();toggleCard(this.closest('.exercise-card'))">
+    <span class="exercise-number">Příklad 1</span>
+    <span class="exercise-source">vzorec funkce</span>
+  </div>
+  <div class="exercise-card-body">
+    <p>Zapište vzorcem $y = f(x)$ funkci vyjadřující, že</p>
+    <p>a) obdélník o délce $x$ cm a šířce $4$ cm má obsah $y$ cm²,</p>
+    <p>b) každému reálnému číslu $x$ je přiřazeno číslo $y$ o 5 menší, než je dvojnásobek čísla $x$,</p>
+    <p>c) každému reálnému číslu $x$ je přiřazeno číslo $y$, které je trojnásobkem jeho druhé mocniny zmenšeným o 4.</p>
+  </div>
+  <div class="solution-data">
+    <div class="sd-result">a) $f: y = 4x$ &ensp; b) $f: y = 2x - 5$ &ensp; c) $f: y = 3x^2 - 4$</div>
+  </div>
+</div>
+
+<!-- ── PS3-2 ── -->
+<div class="exercise-card" data-section="ps3" data-id="ps3-2" onclick="toggleCard(this)">
+  <div class="exercise-card-header">
+    <input type="checkbox" onclick="event.stopPropagation();toggleCard(this.closest('.exercise-card'))">
+    <span class="exercise-number">Příklad 2</span>
+    <span class="exercise-source">hodnoty funkce</span>
+  </div>
+  <div class="exercise-card-body">
+    <p>Je dána funkce $f: y = 3x + 5$. Vypočtěte její hodnotu v čísle:</p>
+    <p>a) $x = 10$ &emsp; b) $x = -4$ &emsp; c) $x = 0$ &emsp; d) $x = -\dfrac{5}{3}$ &emsp; e) $x = \dfrac{2}{3}$ &emsp; f) $x = -\dfrac{1}{6}$</p>
+  </div>
+  <div class="solution-data">
+    <div class="sd-result">a) $35$ &ensp; b) $-7$ &ensp; c) $5$ &ensp; d) $0$ &ensp; e) $7$ &ensp; f) $\frac{9}{2}$</div>
+  </div>
+</div>
+
+<!-- ── PS3-3 ── -->
+<div class="exercise-card" data-section="ps3" data-id="ps3-3" onclick="toggleCard(this)">
+  <div class="exercise-card-header">
+    <input type="checkbox" onclick="event.stopPropagation();toggleCard(this.closest('.exercise-card'))">
+    <span class="exercise-number">Příklad 3</span>
+    <span class="exercise-source">tabulka hodnot</span>
+  </div>
+  <div class="exercise-card-body">
+    <p>Je dána funkce $f: y = \dfrac{2x + 1}{x - 3}$.</p>
+    <p>Určete její hodnoty v číslech $x \in \{-1,\; 0,\; 1,\; 4,\; 7,\; 13\}$ a zapište do tabulky.</p>
+  </div>
+  <div class="solution-data">
+    <div class="sd-result">
+      <table>
+        <tr><th>$x$</th><td>$-1$</td><td>$0$</td><td>$1$</td><td>$4$</td><td>$7$</td><td>$13$</td></tr>
+        <tr><th>$f(x)$</th><td>$\frac{1}{4}$</td><td>$-\frac{1}{3}$</td><td>$-\frac{3}{2}$</td><td>$9$</td><td>$\frac{15}{4}$</td><td>$\frac{27}{10}$</td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ── PS3-4 ── -->
+<div class="exercise-card" data-section="ps3" data-id="ps3-4" onclick="toggleCard(this)">
+  <div class="exercise-card-header">
+    <input type="checkbox" onclick="event.stopPropagation();toggleCard(this.closest('.exercise-card'))">
+    <span class="exercise-number">Příklad 4</span>
+    <span class="exercise-source">hledání x</span>
+  </div>
+  <div class="exercise-card-body">
+    <p>Je dána funkce $h: y = 4x + 3$. Zjistěte, pro která $x$ platí:</p>
+    <p>a) $h(x) = 19$ &emsp; b) $h(x) = -5$ &emsp; c) $h(x) = 0$ &emsp; d) $h(x) = 11$</p>
+  </div>
+  <div class="solution-data">
+    <div class="sd-result">a) $x = 4$ &ensp; b) $x = -2$ &ensp; c) $x = -\dfrac{3}{4}$ &ensp; d) $x = 2$</div>
+  </div>
+</div>
+
+<!-- ── PS3-5 ── -->
+<div class="exercise-card" data-section="ps3" data-id="ps3-5" onclick="toggleCard(this)">
+  <div class="exercise-card-header">
+    <input type="checkbox" onclick="event.stopPropagation();toggleCard(this.closest('.exercise-card'))">
+    <span class="exercise-number">Příklad 5</span>
+    <span class="exercise-source">def. obor z tabulky</span>
+  </div>
+  <div class="exercise-card-body">
+    <p>Zapište definiční obor a obor hodnot funkce dané tabulkou:</p>
+    <p><strong>a)</strong></p>
+    <table>
+      <tr><th>$x$</th><td>$-3$</td><td>$-1$</td><td>$0$</td><td>$2$</td><td>$5$</td></tr>
+      <tr><th>$y$</th><td>$10$</td><td>$2$</td><td>$1$</td><td>$5$</td><td>$26$</td></tr>
+    </table>
+    <p><strong>b)</strong></p>
+    <table>
+      <tr><th>$x$</th><td>$1{,}5$</td><td>$2{,}5$</td><td>$3{,}5$</td><td>$4{,}5$</td></tr>
+      <tr><th>$y$</th><td>$-4$</td><td>$0$</td><td>$-4$</td><td>$-12$</td></tr>
+    </table>
+  </div>
+  <div class="solution-data">
+    <div class="sd-result">
+      a) $D = \{-3;\; -1;\; 0;\; 2;\; 5\}$, $H = \{1;\; 2;\; 5;\; 10;\; 26\}$ &ensp;
+      b) $D = \{1{,}5;\; 2{,}5;\; 3{,}5;\; 4{,}5\}$, $H = \{-12;\; -4;\; 0\}$
+    </div>
+  </div>
+</div>
+
+<!-- ── PS3-6 ── -->
+<div class="exercise-card" data-section="ps3" data-id="ps3-6" onclick="toggleCard(this)">
+  <div class="exercise-card-header">
+    <input type="checkbox" onclick="event.stopPropagation();toggleCard(this.closest('.exercise-card'))">
+    <span class="exercise-number">Příklad 6</span>
+    <span class="exercise-source">vzorec z kontextu</span>
+  </div>
+  <div class="exercise-card-body">
+    <p>Určete vzorec a definiční obor funkce, která vyjadřuje závislost:</p>
+    <p>a) obsahu $y$ (v cm²) kruhu na jeho poloměru $x$ (v cm),</p>
+    <p>b) obvodu $y$ (v cm) rovnostranného trojúhelníku na délce jeho strany $x$ (v cm).</p>
+  </div>
+  <div class="solution-data">
+    <div class="sd-result">a) $f: y = \pi x^2,\; x \in (0, +\infty)$ &ensp; b) $f: y = 3x,\; x \in (0, +\infty)$</div>
+  </div>
+</div>
+
+<!-- ── PS3-7 ── -->
+<div class="exercise-card" data-section="ps3" data-id="ps3-7" onclick="toggleCard(this)">
+  <div class="exercise-card-header">
+    <input type="checkbox" onclick="event.stopPropagation();toggleCard(this.closest('.exercise-card'))">
+    <span class="exercise-number">Příklad 7</span>
+    <span class="exercise-source">def. obor – zlomky</span>
+  </div>
+  <div class="exercise-card-body">
+    <p>Určete definiční obor funkce dané vzorcem:</p>
+    <p>a) $y = 2x + 9$ &emsp; b) $y = \dfrac{3}{x - 4}$ &emsp; c) $y = \dfrac{x + 1}{2x + 6}$</p>
+    <p>d) $y = \dfrac{7x}{3x + 2}$ &emsp; e) $y = \dfrac{5}{x^2 - 1}$ &emsp; f) $y = \dfrac{x}{4 - x}$</p>
+  </div>
+  <div class="solution-data">
+    <div class="sd-result">
+      a) $D = \mathbb{R}$ &ensp;
+      b) $D = \mathbb{R} \setminus \{4\}$ &ensp;
+      c) $D = \mathbb{R} \setminus \{-3\}$ &ensp;
+      d) $D = \mathbb{R} \setminus \left\{-\frac{2}{3}\right\}$ &ensp;
+      e) $D = \mathbb{R} \setminus \{-1;\; 1\}$ &ensp;
+      f) $D = \mathbb{R} \setminus \{4\}$
+    </div>
+  </div>
+</div>
+
+<!-- ── PS3-8 ── -->
+<div class="exercise-card" data-section="ps3" data-id="ps3-8" onclick="toggleCard(this)">
+  <div class="exercise-card-header">
+    <input type="checkbox" onclick="event.stopPropagation();toggleCard(this.closest('.exercise-card'))">
+    <span class="exercise-number">Příklad 8</span>
+    <span class="exercise-source">def. obor – odmocniny</span>
+  </div>
+  <div class="exercise-card-body">
+    <p>Určete definiční obor funkce:</p>
+    <p>a) $f: y = \sqrt{x - 3}$ &emsp; b) $f: y = \sqrt{2x + 8}$ &emsp; c) $f: y = \sqrt{x} - 5$</p>
+    <p>d) $f: y = \sqrt{6 - 3x}$ &emsp; e) $f: y = \sqrt{5x + 10}$ &emsp; f) $f: y = \sqrt{1 - 4x}$</p>
+  </div>
+  <div class="solution-data">
+    <div class="sd-result">
+      a) $D = \langle 3, +\infty)$ &ensp;
+      b) $D = \langle -4, +\infty)$ &ensp;
+      c) $D = \langle 0, +\infty)$ &ensp;
+      d) $D = (-\infty, 2\rangle$ &ensp;
+      e) $D = \langle -2, +\infty)$ &ensp;
+      f) $D = \left(-\infty, \frac{1}{4}\right\rangle$
+    </div>
+  </div>
+</div>
+
+<!-- ── PS3-9 ── -->
+<div class="exercise-card" data-section="ps3" data-id="ps3-9" onclick="toggleCard(this)">
+  <div class="exercise-card-header">
+    <input type="checkbox" onclick="event.stopPropagation();toggleCard(this.closest('.exercise-card'))">
+    <span class="exercise-number">Příklad 9</span>
+    <span class="exercise-source">co nepatří do D</span>
+  </div>
+  <div class="exercise-card-body">
+    <p>Určete, která čísla $x$ nepatří do definičního oboru funkce:</p>
+    <p>a) $g: y = \dfrac{4}{x - 7}$ &emsp;
+       b) $g: y = \dfrac{1}{x^2 - 4x}$ &emsp;
+       c) $g: y = \dfrac{x}{3x(x + 5)}$</p>
+    <p>d) $g: y = \dfrac{2x}{9 - x^2}$ &emsp;
+       e) $g: y = \dfrac{x + 1}{x^2 - 5x + 6}$ &emsp;
+       f) $g: y = \dfrac{3}{x^3 - 4x}$</p>
+  </div>
+  <div class="solution-data">
+    <div class="sd-result">
+      a) $x = 7$ &ensp;
+      b) $x = 0,\; x = 4$ &ensp;
+      c) $x = 0,\; x = -5$ &ensp;
+      d) $x = \pm 3$ &ensp;
+      e) $x = 2,\; x = 3$ &ensp;
+      f) $x = 0,\; x = \pm 2$
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════
+     SEKCE PS4 – CVIČENÍ 3 – LINEÁRNÍ FUNKCE
+══════════════════════════════════ -->
+<div class="section-heading">
+  <h3>📝 Cvičení 3 – Lineární funkce (05)</h3>
+  <button class="section-select-all" onclick="toggleSection('ps4',true)">Vybrat vše</button>
+  <button class="section-select-all" onclick="toggleSection('ps4',false)">Zrušit</button>
+</div>
+
+<!-- ── PS4-1 ── -->
+<div class="exercise-card" data-section="ps4" data-id="ps4-1" onclick="toggleCard(this)">
+  <div class="exercise-card-header">
+    <input type="checkbox" onclick="event.stopPropagation();toggleCard(this.closest('.exercise-card'))">
+    <span class="exercise-number">Příklad 15</span>
+    <span class="exercise-source">vzorec z grafu – dva body</span>
+  </div>
+  <div class="exercise-card-body">
+    <p>Nalezněte vzorec lineární funkce, jejíž graf prochází body:</p>
+    <p>a) $[0,\,3]$ a $[2,\,4]$ &emsp; b) $[2,\,0]$ a $[0,\,-1]$ &emsp; c) $[-2,\,-1]$ a $[0,\,0]$ &emsp; d) $[0,\,-5]$ a $[4,\,-3]$</p>
+  </div>
+  <div class="solution-data">
+    <div class="sd-step">Bod $[0, q]$ leží na ose $y$, tedy $q$ je posun. Směrnici $k$ dopočítáme: $k = \frac{y_2 - y_1}{x_2 - x_1}$.</div>
+    <div class="sd-result">
+      a) $f\colon y = \frac{1}{2}x + 3$ &ensp;
+      b) $f\colon y = \frac{1}{2}x - 1$ &ensp;
+      c) $f\colon y = \frac{1}{2}x$ &ensp;
+      d) $f\colon y = \frac{1}{2}x - 5$
+    </div>
+  </div>
+</div>
+
+<!-- ── PS4-2 ── -->
+<div class="exercise-card" data-section="ps4" data-id="ps4-2" onclick="toggleCard(this)">
+  <div class="exercise-card-header">
+    <input type="checkbox" onclick="event.stopPropagation();toggleCard(this.closest('.exercise-card'))">
+    <span class="exercise-number">Příklad 16</span>
+    <span class="exercise-source">vzorec z funkčních hodnot</span>
+  </div>
+  <div class="exercise-card-body">
+    <p>Nalezněte vzorec lineární funkce $f$, pro kterou platí:</p>
+    <p>a) $f(3) = -2,\quad f(-1) = 6$</p>
+    <p>b) $f(5) = 5,\quad f(4) = -12$</p>
+  </div>
+  <div class="solution-data">
+    <div class="sd-step">
+      a) $k = \frac{6-(-2)}{-1-3} = -2$, $\; q = -2 - (-2)\cdot 3 = 4$ &ensp;
+      b) $k = \frac{-12-5}{4-5} = 17$, $\; q = 5 - 17\cdot 5 = -80$
+    </div>
+    <div class="sd-result">a) $f\colon y = -2x + 4$ &ensp; b) $f\colon y = 17x - 80$</div>
+  </div>
+</div>
+
+<!-- ── PS4-3 ── -->
+<div class="exercise-card" data-section="ps4" data-id="ps4-3" onclick="toggleCard(this)">
+  <div class="exercise-card-header">
+    <input type="checkbox" onclick="event.stopPropagation();toggleCard(this.closest('.exercise-card'))">
+    <span class="exercise-number">Příklad 17</span>
+    <span class="exercise-source">rostoucí / klesající funkce</span>
+  </div>
+  <div class="exercise-card-body">
+    <p>Rozhodněte, zda je daná funkce rostoucí, nebo klesající:</p>
+    <p>a) $y = -9x + 4$ &emsp; b) $y = 0{,}005x + 6$ &emsp; c) $y = -7x$</p>
+    <p>d) $y = -3$ &emsp; e) $y = \tfrac{3}{5}x - 1$ &emsp; f) $y = -x + \tfrac{3}{7}$</p>
+  </div>
+  <div class="solution-data">
+    <div class="sd-result">
+      a) klesající ($k = -9$) &ensp;
+      b) rostoucí ($k = 0{,}005$) &ensp;
+      c) klesající ($k = -7$) &ensp;
+      d) konstantní ($k = 0$) &ensp;
+      e) rostoucí ($k = \frac{3}{5}$) &ensp;
+      f) klesající ($k = -1$)
+    </div>
+  </div>
+</div>
+
+<!-- ── PS4-4 ── -->
+<div class="exercise-card" data-section="ps4" data-id="ps4-4" onclick="toggleCard(this)">
+  <div class="exercise-card-header">
+    <input type="checkbox" onclick="event.stopPropagation();toggleCard(this.closest('.exercise-card'))">
+    <span class="exercise-number">Příklad 18</span>
+    <span class="exercise-source">rostoucí / klesající z bodů</span>
+  </div>
+  <div class="exercise-card-body">
+    <p>Rozhodněte, zda je rostoucí (nebo zda je klesající) lineární funkce, jejíž graf prochází body:</p>
+    <p>a) $[4,\,-5]$ a $\bigl[-\tfrac{5}{2},\,8\bigr]$ &emsp; b) $[4,\,-1]$ a $[0,\,0]$</p>
+    <p>c) $[0,\,3]$ a $[3,\,0]$ &emsp; d) $\bigl[-\tfrac{3}{2},\,3\bigr]$ a $[-3,\,-9]$</p>
+  </div>
+  <div class="solution-data">
+    <div class="sd-step">Vypočteme směrnici $k = \frac{y_2 - y_1}{x_2 - x_1}$. Je-li $k > 0$ → rostoucí, $k &lt; 0$ → klesající.</div>
+    <div class="sd-result">a) klesající ($k = -2$) &ensp; b) klesající ($k = -\frac{1}{4}$) &ensp; c) klesající ($k = -1$) &ensp; d) rostoucí ($k = 8$)</div>
+  </div>
+</div>
+
+<!-- ── PS4-5 ── -->
+<div class="exercise-card" data-section="ps4" data-id="ps4-5" onclick="toggleCard(this)">
+  <div class="exercise-card-header">
+    <input type="checkbox" onclick="event.stopPropagation();toggleCard(this.closest('.exercise-card'))">
+    <span class="exercise-number">Příklad 19</span>
+    <span class="exercise-source">průsečíky s osami – početně i graficky</span>
+  </div>
+  <div class="exercise-card-body">
+    <p>Určete souřadnice průsečíků grafu lineární funkce $y = -\dfrac{3}{2}x + \dfrac{3}{2}$ s osami soustavy souřadnic. Řešte početně i graficky.</p>
+  </div>
+  <div class="solution-data">
+    <div class="sd-step">
+      Průsečík s osou $x$ ($y = 0$): $0 = -\frac{3}{2}x + \frac{3}{2} \Rightarrow x = 1$. &ensp;
+      Průsečík s osou $y$ ($x = 0$): $y = \frac{3}{2}$.
+    </div>
+    <div class="sd-result">$P_x = [1,\,0]$, $\quad P_y = \bigl[0,\,\tfrac{3}{2}\bigr]$</div>
+  </div>
+</div>
+
+<!-- ── PS4-6 ── -->
+<div class="exercise-card" data-section="ps4" data-id="ps4-6" onclick="toggleCard(this)">
+  <div class="exercise-card-header">
+    <input type="checkbox" onclick="event.stopPropagation();toggleCard(this.closest('.exercise-card'))">
+    <span class="exercise-number">Příklad 20</span>
+    <span class="exercise-source">průsečíky s osami</span>
+  </div>
+  <div class="exercise-card-body">
+    <p>Určete souřadnice průsečíků grafu funkce $f$ s osami soustavy souřadnic, je-li:</p>
+    <p>a) $f\colon y = -\dfrac{4}{5}x + 1$ &emsp; b) $f\colon y = \dfrac{1}{2}x + 2$</p>
+  </div>
+  <div class="solution-data">
+    <div class="sd-result">
+      a) $P_x = \bigl[\tfrac{5}{4},\,0\bigr]$, $P_y = [0,\,1]$ &ensp;
+      b) $P_x = [-4,\,0]$, $P_y = [0,\,2]$
+    </div>
+  </div>
+</div>
+
+<!-- ── PS4-7 ── -->
+<div class="exercise-card" data-section="ps4" data-id="ps4-7" onclick="toggleCard(this)">
+  <div class="exercise-card-header">
+    <input type="checkbox" onclick="event.stopPropagation();toggleCard(this.closest('.exercise-card'))">
+    <span class="exercise-number">Příklad 21</span>
+    <span class="exercise-source">průsečíky – velká čísla</span>
+  </div>
+  <div class="exercise-card-body">
+    <p>Grafem funkce $g$ je přímka procházející body $A[-35,\,21]$ a $B[14,\,-28]$. Určete souřadnice průsečíků grafu funkce $g$ s osami soustavy souřadnic.</p>
+  </div>
+  <div class="solution-data">
+    <div class="sd-step">$k = \frac{-28-21}{14-(-35)} = \frac{-49}{49} = -1$; $\; q = 21 + 1 \cdot (-35) = -14$; $\; g\colon y = -x - 14$.</div>
+    <div class="sd-result">$P_x = [-14,\,0]$, $\quad P_y = [0,\,-14]$</div>
+  </div>
+</div>
+
+<!-- ── PS4-8 ── -->
+<div class="exercise-card" data-section="ps4" data-id="ps4-8" onclick="toggleCard(this)">
+  <div class="exercise-card-header">
+    <input type="checkbox" onclick="event.stopPropagation();toggleCard(this.closest('.exercise-card'))">
+    <span class="exercise-number">Příklad 22</span>
+    <span class="exercise-source">vzájemná poloha přímek</span>
+  </div>
+  <div class="exercise-card-body">
+    <p>Jsou dány lineární funkce $f_1\colon y = k_1 x + q_1$ a $f_2\colon y = k_2 x + q_2$. Určete vzájemnou polohu přímek, je-li:</p>
+    <p>a) $k_1 = k_2,\ q_1 \neq q_2$ &emsp; b) $k_1 = k_2,\ q_1 = q_2$ &emsp; c) $k_1 \neq k_2,\ q_1 = q_2$</p>
+  </div>
+  <div class="solution-data">
+    <div class="sd-result">
+      a) přímky jsou <strong>rovnoběžné</strong> (různé posuny, stejná směrnice) &ensp;
+      b) přímky jsou <strong>totožné</strong> (shodné vzorce) &ensp;
+      c) přímky jsou <strong>různoběžné</strong>, protínají se na ose $y$ v bodě $[0,\,q_1]$
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════
+     SKRYTÁ OBLAST TISKU
+══════════════════════════════════ -->
+<div id="print-area"></div>
+
+
+<!-- ══════════════════════════════════
+     JAVASCRIPT
+══════════════════════════════════ -->
+<script>
+  function toggleCard(card) {
+    const cb = card.querySelector('input[type=checkbox]');
+    card.classList.toggle('selected');
+    cb.checked = card.classList.contains('selected');
+    updateCounter();
+  }
+
+  function updateCounter() {
+    const n = document.querySelectorAll('.exercise-card.selected').length;
+    document.getElementById('counter').textContent = n + ' příklad' + (n === 1 ? '' : n >= 2 && n <= 4 ? 'y' : 'ů') + ' vybráno';
+  }
+
+  function selectAll(state) {
+    document.querySelectorAll('.exercise-card').forEach(card => {
+      card.classList.toggle('selected', state);
+      card.querySelector('input[type=checkbox]').checked = state;
+    });
+    updateCounter();
+  }
+
+  function toggleSection(section, state) {
+    document.querySelectorAll(`.exercise-card[data-section="${section}"]`).forEach(card => {
+      card.classList.toggle('selected', state);
+      card.querySelector('input[type=checkbox]').checked = state;
+    });
+    updateCounter();
+  }
+
+  function generatePDF() {
+    const selected = document.querySelectorAll('.exercise-card.selected');
+    if (!selected.length) { alert('Nejprve vyberte alespoň jeden příklad.'); return; }
+
+    const withSteps   = document.getElementById('opt-steps').checked;
+    const withResults = document.getElementById('opt-results').checked;
+    const withBlank   = document.getElementById('opt-blank').checked;
+    const withNameDate= document.getElementById('opt-namedate').checked;
+
+    let html = `<div class="print-header"><h1>Funkce – pracovní list</h1></div>`;
+
+    if (withNameDate) {
+      html += `<div class="print-name-date">
+        <div>Jméno: <span style="min-width:180px;">&nbsp;</span></div>
+        <div>Datum: <span style="min-width:120px;">&nbsp;</span></div>
+        <div>Třída: <span style="min-width:80px;">&nbsp;</span></div>
+      </div>`;
+    }
+
+    selected.forEach(card => {
+      const header = card.querySelector('.exercise-card-header');
+      const num    = header.querySelector('.exercise-number').textContent;
+      const src    = header.querySelector('.exercise-source')?.textContent || '';
+      const body   = card.querySelector('.exercise-card-body').innerHTML;
+      const sd     = card.querySelector('.solution-data');
+
+      html += `<div class="print-exercise">
+        <div class="print-exercise-header">
+          <span class="print-exercise-number">${num}</span>
+          <span class="print-exercise-source">${src}</span>
+        </div>
+        <div class="print-exercise-body">${body}</div>`;
+
+      if (withBlank) {
+        html += `<div class="print-blank"></div>`;
+      }
+
+      if (sd && (withSteps || withResults)) {
+        const steps   = sd.querySelectorAll('.sd-step');
+        const results = sd.querySelectorAll('.sd-result');
+        let solHtml = '';
+        if (withSteps && steps.length) {
+          steps.forEach(s => { solHtml += `<div><strong>Postup:</strong> ${s.innerHTML}</div>`; });
+        }
+        if (withResults && results.length) {
+          results.forEach(r => { solHtml += `<div><strong>Výsledek:</strong> ${r.innerHTML}</div>`; });
+        }
+        if (solHtml) {
+          html += `<div class="print-solution">${solHtml}</div>`;
+        }
+      }
+
+      html += `</div>`;
+    });
+
+    const printArea = document.getElementById('print-area');
+    printArea.innerHTML = html;
+
+    // Render KaTeX and print
+    if (window.renderMathInElement) {
+      renderMathInElement(printArea, {
+        delimiters: [
+          {left: '$$', right: '$$', display: true},
+          {left: '$',  right: '$',  display: false}
+        ]
+      });
+    }
+
+    setTimeout(() => window.print(), 200);
+  }
+</script>
+
+</body>
+</html>
