@@ -45,17 +45,7 @@
   <button class="print-btn" onclick="printPage()">&#x1F5A8;&#xFE0F; Tisknout&nbsp;/&nbsp;Uložit jako PDF</button>
 </div>
 
-<script>
-function printPage() {
-  // Rozbal všechny details před tiskem
-  var all = document.querySelectorAll('details');
-  var states = Array.from(all).map(function(d){ return d.open; });
-  all.forEach(function(d){ d.open = true; });
-  window.print();
-  // Obnov původní stav
-  all.forEach(function(d, i){ d.open = states[i]; });
-}
-</script>
+<script src="print-dialog.js"></script>
 
 <!-- ===================== PŘÍKLAD 15 ===================== -->
 <div class="exercise-card">
