@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<title>TEST – Lineární funkce A/B</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});">
+</script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    font-size: 9.5pt;
+    color: #000;
+    background: #fff;
+  }
+  .page {
+    width: 210mm;
+    padding: 7mm 13mm 5mm;
+    page-break-after: always;
+  }
+  .page:last-child { page-break-after: auto; }
+
+  /* záhlaví */
+  .test-header {
+    border: 2px solid #000;
+    border-radius: 6px;
+    padding: 3px 10px;
+    margin-bottom: 5px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .test-header h1 { font-size: 11pt; font-weight: 800; text-align: center; }
+  .test-header .meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 9.5pt;
+    gap: 10px;
+  }
+  .test-header .meta span {
+    border-bottom: 1px solid #000;
+    flex: 1;
+    padding-bottom: 1px;
+  }
+  .test-header .meta label { font-weight: 700; margin-right: 4px; white-space: nowrap; }
+
+  /* příklady */
+  .ex { margin-bottom: 3px; padding: 2px 0 1px; break-inside: avoid; }
+  .ex-title {
+    font-weight: 700;
+    font-size: 9.5pt;
+    margin-bottom: 2px;
+  }
+  .ex-subtitle {
+    font-size: 8pt;
+    color: #555;
+    font-style: italic;
+    margin-left: 6px;
+  }
+  .ex-body { font-size: 9pt; line-height: 1.45; }
+  .ex-body p { margin-bottom: 2px; }
+
+  .blank { height: 22mm; }
+  .blank-lg { height: 28mm; }
+  .blank-sm { height: 8mm; }
+
+  /* oddělováč */
+  hr { border: none; border-top: 1px solid #ccc; margin: 1px 0 3px; }
+
+  /* čtvercová síť pro graf */
+  .graph-grid {
+    display: inline-block;
+    margin-top: 5px;
+  }
+  .graph-grid svg { display: block; }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════ SKUPINA A ══════════════════════ -->
+<div class="page">
+  <div class="test-header">
+    <h1>TEST – Lineární funkce</h1>
+    <div class="meta">
+      <div><label>Skupina: A</label></div>
+      <div><label>Datum:</label> <span>&nbsp;</span></div>
+      <div><label>Jméno:</label> <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></div>
+    </div>
+  </div>
+
+  <!-- PŘÍKLAD 1 -->
+  <div class="ex">
+    <div class="ex-title">Příklad 1 <span class="ex-subtitle">– vzorec z grafu (dva body)</span></div>
+    <hr>
+    <div class="ex-body">
+      <p>Nalezněte vzorec lineární funkce, jejíž graf prochází body:</p>
+      <p>
+        a) $A[1{,}\ 3]$ a $B[3{,}\ 7]$ &emsp;&emsp;
+        b) $A[0{,}\ 5]$ a $B[2{,}\ 1]$
+      </p>
+      <div class="blank-lg"></div>
+    </div>
+  </div>
+
+  <!-- PŘÍKLAD 2 -->
+  <div class="ex">
+    <div class="ex-title">Příklad 2 <span class="ex-subtitle">– vzorec z funkčních hodnot</span></div>
+    <hr>
+    <div class="ex-body">
+      <p>Nalezněte vzorec lineární funkce $f$, pro kterou platí:</p>
+      <p>$f(2) = 3$ a $f(-2) = 11$</p>
+      <div class="blank-lg"></div>
+    </div>
+  </div>
+
+  <!-- PŘÍKLAD 3 -->
+  <div class="ex">
+    <div class="ex-title">Příklad 3 <span class="ex-subtitle">– rostoucí / klesající funkce</span></div>
+    <hr>
+    <div class="ex-body">
+      <p>Rozhodněte, zda je daná funkce <strong>rostoucí</strong>, nebo <strong>klesající</strong>:</p>
+      <p>
+        a) $y = 6x - 1$ &emsp;
+        b) $y = -0{,}3x + 5$ &emsp;
+        c) $y = 2x$ &emsp;
+        d) $y = -x + 2$ &emsp;
+        e) $y = \tfrac{x}{3} - 1$
+      </p>
+      <div class="blank"></div>
+    </div>
+  </div>
+
+  <!-- PŘÍKLAD 4 -->
+  <div class="ex">
+    <div class="ex-title">Příklad 4 <span class="ex-subtitle">– rostoucí / klesající z bodů</span></div>
+    <hr>
+    <div class="ex-body">
+      <p>Rozhodněte, zda je lineární funkce, jejíž graf prochází danými body, rostoucí nebo klesající:</p>
+      <p>
+        a) $[0{,}\ 3]$ a $[2{,}\ 7]$ &emsp;&emsp;
+        b) $[-1{,}\ 5]$ a $[2{,}\ -1]$
+      </p>
+      <div class="blank"></div>
+    </div>
+  </div>
+
+  <!-- PŘÍKLAD 5 -->
+  <div class="ex" style="margin-top: 10mm;">
+    <div class="ex-title">Příklad 5 <span class="ex-subtitle">– načrtni graf funkce</span></div>
+    <hr>
+    <div class="ex-body">
+      <p>Načrtněte graf funkce $f: y = 2x - 3$.</p>
+      <div class="graph-grid">
+        <svg width="130" height="130" viewBox="0 0 180 180" xmlns="http://www.w3.org/2000/svg"> width="15" height="15" patternUnits="userSpaceOnUse">
+              <path d="M 15 0 L 0 0 0 15" fill="none" stroke="#ddd" stroke-width="0.5"/>
+            </pattern>
+          </defs>
+          <rect width="180" height="180" fill="url(#gridA)"/>
+          <!-- silnější osy (střed 90,90) -->
+          <line x1="0" y1="90" x2="180" y2="90" stroke="#999" stroke-width="1"/>
+          <line x1="90" y1="0" x2="90" y2="180" stroke="#999" stroke-width="1"/>
+          <!-- šipky -->
+          <polygon points="180,90 173,87 173,93" fill="#999"/>
+          <polygon points="90,0 87,7 93,7" fill="#999"/>
+          <!-- popisky os -->
+          <text x="168" y="84" font-size="10" fill="#666">x</text>
+          <text x="95" y="10" font-size="10" fill="#666">y</text>
+          <!-- popisky čísel na ose x: -4 až 4 (krok 15px = 1 jednotka) -->
+          <text x="135" y="103" font-size="8" fill="#888" text-anchor="middle">3</text>
+          <text x="120" y="103" font-size="8" fill="#888" text-anchor="middle">2</text>
+          <text x="105" y="103" font-size="8" fill="#888" text-anchor="middle">1</text>
+          <text x="75" y="103" font-size="8" fill="#888" text-anchor="middle">-1</text>
+          <text x="60" y="103" font-size="8" fill="#888" text-anchor="middle">-2</text>
+          <text x="45" y="103" font-size="8" fill="#888" text-anchor="middle">-3</text>
+          <!-- popisky čísel na ose y -->
+          <text x="82" y="46" font-size="8" fill="#888" text-anchor="end">3</text>
+          <text x="82" y="61" font-size="8" fill="#888" text-anchor="end">2</text>
+          <text x="82" y="76" font-size="8" fill="#888" text-anchor="end">1</text>
+          <text x="82" y="106" font-size="8" fill="#888" text-anchor="end">-1</text>
+          <text x="82" y="121" font-size="8" fill="#888" text-anchor="end">-2</text>
+          <text x="82" y="136" font-size="8" fill="#888" text-anchor="end">-3</text>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /page A -->
+
+
+<!-- ══════════════════════ SKUPINA B ══════════════════════ -->
+<div class="page">
+  <div class="test-header">
+    <h1>TEST – Lineární funkce</h1>
+    <div class="meta">
+      <div><label>Skupina: B</label></div>
+      <div><label>Datum:</label> <span>&nbsp;</span></div>
+      <div><label>Jméno:</label> <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></div>
+    </div>
+  </div>
+
+  <!-- PŘÍKLAD 1 -->
+  <div class="ex">
+    <div class="ex-title">Příklad 1 <span class="ex-subtitle">– vzorec z grafu (dva body)</span></div>
+    <hr>
+    <div class="ex-body">
+      <p>Nalezněte vzorec lineární funkce, jejíž graf prochází body:</p>
+      <p>
+        a) $A[2{,}\ 4]$ a $B[4{,}\ 10]$ &emsp;&emsp;
+        b) $A[0{,}\ 6]$ a $B[3{,}\ 0]$
+      </p>
+      <div class="blank-lg"></div>
+    </div>
+  </div>
+
+  <!-- PŘÍKLAD 2 -->
+  <div class="ex">
+    <div class="ex-title">Příklad 2 <span class="ex-subtitle">– vzorec z funkčních hodnot</span></div>
+    <hr>
+    <div class="ex-body">
+      <p>Nalezněte vzorec lineární funkce $f$, pro kterou platí:</p>
+      <p>$f(1) = 4$ a $f(-3) = 12$</p>
+      <div class="blank-lg"></div>
+    </div>
+  </div>
+
+  <!-- PŘÍKLAD 3 -->
+  <div class="ex">
+    <div class="ex-title">Příklad 3 <span class="ex-subtitle">– rostoucí / klesající funkce</span></div>
+    <hr>
+    <div class="ex-body">
+      <p>Rozhodněte, zda je daná funkce <strong>rostoucí</strong>, nebo <strong>klesající</strong>:</p>
+      <p>
+        a) $y = 4x - 3$ &emsp;
+        b) $y = -0{,}5x + 2$ &emsp;
+        c) $y = 3x$ &emsp;
+        d) $y = -2x + 7$ &emsp;
+        e) $y = \tfrac{x}{4} + 1$
+      </p>
+      <div class="blank"></div>
+    </div>
+  </div>
+
+  <!-- PŘÍKLAD 4 -->
+  <div class="ex">
+    <div class="ex-title">Příklad 4 <span class="ex-subtitle">– rostoucí / klesající z bodů</span></div>
+    <hr>
+    <div class="ex-body">
+      <p>Rozhodněte, zda je lineární funkce, jejíž graf prochází danými body, rostoucí nebo klesající:</p>
+      <p>
+        a) $[0{,}\ 4]$ a $[3{,}\ -2]$ &emsp;&emsp;
+        b) $[-2{,}\ 1]$ a $[1{,}\ 7]$
+      </p>
+      <div class="blank"></div>
+    </div>
+  </div>
+
+  <!-- PŘÍKLAD 5 -->
+  <div class="ex" style="margin-top: 10mm;">
+    <div class="ex-title">Příklad 5 <span class="ex-subtitle">– načrtni graf funkce</span></div>
+    <hr>
+    <div class="ex-body">
+      <p>Načrtněte graf funkce $g: y = -2x + 4$.</p>
+      <div class="graph-grid">
+        <svg width="130" height="130" viewBox="0 0 180 180" xmlns="http://www.w3.org/2000/svg"> width="15" height="15" patternUnits="userSpaceOnUse">
+              <path d="M 15 0 L 0 0 0 15" fill="none" stroke="#ddd" stroke-width="0.5"/>
+            </pattern>
+          </defs>
+          <rect width="180" height="180" fill="url(#gridB)"/>
+          <!-- osy -->
+          <line x1="0" y1="90" x2="180" y2="90" stroke="#999" stroke-width="1"/>
+          <line x1="90" y1="0" x2="90" y2="180" stroke="#999" stroke-width="1"/>
+          <!-- šipky -->
+          <polygon points="180,90 173,87 173,93" fill="#999"/>
+          <polygon points="90,0 87,7 93,7" fill="#999"/>
+          <!-- popisky os -->
+          <text x="168" y="84" font-size="10" fill="#666">x</text>
+          <text x="95" y="10" font-size="10" fill="#666">y</text>
+          <!-- popisky čísel na ose x -->
+          <text x="135" y="103" font-size="8" fill="#888" text-anchor="middle">3</text>
+          <text x="120" y="103" font-size="8" fill="#888" text-anchor="middle">2</text>
+          <text x="105" y="103" font-size="8" fill="#888" text-anchor="middle">1</text>
+          <text x="75" y="103" font-size="8" fill="#888" text-anchor="middle">-1</text>
+          <text x="60" y="103" font-size="8" fill="#888" text-anchor="middle">-2</text>
+          <text x="45" y="103" font-size="8" fill="#888" text-anchor="middle">-3</text>
+          <!-- popisky čísel na ose y -->
+          <text x="82" y="46" font-size="8" fill="#888" text-anchor="end">3</text>
+          <text x="82" y="61" font-size="8" fill="#888" text-anchor="end">2</text>
+          <text x="82" y="76" font-size="8" fill="#888" text-anchor="end">1</text>
+          <text x="82" y="106" font-size="8" fill="#888" text-anchor="end">-1</text>
+          <text x="82" y="121" font-size="8" fill="#888" text-anchor="end">-2</text>
+          <text x="82" y="136" font-size="8" fill="#888" text-anchor="end">-3</text>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /page B -->
+
+</body>
+</html>

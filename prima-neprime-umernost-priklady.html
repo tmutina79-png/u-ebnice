@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Příklady – Přímá a nepřímá úměrnost | Studijní portál</title>
+<!-- KaTeX pro matematiku -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]})"></script>
+<style>
+/* ── Reset & Tokens ── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --brand:#444791;--brand-light:#e8ebfa;--brand-dark:#3b3f85;
+  --bg:#f5f5f5;--surface:#fff;--txt:#242424;--txt2:#424242;--muted:#616161;
+  --border:#e0e0e0;--r:10px;
+  --sh:0 2px 8px rgba(0,0,0,.07);
+  --green:#16a34a;--green-bg:#f0fdf4;--green-border:#bbf7d0;
+  --amber:#b45309;--amber-bg:#fffbeb;--amber-border:#fde68a;
+  --blue:#2563eb;--blue-bg:#eff6ff;--blue-border:#bfdbfe;
+  --purple:#7c3aed;--purple-bg:#f5f3ff;--purple-border:#ddd6fe;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--txt);line-height:1.65}
+
+/* ── Layout ── */
+.page{max-width:780px;margin:0 auto;padding:28px 24px 80px}
+.page-title{font-size:1.6rem;font-weight:800;margin-bottom:6px;display:flex;align-items:center;gap:10px}
+.page-subtitle{font-size:.92rem;color:var(--muted);margin-bottom:32px;line-height:1.6}
+.back-link{display:inline-flex;align-items:center;gap:6px;font-size:.82rem;color:var(--brand);
+  text-decoration:none;font-weight:600;margin-bottom:18px}
+.back-link:hover{text-decoration:underline}
+
+/* ── Exercise card ── */
+.exercise{background:var(--surface);border-radius:var(--r);box-shadow:var(--sh);
+  padding:24px 28px;margin-bottom:24px;border:1px solid var(--border)}
+.exercise-header{font-size:1.08rem;font-weight:700;color:var(--brand-dark);margin-bottom:14px;
+  display:flex;align-items:center;gap:8px}
+.exercise-header .num{background:var(--brand);color:#fff;width:28px;height:28px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;font-size:.78rem;font-weight:700;flex-shrink:0}
+
+/* ── Zadání block ── */
+.zadani{background:var(--blue-bg);border:1px solid var(--blue-border);border-radius:8px;
+  padding:14px 18px;margin-bottom:16px;font-size:.92rem}
+.zadani-label{font-weight:700;color:var(--blue);margin-bottom:4px;font-size:.8rem}
+
+/* ── Toggle buttons ── */
+.toggle-btn{display:flex;align-items:center;gap:8px;width:100%;border:1px solid var(--border);
+  background:var(--surface);border-radius:8px;padding:10px 16px;cursor:pointer;
+  font-family:inherit;font-size:.88rem;font-weight:600;color:var(--txt2);transition:.15s}
+.toggle-btn:hover{background:var(--bg);border-color:#ccc}
+.toggle-btn .chevron{transition:transform .2s;font-size:.7rem}
+.toggle-btn.open .chevron{transform:rotate(90deg)}
+.toggle-btn+.toggle-btn{margin-top:8px}
+
+/* ── Hint ── */
+.hint-box{display:none;background:var(--amber-bg);border:1px solid var(--amber-border);
+  border-radius:8px;padding:14px 18px;margin-top:8px;margin-bottom:8px;font-size:.88rem;color:var(--amber)}
+.hint-box.show{display:block}
+
+/* ── Steps ── */
+.steps-box{display:none;margin-top:8px;margin-bottom:4px}
+.steps-box.show{display:block}
+.step{display:none;background:var(--purple-bg);border:1px solid var(--purple-border);
+  border-radius:8px;padding:14px 18px;margin-bottom:8px;font-size:.88rem;
+  animation:fadeIn .25s ease}
+.step.visible{display:block}
+.step-label{font-weight:700;color:var(--purple);font-size:.76rem;margin-bottom:4px}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+.next-btn{display:inline-flex;align-items:center;gap:6px;border:none;
+  background:var(--brand);color:#fff;padding:8px 18px;border-radius:8px;
+  font-family:inherit;font-size:.82rem;font-weight:600;cursor:pointer;transition:.15s}
+.next-btn:hover{background:var(--brand-dark)}
+.next-btn:disabled{opacity:.4;cursor:default}
+
+.reset-btn{display:none;border:1px solid var(--border);background:var(--surface);
+  color:var(--muted);padding:6px 14px;border-radius:8px;font-family:inherit;
+  font-size:.78rem;font-weight:600;cursor:pointer;margin-left:8px}
+.reset-btn.show{display:inline-flex;align-items:center;gap:4px}
+
+.done-badge{display:none;background:var(--green-bg);border:1px solid var(--green-border);
+  color:var(--green);padding:8px 16px;border-radius:8px;font-size:.82rem;font-weight:700;
+  margin-top:4px}
+.done-badge.show{display:flex;align-items:center;gap:6px}
+
+/* ── Tabulka ── */
+.math-table{border-collapse:collapse;margin:10px 0;font-size:.88rem}
+.math-table th,.math-table td{border:1px solid var(--border);padding:6px 14px;text-align:center}
+.math-table th{background:var(--brand-light);color:var(--brand-dark);font-weight:700}
+
+/* ── Footer ── */
+.footer{text-align:center;padding:32px 0 16px;font-size:.75rem;color:var(--muted);border-top:1px solid var(--border);margin-top:40px}
+.footer a{color:var(--brand);text-decoration:none}
+
+/* ── Responsive ── */
+@media(max-width:600px){
+  .page{padding:16px 14px 60px}
+  .exercise{padding:16px 16px}
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+<a class="back-link" href="index.html">← Zpět na nástěnku</a>
+
+<h1 class="page-title">🧩 Příklady – Přímá a nepřímá úměrnost</h1>
+<p class="page-subtitle">
+  V této sekci najdeš příklady zaměřené na přímou a nepřímou úměrnost. U každého příkladu máš nápovědu a postup řešení krok za krokem.
+</p>
+
+<!-- ════════════════════════════════════════════════ -->
+<!-- PŘÍKLAD 9 -->
+<!-- ════════════════════════════════════════════════ -->
+<div class="exercise" id="ex9">
+  <div class="exercise-header"><span class="num">9</span> Přímá úměrnost – tabulka a graf</div>
+
+  <div class="zadani">
+    <div class="zadani-label">📝 Zadání:</div>
+    Je dána přímá úměrnost $y = 60x$, kde $x \in \{2, 4, 6, 8\}$. Sestavte její tabulku a sestrojte její graf.
+  </div>
+
+  <button class="toggle-btn" onclick="toggleHint(this)">
+    <span>💡</span> Nápověda <span class="chevron">▶</span>
+  </button>
+  <div class="hint-box">
+    Za $x$ postupně dosadíš hodnoty z množiny $\{2, 4, 6, 8\}$ do vztahu $y = 60x$ a vypočteš příslušné $y$. Body pak zakreslíš do soustavy souřadnic a spojíš úsečkami (graf přímé úměrnosti je přímka procházející počátkem).
+  </div>
+
+  <button class="toggle-btn" onclick="toggleSteps(this)" data-steps="4">
+    <span>📝</span> Postup řešení (<span class="counter">0/4</span> kroků) <span class="chevron">▶</span>
+  </button>
+  <div class="steps-box">
+    <div class="step">
+      <div class="step-label">Krok 1 / 4</div>
+      Dosadíme jednotlivé hodnoty $x$ do vzorce $y = 60x$:<br>
+      $x = 2: \quad y = 60 \cdot 2 = 120$<br>
+      $x = 4: \quad y = 60 \cdot 4 = 240$
+    </div>
+    <div class="step">
+      <div class="step-label">Krok 2 / 4</div>
+      $x = 6: \quad y = 60 \cdot 6 = 360$<br>
+      $x = 8: \quad y = 60 \cdot 8 = 480$
+    </div>
+    <div class="step">
+      <div class="step-label">Krok 3 / 4</div>
+      Sestavíme tabulku:
+      <table class="math-table">
+        <tr><th>$x$</th><td>2</td><td>4</td><td>6</td><td>8</td></tr>
+        <tr><th>$y$</th><td>120</td><td>240</td><td>360</td><td>480</td></tr>
+      </table>
+    </div>
+    <div class="step">
+      <div class="step-label">Krok 4 / 4</div>
+      Body $[2; 120]$, $[4; 240]$, $[6; 360]$, $[8; 480]$ zakreslíme do soustavy souřadnic. Spojíme je – vznikne část přímky procházející počátkem $[0; 0]$.
+      <br><br>
+      ✅ <strong>Odpověď:</strong> Tabulka viz krok 3, graf je úsek přímky $y = 60x$ pro $x \in \{2, 4, 6, 8\}$.
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+      <button class="next-btn" onclick="nextStep(this)">Další krok →</button>
+      <button class="reset-btn" onclick="resetSteps(this)">↩️ Od začátku</button>
+    </div>
+    <div class="done-badge">✅ Kompletní řešení</div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════ -->
+<!-- PŘÍKLAD 10 -->
+<!-- ════════════════════════════════════════════════ -->
+<div class="exercise" id="ex10">
+  <div class="exercise-header"><span class="num">10</span> Přímá úměrnost – graf na intervalu</div>
+
+  <div class="zadani">
+    <div class="zadani-label">📝 Zadání:</div>
+    Nakreslete graf přímé úměrnosti $y = 12x$, kde proměnná $x$ nabývá hodnot z intervalu $\langle 0, 10 \rangle$.
+  </div>
+
+  <button class="toggle-btn" onclick="toggleHint(this)">
+    <span>💡</span> Nápověda <span class="chevron">▶</span>
+  </button>
+  <div class="hint-box">
+    Stačí najít dva body na přímce $y = 12x$ v daném intervalu (např. $x = 0$ a $x = 10$) a spojit je úsečkou.
+  </div>
+
+  <button class="toggle-btn" onclick="toggleSteps(this)" data-steps="3">
+    <span>📝</span> Postup řešení (<span class="counter">0/3</span> kroků) <span class="chevron">▶</span>
+  </button>
+  <div class="steps-box">
+    <div class="step">
+      <div class="step-label">Krok 1 / 3</div>
+      Vypočteme hodnoty pro krajní body intervalu:<br>
+      $x = 0: \quad y = 12 \cdot 0 = 0$<br>
+      $x = 10: \quad y = 12 \cdot 10 = 120$
+    </div>
+    <div class="step">
+      <div class="step-label">Krok 2 / 3</div>
+      Doplníme pár bodů pro přesnost:
+      <table class="math-table">
+        <tr><th>$x$</th><td>0</td><td>2</td><td>5</td><td>10</td></tr>
+        <tr><th>$y$</th><td>0</td><td>24</td><td>60</td><td>120</td></tr>
+      </table>
+    </div>
+    <div class="step">
+      <div class="step-label">Krok 3 / 3</div>
+      Body zakreslíme a spojíme úsečkou od $[0; 0]$ do $[10; 120]$.<br><br>
+      ✅ <strong>Odpověď:</strong> Grafem je úsečka od bodu $[0; 0]$ do bodu $[10; 120]$.
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+      <button class="next-btn" onclick="nextStep(this)">Další krok →</button>
+      <button class="reset-btn" onclick="resetSteps(this)">↩️ Od začátku</button>
+    </div>
+    <div class="done-badge">✅ Kompletní řešení</div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════ -->
+<!-- PŘÍKLAD 11 -->
+<!-- ════════════════════════════════════════════════ -->
+<div class="exercise" id="ex11">
+  <div class="exercise-header"><span class="num">11</span> Koeficient přímé úměrnosti a úhel s osami</div>
+
+  <div class="zadani">
+    <div class="zadani-label">📝 Zadání:</div>
+    Určete koeficient přímé úměrnosti $y = x$, kde $x > 0$, a sestrojte její graf v kartézské soustavě souřadnic. Jaký úhel svírá tento graf s každou z os soustavy souřadnic?
+  </div>
+
+  <button class="toggle-btn" onclick="toggleHint(this)">
+    <span>💡</span> Nápověda <span class="chevron">▶</span>
+  </button>
+  <div class="hint-box">
+    Přímá úměrnost má tvar $y = kx$. Porovnej s $y = x$ a urči koeficient $k$. Graf $y = x$ je polopřímka z počátku pod úhlem $45°$ k ose $x$. Jaký úhel pak svírá s osou $y$?
+  </div>
+
+  <button class="toggle-btn" onclick="toggleSteps(this)" data-steps="4">
+    <span>📝</span> Postup řešení (<span class="counter">0/4</span> kroků) <span class="chevron">▶</span>
+  </button>
+  <div class="steps-box">
+    <div class="step">
+      <div class="step-label">Krok 1 / 4</div>
+      Přímá úměrnost má obecný tvar $y = kx$.<br>
+      Porovnáme s $y = x = 1 \cdot x$, tedy <strong>koeficient přímé úměrnosti $k = 1$</strong>.
+    </div>
+    <div class="step">
+      <div class="step-label">Krok 2 / 4</div>
+      Sestrojíme graf: zvolíme body, např.:<br>
+      $x = 1 \Rightarrow y = 1$, &nbsp; $x = 3 \Rightarrow y = 3$, &nbsp; $x = 5 \Rightarrow y = 5$<br>
+      Body leží na polopřímce z počátku pro $x > 0$.
+    </div>
+    <div class="step">
+      <div class="step-label">Krok 3 / 4</div>
+      Úhel s osou $x$: přímka $y = x$ má směrnici $k = 1$, tedy $\tan \alpha = 1$.<br>
+      $$\alpha = \arctan(1) = 45°$$
+    </div>
+    <div class="step">
+      <div class="step-label">Krok 4 / 4</div>
+      Úhel s osou $y$: osy $x$ a $y$ svírají $90°$, takže:<br>
+      $$\beta = 90° - 45° = 45°$$
+      ✅ <strong>Odpověď:</strong> Koeficient $k = 1$. Graf svírá s osou $x$ úhel $45°$ a s osou $y$ také úhel $45°$.
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+      <button class="next-btn" onclick="nextStep(this)">Další krok →</button>
+      <button class="reset-btn" onclick="resetSteps(this)">↩️ Od začátku</button>
+    </div>
+    <div class="done-badge">✅ Kompletní řešení</div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════ -->
+<!-- PŘÍKLAD 12a -->
+<!-- ════════════════════════════════════════════════ -->
+<div class="exercise" id="ex12a">
+  <div class="exercise-header"><span class="num">12a</span> Nepřímá úměrnost – tabulka a graf</div>
+
+  <div class="zadani">
+    <div class="zadani-label">📝 Zadání:</div>
+    Sestavte tabulku a sestrojte graf nepřímé úměrnosti $y = \dfrac{k}{x}$, je-li dán její koeficient $k$ a množina D všech hodnot proměnné $x$:<br><br>
+    a) $k = 10$, &nbsp; $D = \{1;\; 2;\; 2{,}5;\; 4;\; 5\}$
+  </div>
+
+  <button class="toggle-btn" onclick="toggleHint(this)">
+    <span>💡</span> Nápověda <span class="chevron">▶</span>
+  </button>
+  <div class="hint-box">
+    Dosaď každou hodnotu $x$ z množiny $D$ do vzorce $y = \frac{10}{x}$ a vypočti $y$. Body pak zakresli do soustavy souřadnic – graf nepřímé úměrnosti je hyperbola.
+  </div>
+
+  <button class="toggle-btn" onclick="toggleSteps(this)" data-steps="4">
+    <span>📝</span> Postup řešení (<span class="counter">0/4</span> kroků) <span class="chevron">▶</span>
+  </button>
+  <div class="steps-box">
+    <div class="step">
+      <div class="step-label">Krok 1 / 4</div>
+      Dosadíme do $y = \frac{10}{x}$:<br>
+      $x = 1: \quad y = \frac{10}{1} = 10$<br>
+      $x = 2: \quad y = \frac{10}{2} = 5$<br>
+      $x = 2{,}5: \quad y = \frac{10}{2{,}5} = 4$
+    </div>
+    <div class="step">
+      <div class="step-label">Krok 2 / 4</div>
+      $x = 4: \quad y = \frac{10}{4} = 2{,}5$<br>
+      $x = 5: \quad y = \frac{10}{5} = 2$
+    </div>
+    <div class="step">
+      <div class="step-label">Krok 3 / 4</div>
+      Tabulka hodnot:
+      <table class="math-table">
+        <tr><th>$x$</th><td>1</td><td>2</td><td>2,5</td><td>4</td><td>5</td></tr>
+        <tr><th>$y$</th><td>10</td><td>5</td><td>4</td><td>2,5</td><td>2</td></tr>
+      </table>
+      Všimni si: když $x$ roste, $y$ klesá – to je typické pro nepřímou úměrnost.
+    </div>
+    <div class="step">
+      <div class="step-label">Krok 4 / 4</div>
+      Body $[1; 10]$, $[2; 5]$, $[2{,}5; 4]$, $[4; 2{,}5]$, $[5; 2]$ zakreslíme do soustavy souřadnic a proložíme jimi hladkou křivku (hyperbolu).<br><br>
+      ✅ <strong>Odpověď:</strong> Tabulka viz krok 3, graf je část hyperboly $y = \frac{10}{x}$.
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+      <button class="next-btn" onclick="nextStep(this)">Další krok →</button>
+      <button class="reset-btn" onclick="resetSteps(this)">↩️ Od začátku</button>
+    </div>
+    <div class="done-badge">✅ Kompletní řešení</div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════ -->
+<!-- PŘÍKLAD 12b -->
+<!-- ════════════════════════════════════════════════ -->
+<div class="exercise" id="ex12b">
+  <div class="exercise-header"><span class="num">12b</span> Nepřímá úměrnost – tabulka a graf</div>
+
+  <div class="zadani">
+    <div class="zadani-label">📝 Zadání:</div>
+    Sestavte tabulku a sestrojte graf nepřímé úměrnosti $y = \dfrac{k}{x}$, je-li dán její koeficient $k$ a množina D všech hodnot proměnné $x$:<br><br>
+    b) $k = 1$, &nbsp; $D = \{0{,}2;\; 0{,}5;\; 1;\; 2;\; 4\}$
+  </div>
+
+  <button class="toggle-btn" onclick="toggleHint(this)">
+    <span>💡</span> Nápověda <span class="chevron">▶</span>
+  </button>
+  <div class="hint-box">
+    Postup je stejný jako u 12a. Dosaď hodnoty z množiny $D$ do $y = \frac{1}{x}$. Pozor na desetinná čísla – $\frac{1}{0{,}2} = 5$ apod.
+  </div>
+
+  <button class="toggle-btn" onclick="toggleSteps(this)" data-steps="4">
+    <span>📝</span> Postup řešení (<span class="counter">0/4</span> kroků) <span class="chevron">▶</span>
+  </button>
+  <div class="steps-box">
+    <div class="step">
+      <div class="step-label">Krok 1 / 4</div>
+      Dosadíme do $y = \frac{1}{x}$:<br>
+      $x = 0{,}2: \quad y = \frac{1}{0{,}2} = 5$<br>
+      $x = 0{,}5: \quad y = \frac{1}{0{,}5} = 2$
+    </div>
+    <div class="step">
+      <div class="step-label">Krok 2 / 4</div>
+      $x = 1: \quad y = \frac{1}{1} = 1$<br>
+      $x = 2: \quad y = \frac{1}{2} = 0{,}5$<br>
+      $x = 4: \quad y = \frac{1}{4} = 0{,}25$
+    </div>
+    <div class="step">
+      <div class="step-label">Krok 3 / 4</div>
+      Tabulka hodnot:
+      <table class="math-table">
+        <tr><th>$x$</th><td>0,2</td><td>0,5</td><td>1</td><td>2</td><td>4</td></tr>
+        <tr><th>$y$</th><td>5</td><td>2</td><td>1</td><td>0,5</td><td>0,25</td></tr>
+      </table>
+    </div>
+    <div class="step">
+      <div class="step-label">Krok 4 / 4</div>
+      Body zakreslíme a proložíme hladkou křivkou (hyperbola).<br><br>
+      ✅ <strong>Odpověď:</strong> Tabulka viz krok 3, graf je část hyperboly $y = \frac{1}{x}$.
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+      <button class="next-btn" onclick="nextStep(this)">Další krok →</button>
+      <button class="reset-btn" onclick="resetSteps(this)">↩️ Od začátku</button>
+    </div>
+    <div class="done-badge">✅ Kompletní řešení</div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════ -->
+<!-- PŘÍKLAD 13a -->
+<!-- ════════════════════════════════════════════════ -->
+<div class="exercise" id="ex13a">
+  <div class="exercise-header"><span class="num">13a</span> Z grafu zapsat vzorcem – přímá úměrnost</div>
+
+  <div class="zadani">
+    <div class="zadani-label">📝 Zadání:</div>
+    Přímou nebo nepřímou úměrnost z grafu zapište vzorcem.<br><br>
+    <strong>Graf a)</strong> – přímka procházející počátkem a bodem $[5;\; 1]$.
+  </div>
+
+  <button class="toggle-btn" onclick="toggleHint(this)">
+    <span>💡</span> Nápověda <span class="chevron">▶</span>
+  </button>
+  <div class="hint-box">
+    Přímka procházející počátkem → přímá úměrnost $y = kx$. Koeficient $k$ najdeš dosazením bodu z grafu.
+  </div>
+
+  <button class="toggle-btn" onclick="toggleSteps(this)" data-steps="3">
+    <span>📝</span> Postup řešení (<span class="counter">0/3</span> kroků) <span class="chevron">▶</span>
+  </button>
+  <div class="steps-box">
+    <div class="step">
+      <div class="step-label">Krok 1 / 3</div>
+      Graf je přímka procházející počátkem → jedná se o <strong>přímou úměrnost</strong> tvaru $y = kx$.
+    </div>
+    <div class="step">
+      <div class="step-label">Krok 2 / 3</div>
+      Z grafu přečteme bod $[5;\; 1]$. Dosadíme:<br>
+      $$1 = k \cdot 5 \quad \Rightarrow \quad k = \frac{1}{5} = 0{,}2$$
+    </div>
+    <div class="step">
+      <div class="step-label">Krok 3 / 3</div>
+      ✅ <strong>Odpověď:</strong> $y = \dfrac{x}{5}$ &nbsp; (neboli $y = 0{,}2x$)
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+      <button class="next-btn" onclick="nextStep(this)">Další krok →</button>
+      <button class="reset-btn" onclick="resetSteps(this)">↩️ Od začátku</button>
+    </div>
+    <div class="done-badge">✅ Kompletní řešení</div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════ -->
+<!-- PŘÍKLAD 13b -->
+<!-- ════════════════════════════════════════════════ -->
+<div class="exercise" id="ex13b">
+  <div class="exercise-header"><span class="num">13b</span> Z grafu zapsat vzorcem – nepřímá úměrnost</div>
+
+  <div class="zadani">
+    <div class="zadani-label">📝 Zadání:</div>
+    Přímou nebo nepřímou úměrnost z grafu zapište vzorcem.<br><br>
+    <strong>Graf b)</strong> – hyperbola procházející bodem $[1;\; 45]$.
+  </div>
+
+  <button class="toggle-btn" onclick="toggleHint(this)">
+    <span>💡</span> Nápověda <span class="chevron">▶</span>
+  </button>
+  <div class="hint-box">
+    Hyperbola → nepřímá úměrnost $y = \frac{k}{x}$. Koeficient $k$ najdeš dosazením bodu z grafu: $k = x \cdot y$.
+  </div>
+
+  <button class="toggle-btn" onclick="toggleSteps(this)" data-steps="3">
+    <span>📝</span> Postup řešení (<span class="counter">0/3</span> kroků) <span class="chevron">▶</span>
+  </button>
+  <div class="steps-box">
+    <div class="step">
+      <div class="step-label">Krok 1 / 3</div>
+      Graf je hyperbola → jedná se o <strong>nepřímou úměrnost</strong> tvaru $y = \frac{k}{x}$.
+    </div>
+    <div class="step">
+      <div class="step-label">Krok 2 / 3</div>
+      Z grafu přečteme bod $[1;\; 45]$. Dosadíme:<br>
+      $$45 = \frac{k}{1} \quad \Rightarrow \quad k = 45$$
+      Ověření bodem $[9;\; 5]$: &nbsp; $y = \frac{45}{9} = 5$ ✓
+    </div>
+    <div class="step">
+      <div class="step-label">Krok 3 / 3</div>
+      ✅ <strong>Odpověď:</strong> $y = \dfrac{45}{x}$
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+      <button class="next-btn" onclick="nextStep(this)">Další krok →</button>
+      <button class="reset-btn" onclick="resetSteps(this)">↩️ Od začátku</button>
+    </div>
+    <div class="done-badge">✅ Kompletní řešení</div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════ -->
+<!-- PŘÍKLAD 13c -->
+<!-- ════════════════════════════════════════════════ -->
+<div class="exercise" id="ex13c">
+  <div class="exercise-header"><span class="num">13c</span> Z grafu zapsat vzorcem – přímá úměrnost</div>
+
+  <div class="zadani">
+    <div class="zadani-label">📝 Zadání:</div>
+    Přímou nebo nepřímou úměrnost z grafu zapište vzorcem.<br><br>
+    <strong>Graf c)</strong> – přímka procházející počátkem a bodem $[10;\; 2]$.
+  </div>
+
+  <button class="toggle-btn" onclick="toggleHint(this)">
+    <span>💡</span> Nápověda <span class="chevron">▶</span>
+  </button>
+  <div class="hint-box">
+    Přímka procházející počátkem → přímá úměrnost $y = kx$. Dosazením bodu $[10;\; 2]$ najdeš koeficient $k$.
+  </div>
+
+  <button class="toggle-btn" onclick="toggleSteps(this)" data-steps="3">
+    <span>📝</span> Postup řešení (<span class="counter">0/3</span> kroků) <span class="chevron">▶</span>
+  </button>
+  <div class="steps-box">
+    <div class="step">
+      <div class="step-label">Krok 1 / 3</div>
+      Graf je přímka procházející počátkem → jedná se o <strong>přímou úměrnost</strong> tvaru $y = kx$.
+    </div>
+    <div class="step">
+      <div class="step-label">Krok 2 / 3</div>
+      Z grafu přečteme bod $[10;\; 2]$. Dosadíme:<br>
+      $$2 = k \cdot 10 \quad \Rightarrow \quad k = \frac{2}{10} = \frac{1}{5} = 0{,}2$$
+    </div>
+    <div class="step">
+      <div class="step-label">Krok 3 / 3</div>
+      ✅ <strong>Odpověď:</strong> $y = \dfrac{x}{5}$ &nbsp; (neboli $y = 0{,}2x$)
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+      <button class="next-btn" onclick="nextStep(this)">Další krok →</button>
+      <button class="reset-btn" onclick="resetSteps(this)">↩️ Od začátku</button>
+    </div>
+    <div class="done-badge">✅ Kompletní řešení</div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════ -->
+<!-- PŘÍKLAD 13d -->
+<!-- ════════════════════════════════════════════════ -->
+<div class="exercise" id="ex13d">
+  <div class="exercise-header"><span class="num">13d</span> Z grafu zapsat vzorcem – nepřímá úměrnost</div>
+
+  <div class="zadani">
+    <div class="zadani-label">📝 Zadání:</div>
+    Přímou nebo nepřímou úměrnost z grafu zapište vzorcem.<br><br>
+    <strong>Graf d)</strong> – hyperbola procházející body $[3;\; 12]$, $[6;\; 6]$, $[9;\; 4]$.
+  </div>
+
+  <button class="toggle-btn" onclick="toggleHint(this)">
+    <span>💡</span> Nápověda <span class="chevron">▶</span>
+  </button>
+  <div class="hint-box">
+    Hyperbola → nepřímá úměrnost $y = \frac{k}{x}$. Koeficient $k$ najdeš jako součin $k = x \cdot y$ z libovolného bodu. Ověř na ostatních bodech.
+  </div>
+
+  <button class="toggle-btn" onclick="toggleSteps(this)" data-steps="4">
+    <span>📝</span> Postup řešení (<span class="counter">0/4</span> kroků) <span class="chevron">▶</span>
+  </button>
+  <div class="steps-box">
+    <div class="step">
+      <div class="step-label">Krok 1 / 4</div>
+      Graf je hyperbola → jedná se o <strong>nepřímou úměrnost</strong> tvaru $y = \frac{k}{x}$.
+    </div>
+    <div class="step">
+      <div class="step-label">Krok 2 / 4</div>
+      Z grafu přečteme bod $[3;\; 12]$. Dosadíme:<br>
+      $$12 = \frac{k}{3} \quad \Rightarrow \quad k = 12 \cdot 3 = 36$$
+    </div>
+    <div class="step">
+      <div class="step-label">Krok 3 / 4</div>
+      Ověříme na dalších bodech:<br>
+      $[6;\; 6]: \quad y = \frac{36}{6} = 6$ ✓<br>
+      $[9;\; 4]: \quad y = \frac{36}{9} = 4$ ✓
+    </div>
+    <div class="step">
+      <div class="step-label">Krok 4 / 4</div>
+      ✅ <strong>Odpověď:</strong> $y = \dfrac{36}{x}$
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+      <button class="next-btn" onclick="nextStep(this)">Další krok →</button>
+      <button class="reset-btn" onclick="resetSteps(this)">↩️ Od začátku</button>
+    </div>
+    <div class="done-badge">✅ Kompletní řešení</div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════ -->
+<!-- SLOVNÍ ÚLOHY -->
+<!-- ════════════════════════════════════════════════ -->
+
+<h2 style="font-size:1.3rem;font-weight:800;margin:40px 0 8px;color:var(--brand-dark);display:flex;align-items:center;gap:10px;">
+  📖 Slovní úlohy k procvičení
+</h2>
+<p style="font-size:.88rem;color:var(--muted);margin-bottom:24px;">8 příkladů z praxe – přímá a nepřímá úměrnost, trojčlenka. Klikni na výsledek pro zobrazení.</p>
+
+<!-- ─── Slovní úloha 1 ─── -->
+<div class="exercise">
+  <div class="exercise-header">
+    <div class="num">S1</div> Přímá úměrnost – nákup ovoce
+  </div>
+  <div class="zadani">
+    <div class="zadani-label">📝 Zadání:</div>
+    Za 3 kg jablek zaplatíte 87 Kč. Kolik zaplatíte za 7 kg jablek?
+  </div>
+  <details style="margin-top:8px">
+    <summary class="toggle-btn">🎯 Výsledek <span class="chevron">▶</span></summary>
+    <div style="background:var(--green-bg);border:1px solid var(--green-border);border-radius:8px;padding:14px 18px;margin-top:8px;font-size:.92rem;color:var(--green);">
+      <strong>Za 7 kg jablek zaplatíte 203 Kč.</strong><br>
+      (Typ: přímá úměrnost – trojčlenka; $\frac{87}{3} \cdot 7 = 203$)
+    </div>
+  </details>
+</div>
+
+<!-- ─── Slovní úloha 2 ─── -->
+<div class="exercise">
+  <div class="exercise-header">
+    <div class="num">S2</div> Nepřímá úměrnost – malíři
+  </div>
+  <div class="zadani">
+    <div class="zadani-label">📝 Zadání:</div>
+    5 malířů vymaluje byt za 6 dní. Za kolik dní vymaluje byt 3 malíři? (Každý pracuje stejně rychle.)
+  </div>
+  <details style="margin-top:8px">
+    <summary class="toggle-btn">🎯 Výsledek <span class="chevron">▶</span></summary>
+    <div style="background:var(--green-bg);border:1px solid var(--green-border);border-radius:8px;padding:14px 18px;margin-top:8px;font-size:.92rem;color:var(--green);">
+      <strong>3 malíři vymalují byt za 10 dní.</strong><br>
+      (Typ: nepřímá úměrnost; $\frac{5 \cdot 6}{3} = 10$)
+    </div>
+  </details>
+</div>
+
+<!-- ─── Slovní úloha 3 ─── -->
+<div class="exercise">
+  <div class="exercise-header">
+    <div class="num">S3</div> Přímá úměrnost – auto a benzín
+  </div>
+  <div class="zadani">
+    <div class="zadani-label">📝 Zadání:</div>
+    Auto spotřebuje na 150 km celkem 9 litrů benzínu. Kolik litrů spotřebuje na cestu dlouhou 350 km?
+  </div>
+  <details style="margin-top:8px">
+    <summary class="toggle-btn">🎯 Výsledek <span class="chevron">▶</span></summary>
+    <div style="background:var(--green-bg);border:1px solid var(--green-border);border-radius:8px;padding:14px 18px;margin-top:8px;font-size:.92rem;color:var(--green);">
+      <strong>Na 350 km spotřebuje 21 litrů benzínu.</strong><br>
+      (Typ: přímá úměrnost; $\frac{9}{150} \cdot 350 = 21$)
+    </div>
+  </details>
+</div>
+
+<!-- ─── Slovní úloha 4 ─── -->
+<div class="exercise">
+  <div class="exercise-header">
+    <div class="num">S4</div> Nepřímá úměrnost – dělníci a výkop
+  </div>
+  <div class="zadani">
+    <div class="zadani-label">📝 Zadání:</div>
+    8 dělníků vykope základy domu za 12 dní. Kolik dělníků by bylo potřeba, aby práci zvládli za 6 dní?
+  </div>
+  <details style="margin-top:8px">
+    <summary class="toggle-btn">🎯 Výsledek <span class="chevron">▶</span></summary>
+    <div style="background:var(--green-bg);border:1px solid var(--green-border);border-radius:8px;padding:14px 18px;margin-top:8px;font-size:.92rem;color:var(--green);">
+      <strong>Bylo by potřeba 16 dělníků.</strong><br>
+      (Typ: nepřímá úměrnost; $\frac{8 \cdot 12}{6} = 16$)
+    </div>
+  </details>
+</div>
+
+<!-- ─── Slovní úloha 5 ─── -->
+<div class="exercise">
+  <div class="exercise-header">
+    <div class="num">S5</div> Přímá úměrnost – recept na koláč
+  </div>
+  <div class="zadani">
+    <div class="zadani-label">📝 Zadání:</div>
+    Na koláč pro 4 osoby je potřeba 250 g mouky. Kolik gramů mouky je potřeba, chcete-li upéct koláč pro 10 osob?
+  </div>
+  <details style="margin-top:8px">
+    <summary class="toggle-btn">🎯 Výsledek <span class="chevron">▶</span></summary>
+    <div style="background:var(--green-bg);border:1px solid var(--green-border);border-radius:8px;padding:14px 18px;margin-top:8px;font-size:.92rem;color:var(--green);">
+      <strong>Na koláč pro 10 osob je potřeba 625 g mouky.</strong><br>
+      (Typ: přímá úměrnost; $\frac{250}{4} \cdot 10 = 625$)
+    </div>
+  </details>
+</div>
+
+<!-- ─── Slovní úloha 6 ─── -->
+<div class="exercise">
+  <div class="exercise-header">
+    <div class="num">S6</div> Nepřímá úměrnost – kohoutek a bazén
+  </div>
+  <div class="zadani">
+    <div class="zadani-label">📝 Zadání:</div>
+    Jeden kohoutek naplní bazén za 12 hodin. Za jak dlouho naplní bazén 4 stejné kohoutky puštěné najednou?
+  </div>
+  <details style="margin-top:8px">
+    <summary class="toggle-btn">🎯 Výsledek <span class="chevron">▶</span></summary>
+    <div style="background:var(--green-bg);border:1px solid var(--green-border);border-radius:8px;padding:14px 18px;margin-top:8px;font-size:.92rem;color:var(--green);">
+      <strong>4 kohoutky naplní bazén za 3 hodiny.</strong><br>
+      (Typ: nepřímá úměrnost; $\frac{1 \cdot 12}{4} = 3$)
+    </div>
+  </details>
+</div>
+
+<!-- ─── Slovní úloha 7 ─── -->
+<div class="exercise">
+  <div class="exercise-header">
+    <div class="num">S7</div> Přímá úměrnost – mapa a vzdálenost
+  </div>
+  <div class="zadani">
+    <div class="zadani-label">📝 Zadání:</div>
+    Na mapě s měřítkem $1 : 50\,000$ je vzdálenost mezi dvěma městy 8,4 cm. Jaká je skutečná vzdálenost v kilometrech?
+  </div>
+  <details style="margin-top:8px">
+    <summary class="toggle-btn">🎯 Výsledek <span class="chevron">▶</span></summary>
+    <div style="background:var(--green-bg);border:1px solid var(--green-border);border-radius:8px;padding:14px 18px;margin-top:8px;font-size:.92rem;color:var(--green);">
+      <strong>Skutečná vzdálenost je 4,2 km.</strong><br>
+      (Typ: přímá úměrnost; $8{,}4 \cdot 50\,000 = 420\,000$ cm $= 4{,}2$ km)
+    </div>
+  </details>
+</div>
+
+<!-- ─── Slovní úloha 8 ─── -->
+<div class="exercise">
+  <div class="exercise-header">
+    <div class="num">S8</div> Nepřímá úměrnost – rychlost a čas
+  </div>
+  <div class="zadani">
+    <div class="zadani-label">📝 Zadání:</div>
+    Cyklista jede rychlostí 20 km/h a cestu do školy zvládne za 45 minut. Za kolik minut by zvládl stejnou cestu, kdyby jel rychlostí 30 km/h?
+  </div>
+  <details style="margin-top:8px">
+    <summary class="toggle-btn">🎯 Výsledek <span class="chevron">▶</span></summary>
+    <div style="background:var(--green-bg);border:1px solid var(--green-border);border-radius:8px;padding:14px 18px;margin-top:8px;font-size:.92rem;color:var(--green);">
+      <strong>Rychlostí 30 km/h zvládne cestu za 30 minut.</strong><br>
+      (Typ: nepřímá úměrnost; $\frac{20 \cdot 45}{30} = 30$)
+    </div>
+  </details>
+</div>
+
+<!-- ════════════════════════════════════════════════ -->
+<!-- FOOTER -->
+<!-- ════════════════════════════════════════════════ -->
+<div class="footer">
+  Interaktivní příklady vytvořili: Ing. Tomáš Mutina a Mgr. Aleš Bajnar, Mgr. Naděžda Hloušková<br>
+  <a href="index.html">🎓 Studijní portál</a> · Projekt NPI – Výukové materiály
+</div>
+
+</div><!-- /.page -->
+
+<!-- ════════════════════════════════════════════════ -->
+<!-- JAVASCRIPT -->
+<!-- ════════════════════════════════════════════════ -->
+<script>
+/* ── Nápověda toggle ── */
+function toggleHint(btn){
+  btn.classList.toggle('open');
+  const box = btn.nextElementSibling;
+  box.classList.toggle('show');
+}
+
+/* ── Kroky toggle ── */
+function toggleSteps(btn){
+  btn.classList.toggle('open');
+  const box = btn.nextElementSibling;
+  if(!box.classList.contains('show')){
+    box.classList.add('show');
+    // Odkryj první krok automaticky
+    const steps = box.querySelectorAll('.step');
+    if(steps.length && !steps[0].classList.contains('visible')){
+      steps[0].classList.add('visible');
+      updateCounter(btn, 1);
+    }
+  } else {
+    box.classList.remove('show');
+  }
+}
+
+/* ── Další krok ── */
+function nextStep(nextBtn){
+  const box = nextBtn.closest('.steps-box');
+  const steps = box.querySelectorAll('.step');
+  const toggleBtn = box.previousElementSibling;
+
+  let current = 0;
+  steps.forEach((s,i) => { if(s.classList.contains('visible')) current = i + 1; });
+
+  if(current < steps.length){
+    steps[current].classList.add('visible');
+    steps[current].scrollIntoView({behavior:'smooth', block:'nearest'});
+    updateCounter(toggleBtn, current + 1);
+    // Re-render KaTeX v novém kroku
+    if(window.renderMathInElement) renderMathInElement(steps[current]);
+  }
+
+  if(current + 1 >= steps.length){
+    nextBtn.disabled = true;
+    box.querySelector('.done-badge').classList.add('show');
+    box.querySelector('.reset-btn').classList.add('show');
+  }
+}
+
+/* ── Reset ── */
+function resetSteps(resetBtn){
+  const box = resetBtn.closest('.steps-box');
+  const steps = box.querySelectorAll('.step');
+  const toggleBtn = box.previousElementSibling;
+
+  steps.forEach(s => s.classList.remove('visible'));
+  steps[0].classList.add('visible');
+
+  box.querySelector('.next-btn').disabled = false;
+  box.querySelector('.done-badge').classList.remove('show');
+  resetBtn.classList.remove('show');
+
+  updateCounter(toggleBtn, 1);
+  steps[0].scrollIntoView({behavior:'smooth', block:'nearest'});
+}
+
+/* ── Počítadlo kroků ── */
+function updateCounter(toggleBtn, shown){
+  const counter = toggleBtn.querySelector('.counter');
+  if(!counter) return;
+  const total = counter.textContent.split('/')[1];
+  counter.textContent = shown + '/' + total;
+}
+</script>
+</body>
+</html>

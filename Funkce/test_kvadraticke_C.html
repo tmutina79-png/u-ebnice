@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<title>TEST – Kvadratická funkce C</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});">
+</script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    font-size: 9.5pt;
+    color: #000;
+    background: #fff;
+  }
+  .page {
+    width: 210mm;
+    padding: 7mm 13mm 5mm;
+    page-break-after: auto;
+  }
+
+  .test-header {
+    border: 2px solid #000;
+    border-radius: 6px;
+    padding: 3px 10px;
+    margin-bottom: 6px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .test-header h1 { font-size: 11pt; font-weight: 800; text-align: center; }
+  .test-header .meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 9.5pt;
+    gap: 10px;
+  }
+  .test-header .meta span {
+    border-bottom: 1px solid #000;
+    flex: 1;
+    padding-bottom: 1px;
+  }
+  .test-header .meta label { font-weight: 700; margin-right: 4px; white-space: nowrap; }
+
+  .ex { margin-bottom: 4px; padding: 2px 0 1px; break-inside: avoid; }
+  .ex-title { font-weight: 700; font-size: 9.5pt; margin-bottom: 2px; }
+  .ex-subtitle { font-size: 8pt; color: #555; font-style: italic; margin-left: 6px; }
+  .ex-body { font-size: 9pt; line-height: 1.5; }
+  .ex-body p { margin-bottom: 2px; }
+
+  .blank    { height: 18mm; }
+  .blank-lg { height: 24mm; }
+  .blank-xl { height: 36mm; }
+
+  hr { border: none; border-top: 1px solid #ccc; margin: 1px 0 4px; }
+</style>
+</head>
+<body>
+
+<div class="page">
+  <div class="test-header">
+    <h1>TEST – Kvadratická funkce</h1>
+    <div class="meta">
+      <div><label>Skupina: C</label></div>
+      <div><label>Datum:</label> <span>&nbsp;</span></div>
+      <div><label>Jméno:</label> <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></div>
+    </div>
+  </div>
+
+  <!-- PŘÍKLAD 1 -->
+  <div class="ex">
+    <div class="ex-title">Příklad 1 <span class="ex-subtitle">– nakreslete graf funkce</span></div>
+    <hr>
+    <div class="ex-body">
+      <p>Nakreslete graf funkce $f: y = x^2 - 2$.</p>
+      <div class="blank-xl"></div>
+    </div>
+  </div>
+
+  <!-- PŘÍKLAD 2 -->
+  <div class="ex" style="margin-top:4mm;">
+    <div class="ex-title">Příklad 2 <span class="ex-subtitle">– rostoucí a klesající intervaly</span></div>
+    <hr>
+    <div class="ex-body">
+      <p>Určete intervaly, ve kterých je daná funkce <strong>rostoucí</strong> a ve kterých <strong>klesající</strong>:</p>
+      <p>a) $f: y = -x^2 + 1$ &emsp;&emsp; b) $f: y = x^2 - 4$</p>
+      <div class="blank-lg"></div>
+    </div>
+  </div>
+
+  <!-- PŘÍKLAD 3 -->
+  <div class="ex" style="margin-top:4mm;">
+    <div class="ex-title">Příklad 3 <span class="ex-subtitle">– cvičení 8: průsečíky s osami</span></div>
+    <hr>
+    <div class="ex-body">
+      <p>Vypočtěte souřadnice průsečíků grafu funkce $y = 5x^2 - 20$ s osami soustavy souřadnic.</p>
+      <div class="blank-lg"></div>
+    </div>
+  </div>
+
+  <!-- PŘÍKLAD 4 -->
+  <div class="ex" style="margin-top:4mm;">
+    <div class="ex-title">Příklad 4 <span class="ex-subtitle">– určete k a q</span></div>
+    <hr>
+    <div class="ex-body">
+      <p>Určete čísla $k$ a $q$, víte-li, že graf funkce $f: y = kx^2 + q$ prochází body $C[1,\,-2]$ a $D[-2,\,7]$.</p>
+      <div class="blank-xl"></div>
+    </div>
+  </div>
+
+  <!-- PŘÍKLAD 5 -->
+  <div class="ex" style="margin-top:4mm;">
+    <div class="ex-title">Příklad 5 <span class="ex-subtitle">– určete číslo k</span></div>
+    <hr>
+    <div class="ex-body">
+      <p>Určete číslo $k$ ze vzorce funkce $f: y = kx^2$, jestliže platí:</p>
+      <p>a) $f(2) = 12$ &emsp;&emsp; b) $f\!\left(\dfrac{1}{2}\right) = \dfrac{1}{6}$</p>
+      <div class="blank-lg"></div>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

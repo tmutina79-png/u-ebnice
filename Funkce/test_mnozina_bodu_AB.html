@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<title>TEST – Množina bodů A/B</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});">
+</script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    font-size: 10pt;
+    color: #000;
+    background: #fff;
+  }
+  .page {
+    width: 210mm;
+    padding: 10mm 14mm 8mm;
+    page-break-after: always;
+  }
+  .page:last-child { page-break-after: auto; }
+
+  .test-header {
+    border: 2px solid #000;
+    border-radius: 6px;
+    padding: 4px 12px;
+    margin-bottom: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+  .test-header h1 { font-size: 11pt; font-weight: 800; text-align: center; }
+  .test-header .meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 9.5pt;
+    gap: 10px;
+  }
+  .test-header .meta span {
+    border-bottom: 1px solid #000;
+    flex: 1;
+    padding-bottom: 1px;
+  }
+  .test-header .meta label { font-weight: 700; margin-right: 4px; white-space: nowrap; }
+
+  .ex { margin-bottom: 6px; padding: 2px 0; break-inside: avoid; }
+  .ex-title { font-weight: 700; font-size: 10pt; margin-bottom: 3px; }
+  .ex-subtitle { font-size: 8pt; color: #555; font-style: italic; margin-left: 6px; }
+  .ex-body { font-size: 9.5pt; line-height: 1.55; }
+  .ex-body p { margin-bottom: 3px; }
+
+  hr { border: none; border-top: 1px solid #ccc; margin: 2px 0 5px; }
+
+  /* prázdné místo pro náčrt/řešení */
+  .blank    { height: 48mm; border: 1px dashed #ccc; margin-top: 4px; }
+  .blank-sm { height: 28mm; border: 1px dashed #ccc; margin-top: 4px; }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════ SKUPINA A ══════════════════════ -->
+<div class="page">
+  <div class="test-header">
+    <h1>TEST – Množina bodů daných vlastností</h1>
+    <div class="meta">
+      <div><label>Skupina: A</label></div>
+      <div><label>Datum:</label> <span>&nbsp;</span></div>
+      <div><label>Jméno:</label> <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></div>
+    </div>
+  </div>
+
+  <!-- PŘÍKLAD 1 -->
+  <div class="ex">
+    <div class="ex-title">Příklad 1 <span class="ex-subtitle">– průsečík dvou kružnic</span></div>
+    <hr>
+    <div class="ex-body">
+      <p>Zvolte dva body $R$ a $S$ tak, aby $|RS| = 4\text{ cm}$. Narýsujte množinu všech bodů, které mají od bodu $R$ i od bodu $S$ vzdálenost $4\text{ cm}$. Určete počet řešení.</p>
+      <div class="blank"></div>
+    </div>
+  </div>
+
+  <!-- PŘÍKLAD 2 -->
+  <div class="ex">
+    <div class="ex-title">Příklad 2 <span class="ex-subtitle">– bod a dvě rovnoběžky</span></div>
+    <hr>
+    <div class="ex-body">
+      <p>Jsou dány rovnoběžky $e$, $f$ vzdálené $2{,}3\text{ cm}$. Sestrojte bod $D$, který má od přímky $e$ vzdálenost $1{,}2\text{ cm}$ a od přímky $f$ vzdálenost $1{,}1\text{ cm}$. Určete počet řešení.</p>
+      <div class="blank"></div>
+    </div>
+  </div>
+
+  <!-- PŘÍKLAD 3 -->
+  <div class="ex">
+    <div class="ex-title">Příklad 3 <span class="ex-subtitle">– kružnice dotýkající se dvou různoběžek</span></div>
+    <hr>
+    <div class="ex-body">
+      <p>Jsou dány různoběžky $a$, $b$, které svírají úhel $60°$. Sestrojte kružnici $m$ o poloměru $2{,}5\text{ cm}$, která se přímek $a$, $b$ dotýká. Určete počet řešení.</p>
+      <div class="blank"></div>
+    </div>
+  </div>
+
+</div><!-- /page A -->
+
+
+<!-- ══════════════════════ SKUPINA B ══════════════════════ -->
+<div class="page">
+  <div class="test-header">
+    <h1>TEST – Množina bodů daných vlastností</h1>
+    <div class="meta">
+      <div><label>Skupina: B</label></div>
+      <div><label>Datum:</label> <span>&nbsp;</span></div>
+      <div><label>Jméno:</label> <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></div>
+    </div>
+  </div>
+
+  <!-- PŘÍKLAD 1 -->
+  <div class="ex">
+    <div class="ex-title">Příklad 1 <span class="ex-subtitle">– průsečík dvou kružnic</span></div>
+    <hr>
+    <div class="ex-body">
+      <p>Zvolte dva body $R$ a $S$ tak, aby $|RS| = 5\text{ cm}$. Narýsujte množinu všech bodů, které mají od bodu $R$ i od bodu $S$ vzdálenost $5\text{ cm}$. Určete počet řešení.</p>
+      <div class="blank"></div>
+    </div>
+  </div>
+
+  <!-- PŘÍKLAD 2 -->
+  <div class="ex">
+    <div class="ex-title">Příklad 2 <span class="ex-subtitle">– bod a dvě rovnoběžky</span></div>
+    <hr>
+    <div class="ex-body">
+      <p>Jsou dány rovnoběžky $e$, $f$ vzdálené $2\text{ cm}$. Sestrojte bod $D$, který má od přímky $e$ vzdálenost $1\text{ cm}$ a od přímky $f$ vzdálenost $1\text{ cm}$. Určete počet řešení.</p>
+      <div class="blank"></div>
+    </div>
+  </div>
+
+  <!-- PŘÍKLAD 3 -->
+  <div class="ex">
+    <div class="ex-title">Příklad 3 <span class="ex-subtitle">– kružnice dotýkající se dvou různoběžek</span></div>
+    <hr>
+    <div class="ex-body">
+      <p>Jsou dány různoběžky $a$, $b$, které svírají úhel $90°$. Sestrojte kružnici $m$ o poloměru $3\text{ cm}$, která se přímek $a$, $b$ dotýká. Určete počet řešení.</p>
+      <div class="blank"></div>
+    </div>
+  </div>
+
+</div><!-- /page B -->
+
+</body>
+</html>

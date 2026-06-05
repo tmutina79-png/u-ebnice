@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<title>TEST – Funkce C</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});">
+</script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    font-size: 10pt;
+    color: #000;
+    background: #fff;
+  }
+
+  .page {
+    width: 210mm;
+    min-height: 297mm;
+    padding: 10mm 14mm 8mm;
+    page-break-after: always;
+  }
+  .page:last-child { page-break-after: auto; }
+
+  /* záhlaví */
+  .test-header {
+    border: 2px solid #000;
+    border-radius: 6px;
+    padding: 5px 10px;
+    margin-bottom: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .test-header h1 {
+    font-size: 12pt;
+    font-weight: 800;
+    text-align: center;
+    letter-spacing: .04em;
+  }
+  .test-header .meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 10pt;
+    gap: 10px;
+  }
+  .test-header .meta span {
+    border-bottom: 1px solid #000;
+    flex: 1;
+    padding-bottom: 1px;
+  }
+  .test-header .meta label { font-weight: 700; margin-right: 4px; white-space: nowrap; }
+
+  /* příklady */
+  .ex {
+    margin-bottom: 7px;
+    padding: 5px 9px 4px;
+    break-inside: avoid;
+  }
+  .ex-title {
+    font-weight: 700;
+    font-size: 10pt;
+    padding-bottom: 2px;
+    margin-bottom: 4px;
+  }
+  .ex-body { font-size: 9.5pt; line-height: 1.45; }
+  .ex-body p { margin-bottom: 2px; }
+
+  /* tabulka */
+  table { border-collapse: collapse; margin: 5px 0; font-size: 9.5pt; }
+  table th, table td {
+    border: 1px solid #888;
+    padding: 3px 8px;
+    text-align: center;
+    min-width: 22px;
+  }
+  table th { background: #f0f0f0; }
+
+  /* grafy */
+  .graphs-row {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    margin-top: 3px;
+    flex-wrap: wrap;
+  }
+  .graph-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+  }
+  .graph-box svg { display: block; }
+  .graph-label { font-size: 9pt; font-weight: 700; }
+
+  /* místo na řešení */
+  .blank { height: 22mm; }
+  .blank-sm { height: 8mm; }
+
+  @media print {
+    body { margin: 0; }
+    .page { padding: 14mm 16mm 12mm; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════ STRANA 1 – SKUPINA C ═══════════════════ -->
+<div class="page">
+  <div class="test-header">
+    <h1>TEST – Funkce</h1>
+    <div class="meta">
+      <div><label>Skupina: C</label></div>
+      <div><label>Datum:</label> <span>&nbsp;</span></div>
+      <div><label>Jméno:</label> <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></div>
+    </div>
+  </div>
+
+  <!-- PŘÍKLAD 1 -->
+  <div class="ex">
+    <div class="ex-title">Příklad 1</div>
+    <div class="ex-body">
+      <p>Je dána funkce $f: y = -3x + 8$. Vypočtěte:</p>
+      <p>a) $f(2)$ &emsp;&emsp; b) $f(-2)$ &emsp;&emsp; c) $f(0)$ &emsp;&emsp; d) $f\!\left(\dfrac{8}{3}\right)$</p>
+      <div class="blank"></div>
+    </div>
+  </div>
+
+  <!-- PŘÍKLAD 2 -->
+  <div class="ex">
+    <div class="ex-title">Příklad 2</div>
+    <div class="ex-body">
+      <p>Zapište vzorcem $y = f(x)$ funkci vyjadřující, že:</p>
+      <p>a) rovnostranný trojúhelník o straně $x$ cm má obvod $y$ cm.</p>
+      <div class="blank"></div>
+    </div>
+  </div>
+
+  <!-- PŘÍKLAD 3 -->
+  <div class="ex">
+    <div class="ex-title">Příklad 3</div>
+    <div class="ex-body">
+      <p>Určete definiční obor funkce:</p>
+      <p>
+        a) $y = \dfrac{5}{2x - 6}$ &emsp;&emsp;
+        b) $y = \dfrac{x - 1}{x^2 - 25}$ &emsp;&emsp;
+        c) $y = \sqrt{3x - 6}$ &emsp;&emsp;
+        d) $y = \dfrac{x^2}{x^2 - 3x}$
+      </p>
+      <div class="blank"></div>
+    </div>
+  </div>
+
+  <!-- PŘÍKLAD 4 -->
+  <div class="ex">
+    <div class="ex-title">Příklad 4</div>
+    <div class="ex-body">
+      <p>Je dána funkce $k: y = -2x + 10$. Zjistěte, pro která $x$ platí:</p>
+      <p>a) $k(x) = 4$ &emsp;&emsp; b) $k(x) = -6$ &emsp;&emsp; c) $k(x) = 0$</p>
+      <div class="blank"></div>
+    </div>
+  </div>
+
+  <!-- PŘÍKLAD 5 -->
+  <div class="ex">
+    <div class="ex-title">Příklad 5</div>
+    <div class="ex-body">
+      <p>Rozhodněte, zda daný obrázek může být grafem funkce. Odpověď zdůvodněte.</p>
+      <div class="graphs-row">
+
+        <!-- Graf a) – přímka (rostoucí) → JE funkce -->
+        <div class="graph-box">
+          <svg viewBox="0 0 130 120" width="95" height="88" xmlns="http://www.w3.org/2000/svg">
+            <!-- osy -->
+            <line x1="10" y1="60" x2="120" y2="60" stroke="#aaa" stroke-width="1"/>
+            <line x1="65" y1="10" x2="65" y2="110" stroke="#aaa" stroke-width="1"/>
+            <!-- šipky -->
+            <polygon points="120,60 114,57 114,63" fill="#aaa"/>
+            <polygon points="65,10 62,16 68,16" fill="#aaa"/>
+            <!-- popisky -->
+            <text x="123" y="64" font-size="9" fill="#555">x</text>
+            <text x="68" y="10" font-size="9" fill="#555">y</text>
+            <!-- přímka y = x – 1 -->
+            <line x1="15" y1="110" x2="115" y2="10" stroke="#2563eb" stroke-width="2"/>
+          </svg>
+          <div class="graph-label">a)</div>
+        </div>
+
+        <!-- Graf b) – kružnice → NENÍ funkce -->
+        <div class="graph-box">
+          <svg viewBox="0 0 130 120" width="95" height="88" xmlns="http://www.w3.org/2000/svg">
+            <line x1="10" y1="60" x2="120" y2="60" stroke="#aaa" stroke-width="1"/>
+            <line x1="65" y1="10" x2="65" y2="110" stroke="#aaa" stroke-width="1"/>
+            <polygon points="120,60 114,57 114,63" fill="#aaa"/>
+            <polygon points="65,10 62,16 68,16" fill="#aaa"/>
+            <text x="123" y="64" font-size="9" fill="#555">x</text>
+            <text x="68" y="10" font-size="9" fill="#555">y</text>
+            <!-- kružnice -->
+            <circle cx="65" cy="60" r="38" fill="none" stroke="#dc2626" stroke-width="2"/>
+          </svg>
+          <div class="graph-label">b)</div>
+        </div>
+
+        <!-- Graf c) – parabola otevřená nahoru → JE funkce -->
+        <div class="graph-box">
+          <svg viewBox="0 0 130 120" width="95" height="88" xmlns="http://www.w3.org/2000/svg">
+            <line x1="10" y1="60" x2="120" y2="60" stroke="#aaa" stroke-width="1"/>
+            <line x1="65" y1="10" x2="65" y2="110" stroke="#aaa" stroke-width="1"/>
+            <polygon points="120,60 114,57 114,63" fill="#aaa"/>
+            <polygon points="65,10 62,16 68,16" fill="#aaa"/>
+            <text x="123" y="64" font-size="9" fill="#555">x</text>
+            <text x="68" y="10" font-size="9" fill="#555">y</text>
+            <!-- parabola y = x² -->
+            <path d="M20,105 Q65,15 110,105" fill="none" stroke="#16a34a" stroke-width="2"/>
+          </svg>
+          <div class="graph-label">c)</div>
+        </div>
+
+      </div>
+      <div class="blank-sm"></div>
+    </div>
+  </div>
+
+</div><!-- /page -->
+
+</body>
+</html>
