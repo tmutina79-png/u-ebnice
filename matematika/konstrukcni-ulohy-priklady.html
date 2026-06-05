@@ -91,12 +91,13 @@ body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--
       d) $b=3\,\mathrm{cm}$, $c=7\,\mathrm{cm}$, $d=8{,}2\,\mathrm{cm}$, $\gamma=120^\circ$, $\delta=38^\circ$
     </div>
     <button class="toggle-btn" onclick="toggleHint(this)"><span>💡</span> Nápověda <span class="chevron">▶</span></button>
-    <div class="hint-box">Začni stranou nebo úhlopříčkou, která je v zadání přímo daná. Další vrcholy určuj jako průsečíky kružnic (délky stran) a případně ramen zadaných úhlů.</div>
-    <button class="toggle-btn" onclick="toggleSteps(this)" data-steps="3"><span>📝</span> Postup řešení (<span class="counter">0/3</span> kroků) <span class="chevron">▶</span></button>
+    <div class="hint-box">Všechny varianty (a–d) řeš metodou průsečíků kružnic a úhlů. Začni vždy stranou nebo úhlopříčkou, kterou znáš. Další vrcholy získáš jako průsečíky příslušných geometrických míst.</div>
+    <button class="toggle-btn" onclick="toggleSteps(this)" data-steps="4"><span>📝</span> Postup řešení (<span class="counter">0/4</span> kroků) <span class="chevron">▶</span></button>
     <div class="steps-box">
-      <div class="step"><div class="step-label">Krok 1 / 3</div>Zvol základní úsečku (např. $AB$ nebo zadanou úhlopříčku) a přesně ji narýsuj.</div>
-      <div class="step"><div class="step-label">Krok 2 / 3</div>Pomocí kružnic se středy v koncových bodech a se zadanými poloměry urči další vrchol (nebo vrcholy). U variant se zadanými úhly nejprve narýsuj příslušná ramena úhlů.</div>
-      <div class="step"><div class="step-label">Krok 3 / 3</div>Spoj vrcholy ve správném pořadí, ověř všechny zadané délky/úhly a proveď diskusi počtu řešení (obvykle 1 nebo 2 zrcadlová).</div>
+      <div class="step"><div class="step-label">Krok 1 / 4</div><strong>Varianta a)</strong> Narýsuj úsečku $AB=4{,}7\,\mathrm{cm}$. Postupně hledej vrcholy $C,D$ pomocí kružnic se středy v $B,A$ a poloměry $c=4{,}6\,\mathrm{cm}$, $d=3{,}6\,\mathrm{cm}$. Úhlopříčku $f=3{,}8\,\mathrm{cm}$ využij k upřesnění.</div>
+      <div class="step"><div class="step-label">Krok 2 / 4</div><strong>Varianta b)</strong> Narýsuj $AB=6\,\mathrm{cm}$ a v bodě $A$ úhel $\alpha=90^\circ$. Na rameni urči $D$ tak, aby $d=5\,\mathrm{cm}$. Bod $C$ získáš z podmínek $BC=c=7{,}5\,\mathrm{cm}$ a $\angle BCD=\gamma=78^\circ$.</div>
+      <div class="step"><div class="step-label">Krok 3 / 4</div><strong>Varianta c)</strong> Sestrojuj pomocí všech pěti délek: $AB=a=7{,}6\,\mathrm{cm}$, $BC=b$ (určíš z ostatních), $CD=c=5\,\mathrm{cm}$, $DA=d=2\,\mathrm{cm}$, úhlopříčka $AC=e=6{,}7\,\mathrm{cm}$, $BD=f=7\,\mathrm{cm}$. Oba trojúhelníky urči ze tří stran.</div>
+      <div class="step"><div class="step-label">Krok 4 / 4</div><strong>Varianta d)</strong> Narýsuj stranu $AB=b=3\,\mathrm{cm}$. V bodě $B$ sestroj úhel $\gamma=120^\circ$, na rameni vyznač $C$ tak, aby $BC=c=7\,\mathrm{cm}$. Bod $D$ urči z podmínek $CD=d=8{,}2\,\mathrm{cm}$ a $\angle CDA=\delta=38^\circ$.</div>
       <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><button class="next-btn" onclick="nextStep(this)">Další krok →</button><button class="reset-btn" onclick="resetSteps(this)">↩️ Od začátku</button></div>
       <div class="done-badge">✅ Kompletní řešení</div>
     </div>
@@ -163,12 +164,13 @@ body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--
       a) $f=6\,\mathrm{cm}$ &nbsp;&nbsp; b) $f=5\,\mathrm{cm}$ &nbsp;&nbsp; c) $f=7\,\mathrm{cm}$.
     </div>
     <button class="toggle-btn" onclick="toggleHint(this)"><span>💡</span> Nápověda <span class="chevron">▶</span></button>
-    <div class="hint-box">Základem je trojúhelník s úhlopříčkou $AC=e$. Každou variantu řeš samostatně podle jiné délky druhé úhlopříčky $f$.</div>
-    <button class="toggle-btn" onclick="toggleSteps(this)" data-steps="3"><span>📝</span> Postup řešení (<span class="counter">0/3</span> kroků) <span class="chevron">▶</span></button>
+    <div class="hint-box">Všechny tři varianty vycházejí ze stejné úhlopříčky $AC=e$ a podmínek pro úhly. Liší se pouze délkou druhé úhlopříčky $f$.</div>
+    <button class="toggle-btn" onclick="toggleSteps(this)" data-steps="4"><span>📝</span> Postup řešení (<span class="counter">0/4</span> kroků) <span class="chevron">▶</span></button>
     <div class="steps-box">
-      <div class="step"><div class="step-label">Krok 1 / 3</div>Narýsuj $AC=e=7{,}5\,\mathrm{cm}$ a v bodě $A$ sestroj úhly $\angle DAC$ a $\angle CAB$.</div>
-      <div class="step"><div class="step-label">Krok 2 / 3</div>Na příslušném rameni urči bod $D$ z podmínky $AD=d=6{,}5\,\mathrm{cm}$.</div>
-      <div class="step"><div class="step-label">Krok 3 / 3</div>Bod $B$ dohledej podle délky $f$ (varianta a/b/c) a dokonči čtyřúhelník $ABCD$.</div>
+      <div class="step"><div class="step-label">Krok 1 / 4</div>Narýsuj úhlopříčku $AC=e=7{,}5\,\mathrm{cm}$. V bodě $A$ sestroj dva úhly: $\angle DAC=35^\circ$ a $\angle CAB=23^\circ$.</div>
+      <div class="step"><div class="step-label">Krok 2 / 4</div>Na rameni úhlu $\angle DAC$ vyznač bod $D$ tak, aby $AD=d=6{,}5\,\mathrm{cm}$.</div>
+      <div class="step"><div class="step-label">Krok 3 / 4</div><strong>Varianty a, b, c:</strong> Bod $B$ určuješ jako průsečík paprsku z $A$ (úhel $\angle CAB$) s kružnicí se středem $C$ a poloměrem $f$. Pro variantu a) $f=6\,\mathrm{cm}$; b) $f=5\,\mathrm{cm}$; c) $f=7\,\mathrm{cm}$.</div>
+      <div class="step"><div class="step-label">Krok 4 / 4</div>Spoj vrcholy: $A-D-?-B-?-C$ (pořadí si ověř z obrázku). Každá varianta dá jeden čtyřúhelník $ABCD$.</div>
       <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><button class="next-btn" onclick="nextStep(this)">Další krok →</button><button class="reset-btn" onclick="resetSteps(this)">↩️ Od začátku</button></div>
       <div class="done-badge">✅ Kompletní řešení</div>
     </div>
@@ -181,12 +183,13 @@ body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--
       a) $e=5{,}7\,\mathrm{cm}$ &nbsp;&nbsp; b) $e=3{,}5\,\mathrm{cm}$ &nbsp;&nbsp; c) $e=8\,\mathrm{cm}$.
     </div>
     <button class="toggle-btn" onclick="toggleHint(this)"><span>💡</span> Nápověda <span class="chevron">▶</span></button>
-    <div class="hint-box">Sestroj základnu $AB$ a směr rovnoběžné přímky pro $CD$. Úloha se liší podle délky úhlopříčky $e$.</div>
-    <button class="toggle-btn" onclick="toggleSteps(this)" data-steps="3"><span>📝</span> Postup řešení (<span class="counter">0/3</span> kroků) <span class="chevron">▶</span></button>
+    <div class="hint-box">Všechny tři varianty vycházejí z jedné konstrukce: základny $AB$, úhlu $\alpha$, ramene $AD$. Liší se pouze délkou úhlopříčky $e$, která určuje polohu vrcholu $C$.</div>
+    <button class="toggle-btn" onclick="toggleSteps(this)" data-steps="4"><span>📝</span> Postup řešení (<span class="counter">0/4</span> kroků) <span class="chevron">▶</span></button>
     <div class="steps-box">
-      <div class="step"><div class="step-label">Krok 1 / 3</div>Narýsuj $AB=6\,\mathrm{cm}$, v bodě $A$ úhel $\alpha=52^\circ$ a určuj směr ramene $AD$.</div>
-      <div class="step"><div class="step-label">Krok 2 / 3</div>Na rameni vyznač $D$ tak, aby $AD=d=4\,\mathrm{cm}$. Bodem $D$ veď rovnoběžku s $AB$ (to je přímka $CD$).</div>
-      <div class="step"><div class="step-label">Krok 3 / 3</div>Bod $C$ urč jako průsečík této rovnoběžky s kružnicí se středem $A$ a poloměrem $e$ (pro a/b/c zvlášť).</div>
+      <div class="step"><div class="step-label">Krok 1 / 4</div>Narýsuj základnu $AB=6\,\mathrm{cm}$. V bodě $A$ sestroj úhel $\alpha=52^\circ$ (směr ramene $AD$).</div>
+      <div class="step"><div class="step-label">Krok 2 / 4</div>Na rameni vyznač bod $D$ tak, aby $AD=d=4\,\mathrm{cm}$.</div>
+      <div class="step"><div class="step-label">Krok 3 / 4</div>Bodem $D$ veď přímku rovnoběžnou s $AB$ (to je přímka $CD$).</div>
+      <div class="step"><div class="step-label">Krok 4 / 4</div><strong>Varianty a, b, c:</strong> Bod $C$ je průsečík rovnoběžky $CD$ s kružnicí se středem $A$ a poloměrem $e$. Pro a) $e=5{,}7\,\mathrm{cm}$; b) $e=3{,}5\,\mathrm{cm}$; c) $e=8\,\mathrm{cm}$. Každá varianta dává jiný lichoběžník.</div>
       <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><button class="next-btn" onclick="nextStep(this)">Další krok →</button><button class="reset-btn" onclick="resetSteps(this)">↩️ Od začátku</button></div>
       <div class="done-badge">✅ Kompletní řešení</div>
     </div>
@@ -216,12 +219,13 @@ body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--
       b) $c=7{,}5\,\mathrm{cm}$, $v=4\,\mathrm{cm}$, $e=4{,}8\,\mathrm{cm}$, $f=7{,}8\,\mathrm{cm}$.
     </div>
     <button class="toggle-btn" onclick="toggleHint(this)"><span>💡</span> Nápověda <span class="chevron">▶</span></button>
-    <div class="hint-box">Výška $v$ určuje vzdálenost rovnoběžných základen. Potom doplň body z délek stran/úhlopříček podle varianty.</div>
-    <button class="toggle-btn" onclick="toggleSteps(this)" data-steps="3"><span>📝</span> Postup řešení (<span class="counter">0/3</span> kroků) <span class="chevron">▶</span></button>
+    <div class="hint-box">Výška $v$ určuje vzdálenost rovnoběžných základen. Dvě varianty se liší v zadaných datech: (a) používá strany a úhel, (b) používá úhlopříčky.</div>
+    <button class="toggle-btn" onclick="toggleSteps(this)" data-steps="4"><span>📝</span> Postup řešení (<span class="counter">0/4</span> kroků) <span class="chevron">▶</span></button>
     <div class="steps-box">
-      <div class="step"><div class="step-label">Krok 1 / 3</div>Sestroj jednu základnu a rovnoběžku ve vzdálenosti $v$ pro druhou základnu.</div>
-      <div class="step"><div class="step-label">Krok 2 / 3</div>V případě (a) využij délky $a,c$ a úhel $\delta$. V případě (b) využij úhlopříčky $e,f$ jako průsečíky kružnic.</div>
-      <div class="step"><div class="step-label">Krok 3 / 3</div>Dourči vrcholy, zkontroluj rovnoběžnost $AB\parallel CD$ a všechny zadané údaje.</div>
+      <div class="step"><div class="step-label">Krok 1 / 4</div>Sestroj základnu $AB=a$ a pomocí výšky $v$ narýsuj rovnoběžku v její vzdálenosti.</div>
+      <div class="step"><div class="step-label">Krok 2 / 4</div><strong>Varianta a):</strong> Na základně $AB$ vyznač $a=4{,}8\,\mathrm{cm}$. V bodě $D$ sestroj úhel $\delta=106^\circ$ a na horní rovnoběžce vyznač $C$ tak, aby $CD=c=1{,}8\,\mathrm{cm}$.</div>
+      <div class="step"><div class="step-label">Krok 3 / 4</div><strong>Varianta b):</strong> Na horní rovnoběžce vyznač $CD=c=7{,}5\,\mathrm{cm}$. Vrcholy $A,B$ urči jako průsečíky kružnic se středem $C,D$ a poloměry $e=4{,}8\,\mathrm{cm}$ a $f=7{,}8\,\mathrm{cm}$ (úhlopříčky).</div>
+      <div class="step"><div class="step-label">Krok 4 / 4</div>Ověř rovnoběžnost $AB\parallel CD$, správnost výšky $v=3{,}2\,\mathrm{cm}$ (varianta a) resp. $v=4\,\mathrm{cm}$ (varianta b), a všechny ostatní zadané údaje.</div>
       <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><button class="next-btn" onclick="nextStep(this)">Další krok →</button><button class="reset-btn" onclick="resetSteps(this)">↩️ Od začátku</button></div>
       <div class="done-badge">✅ Kompletní řešení</div>
     </div>
@@ -285,12 +289,13 @@ body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--
       b) $e=4{,}2\,\mathrm{cm}$, $f=9{,}6\,\mathrm{cm}$, $\omega=110^\circ$.
     </div>
     <button class="toggle-btn" onclick="toggleHint(this)"><span>💡</span> Nápověda <span class="chevron">▶</span></button>
-    <div class="hint-box">V rovnoběžníku se úhlopříčky půlí. To je klíčové pro konstrukci z úhlopříček $e,f$ a případně úhlu $\omega$.</div>
-    <button class="toggle-btn" onclick="toggleSteps(this)" data-steps="3"><span>📝</span> Postup řešení (<span class="counter">0/3</span> kroků) <span class="chevron">▶</span></button>
+    <div class="hint-box">V rovnoběžníku se úhlopříčky půlí (mají společný střed). To je klíčové pro konstrukci. Obě varianty používají úhlopříčky, liší se v třetím daném údaji.</div>
+    <button class="toggle-btn" onclick="toggleSteps(this)" data-steps="4"><span>📝</span> Postup řešení (<span class="counter">0/4</span> kroků) <span class="chevron">▶</span></button>
     <div class="steps-box">
-      <div class="step"><div class="step-label">Krok 1 / 3</div>Sestroj jednu úhlopříčku a její střed.</div>
-      <div class="step"><div class="step-label">Krok 2 / 3</div>Podle druhé úhlopříčky urči protilehlé vrcholy symetricky ke středu.</div>
-      <div class="step"><div class="step-label">Krok 3 / 3</div>Dopočti/ověř stranu $a$ (varianta a) nebo úhel $\omega$ (varianta b) a spoj vrcholy.</div>
+      <div class="step"><div class="step-label">Krok 1 / 4</div>Narýsuj jednu úhlopříčku $AC=e$ a vyznač její střed $S$.</div>
+      <div class="step"><div class="step-label">Krok 2 / 4</div>Bodem $S$ narýsuj druhou úhlopříčku $BD=f$ (její směr určí varianta nebo volba).</div>
+      <div class="step"><div class="step-label">Krok 3 / 4</div><strong>Varianta a):</strong> Vrcholy $B,D$ leží na přímce procházející $S$, která je svislá (nebo jinak volená). Ověř, že $AB=a=4\,\mathrm{cm}$ a že se skutečně jedná o rovnoběžník.</div>
+      <div class="step"><div class="step-label">Krok 4 / 4</div><strong>Varianta b):</strong> Úhlopříčky se protínají pod úhlem $\omega=110^\circ$. Narýsuj druhou úhlopříčku v tomto úhlu vůči první, pak určuj vrcholy jako průsečíky. Ověř všechny údaje a rovnoběžnost protilehlých stran.</div>
       <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><button class="next-btn" onclick="nextStep(this)">Další krok →</button><button class="reset-btn" onclick="resetSteps(this)">↩️ Od začátku</button></div>
       <div class="done-badge">✅ Kompletní řešení</div>
     </div>
