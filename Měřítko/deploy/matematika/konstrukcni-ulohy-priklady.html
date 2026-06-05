@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Příklady – Geometrické konstrukce | Studijní portál</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]})"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --brand:#444791;--brand-light:#e8ebfa;--brand-dark:#3b3f85;
+  --bg:#f5f5f5;--surface:#fff;--txt:#242424;--txt2:#424242;--muted:#616161;
+  --border:#e0e0e0;--r:10px;--sh:0 2px 8px rgba(0,0,0,.07);
+  --green:#16a34a;--green-bg:#f0fdf4;--green-border:#bbf7d0;
+  --amber:#b45309;--amber-bg:#fffbeb;--amber-border:#fde68a;
+  --blue:#2563eb;--blue-bg:#eff6ff;--blue-border:#bfdbfe;
+  --purple:#7c3aed;--purple-bg:#f5f3ff;--purple-border:#ddd6fe;
+}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--txt);line-height:1.65}
+.page{max-width:840px;margin:0 auto;padding:28px 24px 80px}
+.page-title{font-size:1.6rem;font-weight:800;margin-bottom:6px;display:flex;align-items:center;gap:10px}
+.page-subtitle{font-size:.92rem;color:var(--muted);margin-bottom:28px;line-height:1.6}
+.back-link{display:inline-flex;align-items:center;gap:6px;font-size:.82rem;color:var(--brand);text-decoration:none;font-weight:600;margin-bottom:18px}
+.back-link:hover{text-decoration:underline}
+
+.embed-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--sh);padding:12px;margin-bottom:18px}
+.embed-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:8px}
+.embed-title{font-size:.95rem;font-weight:700;color:var(--brand-dark)}
+.embed-link{font-size:.82rem;font-weight:700;color:var(--brand);text-decoration:none}
+.embed-link:hover{text-decoration:underline}
+.embed-frame{width:100%;height:540px;border:1px solid var(--border);border-radius:8px;background:#fff}
+
+.section-tabs{display:flex;gap:6px;margin-bottom:24px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:5px;box-shadow:var(--sh)}
+.section-tab{flex:1;border:none;background:transparent;padding:12px 14px;border-radius:8px;font-family:inherit;font-size:.9rem;font-weight:700;color:var(--muted);cursor:pointer;transition:.15s}
+.section-tab:hover{background:var(--bg);color:var(--txt2)}
+.section-tab.active{background:var(--brand);color:#fff}
+.section-panel{display:none}
+.section-panel.active{display:block}
+
+.exercise{background:var(--surface);border-radius:var(--r);box-shadow:var(--sh);padding:22px 26px;margin-bottom:20px;border:1px solid var(--border)}
+.exercise-header{font-size:1.05rem;font-weight:700;color:var(--brand-dark);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.exercise-header .num{background:var(--brand);color:#fff;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.78rem;font-weight:700;flex-shrink:0}
+.zadani{background:var(--blue-bg);border:1px solid var(--blue-border);border-radius:8px;padding:14px 18px;margin-bottom:14px;font-size:.92rem}
+.zadani-label{font-weight:700;color:var(--blue);margin-bottom:4px;font-size:.8rem}
+.toggle-btn{display:flex;align-items:center;gap:8px;width:100%;border:1px solid var(--border);background:var(--surface);border-radius:8px;padding:10px 16px;cursor:pointer;font-family:inherit;font-size:.88rem;font-weight:600;color:var(--txt2);transition:.15s}
+.toggle-btn:hover{background:var(--bg);border-color:#ccc}
+.toggle-btn .chevron{transition:transform .2s;font-size:.7rem}
+.toggle-btn.open .chevron{transform:rotate(90deg)}
+.toggle-btn+.toggle-btn{margin-top:8px}
+.hint-box{display:none;background:var(--amber-bg);border:1px solid var(--amber-border);border-radius:8px;padding:14px 18px;margin-top:8px;margin-bottom:8px;font-size:.88rem;color:var(--amber)}
+.hint-box.show{display:block}
+.steps-box{display:none;margin-top:8px;margin-bottom:4px}
+.steps-box.show{display:block}
+.step{display:none;background:var(--purple-bg);border:1px solid var(--purple-border);border-radius:8px;padding:14px 18px;margin-bottom:8px;font-size:.88rem}
+.step.visible{display:block}
+.step-label{font-weight:700;color:var(--purple);font-size:.76rem;margin-bottom:4px}
+.next-btn{display:inline-flex;align-items:center;gap:6px;border:none;background:var(--brand);color:#fff;padding:8px 18px;border-radius:8px;font-family:inherit;font-size:.82rem;font-weight:600;cursor:pointer}
+.next-btn:disabled{opacity:.4;cursor:default}
+.reset-btn{display:none;border:1px solid var(--border);background:var(--surface);color:var(--muted);padding:6px 14px;border-radius:8px;font-family:inherit;font-size:.78rem;font-weight:600;cursor:pointer;margin-left:8px}
+.reset-btn.show{display:inline-flex;align-items:center;gap:4px}
+.done-badge{display:none;background:var(--green-bg);border:1px solid var(--green-border);color:var(--green);padding:8px 16px;border-radius:8px;font-size:.82rem;font-weight:700;margin-top:4px}
+.done-badge.show{display:flex;align-items:center;gap:6px}
+.footer{text-align:center;padding:28px 0 12px;font-size:.75rem;color:var(--muted);border-top:1px solid var(--border);margin-top:34px}
+@media(max-width:600px){.page{padding:16px 14px 60px}.exercise{padding:16px 16px}}
+</style>
+</head>
+<body>
+<div class="page">
+
+<a class="back-link" href="index.html">← Zpět na matematiku</a>
+<h1 class="page-title">🧩 Příklady – Geometrické konstrukce</h1>
+<p class="page-subtitle">Struktura je stejná jako u interaktivních příkladů: každá úloha má zadání, nápovědu a postup řešení krok za krokem. Obsah vychází z obou přiložených stran.</p>
+
+<div class="section-tabs">
+  <button class="section-tab active" onclick="switchSection('sada1', this)">📘 Sada 1 (Cvičení 5)</button>
+  <button class="section-tab" onclick="switchSection('sada2', this)">📗 Sada 2 (další konstrukce)</button>
+</div>
+
+<div class="section-panel active" id="section-sada1">
+  <div class="exercise" id="ex1">
+    <div class="exercise-header"><span class="num">1</span> Sestrojte čtyřúhelník $ABCD$</div>
+    <div class="zadani">
+      <div class="zadani-label">📝 Zadání:</div>
+      Sestrojte čtyřúhelník $ABCD$, je-li dáno:<br>
+      a) $a=4{,}7\,\mathrm{cm}$, $b=2{,}4\,\mathrm{cm}$, $c=4{,}6\,\mathrm{cm}$, $d=3{,}6\,\mathrm{cm}$, $f=3{,}8\,\mathrm{cm}$<br>
+      b) $a=6\,\mathrm{cm}$, $b=5\,\mathrm{cm}$, $c=7{,}5\,\mathrm{cm}$, $\alpha=90^\circ$, $\gamma=78^\circ$<br>
+      c) $a=7{,}6\,\mathrm{cm}$, $c=5\,\mathrm{cm}$, $d=2\,\mathrm{cm}$, $e=6{,}7\,\mathrm{cm}$, $f=7\,\mathrm{cm}$<br>
+      d) $b=3\,\mathrm{cm}$, $c=7\,\mathrm{cm}$, $d=8{,}2\,\mathrm{cm}$, $\gamma=120^\circ$, $\delta=38^\circ$
+    </div>
+    <button class="toggle-btn" onclick="toggleHint(this)"><span>💡</span> Nápověda <span class="chevron">▶</span></button>
+    <div class="hint-box">Začni stranou nebo úhlopříčkou, která je v zadání přímo daná. Další vrcholy určuj jako průsečíky kružnic (délky stran) a případně ramen zadaných úhlů.</div>
+    <button class="toggle-btn" onclick="toggleSteps(this)" data-steps="3"><span>📝</span> Postup řešení (<span class="counter">0/3</span> kroků) <span class="chevron">▶</span></button>
+    <div class="steps-box">
+      <div class="step"><div class="step-label">Krok 1 / 3</div>Zvol základní úsečku (např. $AB$ nebo zadanou úhlopříčku) a přesně ji narýsuj.</div>
+      <div class="step"><div class="step-label">Krok 2 / 3</div>Pomocí kružnic se středy v koncových bodech a se zadanými poloměry urči další vrchol (nebo vrcholy). U variant se zadanými úhly nejprve narýsuj příslušná ramena úhlů.</div>
+      <div class="step"><div class="step-label">Krok 3 / 3</div>Spoj vrcholy ve správném pořadí, ověř všechny zadané délky/úhly a proveď diskusi počtu řešení (obvykle 1 nebo 2 zrcadlová).</div>
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><button class="next-btn" onclick="nextStep(this)">Další krok →</button><button class="reset-btn" onclick="resetSteps(this)">↩️ Od začátku</button></div>
+      <div class="done-badge">✅ Kompletní řešení</div>
+    </div>
+  </div>
+</div>
+
+<div class="section-panel" id="section-sada2">
+
+  <div class="exercise" id="ex2">
+    <div class="exercise-header"><span class="num">2</span> Sestrojte čtyřúhelník $MNOP$</div>
+    <div class="zadani"><div class="zadani-label">📝 Zadání:</div>
+      $|MP|=6\,\mathrm{cm}$, $|PO|=4\,\mathrm{cm}$, $\angle OPM=95^\circ$, $\angle PMN=45^\circ$, $\angle PON=66^\circ$.
+    </div>
+    <button class="toggle-btn" onclick="toggleHint(this)"><span>💡</span> Nápověda <span class="chevron">▶</span></button>
+    <div class="hint-box">Nejprve urči trojúhelník $MPO$ ze dvou stran a sevřeného úhlu. Bod $N$ získáš jako průsečík dvou ramen z vrcholů $M$ a $O$.</div>
+    <button class="toggle-btn" onclick="toggleSteps(this)" data-steps="3"><span>📝</span> Postup řešení (<span class="counter">0/3</span> kroků) <span class="chevron">▶</span></button>
+    <div class="steps-box">
+      <div class="step"><div class="step-label">Krok 1 / 3</div>Narýsuj úsečku $MP$ délky $6\,\mathrm{cm}$ a v bodě $P$ sestroj úhel $\angle OPM=95^\circ$.</div>
+      <div class="step"><div class="step-label">Krok 2 / 3</div>Na rameni úhlu vyznač bod $O$ tak, aby $|PO|=4\,\mathrm{cm}$.</div>
+      <div class="step"><div class="step-label">Krok 3 / 3</div>V bodě $M$ sestroj rameno úhlu $\angle PMN=45^\circ$ a v bodě $O$ rameno úhlu $\angle PON=66^\circ$. Jejich průsečík je $N$.</div>
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><button class="next-btn" onclick="nextStep(this)">Další krok →</button><button class="reset-btn" onclick="resetSteps(this)">↩️ Od začátku</button></div>
+      <div class="done-badge">✅ Kompletní řešení</div>
+    </div>
+  </div>
+
+  <div class="exercise" id="ex3">
+    <div class="exercise-header"><span class="num">3</span> Sestrojte čtyřúhelník $ABCD$</div>
+    <div class="zadani"><div class="zadani-label">📝 Zadání:</div>
+      $a=3{,}6\,\mathrm{cm}$, $d=4\,\mathrm{cm}$, $e=7\,\mathrm{cm}$, $\gamma=59^\circ$, $\angle DAC=60^\circ$.
+    </div>
+    <button class="toggle-btn" onclick="toggleHint(this)"><span>💡</span> Nápověda <span class="chevron">▶</span></button>
+    <div class="hint-box">Využij úhlopříčku $AC=e$ jako základ. Bod $D$ určíš z délky $d$ a úhlu $\angle DAC$, bod $B$ potom pomocí délky $a$ a podmínky pro úhel u vrcholu $C$.</div>
+    <button class="toggle-btn" onclick="toggleSteps(this)" data-steps="3"><span>📝</span> Postup řešení (<span class="counter">0/3</span> kroků) <span class="chevron">▶</span></button>
+    <div class="steps-box">
+      <div class="step"><div class="step-label">Krok 1 / 3</div>Narýsuj úhlopříčku $AC=7\,\mathrm{cm}$.</div>
+      <div class="step"><div class="step-label">Krok 2 / 3</div>V bodě $A$ sestroj úhel $\angle DAC=60^\circ$ a na jeho rameni vyznač bod $D$ tak, aby $AD=d=4\,\mathrm{cm}$.</div>
+      <div class="step"><div class="step-label">Krok 3 / 3</div>Bod $B$ urči z podmínek $AB=a=3{,}6\,\mathrm{cm}$ a $\gamma=\angle BCD=59^\circ$. Spoj $A-B-C-D$.</div>
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><button class="next-btn" onclick="nextStep(this)">Další krok →</button><button class="reset-btn" onclick="resetSteps(this)">↩️ Od začátku</button></div>
+      <div class="done-badge">✅ Kompletní řešení</div>
+    </div>
+  </div>
+
+  <div class="exercise" id="ex4">
+    <div class="exercise-header"><span class="num">4</span> Sestrojte čtyřúhelník $TUVX$</div>
+    <div class="zadani"><div class="zadani-label">📝 Zadání:</div>
+      S pravým úhlem při vrcholu $V$, kde $|TX|=2\,\mathrm{cm}$, $|XU|=8\,\mathrm{cm}$, $|TU|=6{,}5\,\mathrm{cm}$, $|TV|=4\,\mathrm{cm}$.
+    </div>
+    <button class="toggle-btn" onclick="toggleHint(this)"><span>💡</span> Nápověda <span class="chevron">▶</span></button>
+    <div class="hint-box">Pravý úhel v bodě $V$ určuje dvě kolmé polopřímky. Body $T$ a $U$ pak hledej na těchto ramenech pomocí daných délek.</div>
+    <button class="toggle-btn" onclick="toggleSteps(this)" data-steps="3"><span>📝</span> Postup řešení (<span class="counter">0/3</span> kroků) <span class="chevron">▶</span></button>
+    <div class="steps-box">
+      <div class="step"><div class="step-label">Krok 1 / 3</div>Sestroj pravý úhel v bodě $V$.</div>
+      <div class="step"><div class="step-label">Krok 2 / 3</div>Na jednom rameni vyznač bod $T$ tak, aby $TV=4\,\mathrm{cm}$; bod $U$ urči z podmínky $TU=6{,}5\,\mathrm{cm}$.</div>
+      <div class="step"><div class="step-label">Krok 3 / 3</div>Bod $X$ urči jako průsečík kružnic se středy $T$ a $U$ a poloměry $2\,\mathrm{cm}$ a $8\,\mathrm{cm}$.</div>
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><button class="next-btn" onclick="nextStep(this)">Další krok →</button><button class="reset-btn" onclick="resetSteps(this)">↩️ Od začátku</button></div>
+      <div class="done-badge">✅ Kompletní řešení</div>
+    </div>
+  </div>
+
+  <div class="exercise" id="ex5">
+    <div class="exercise-header"><span class="num">5</span> Sestrojte čtyřúhelník $ABCD$ – tři varianty</div>
+    <div class="zadani"><div class="zadani-label">📝 Zadání:</div>
+      Je dáno: $d=6{,}5\,\mathrm{cm}$, $e=7{,}5\,\mathrm{cm}$, $\angle DAC=35^\circ$, $\angle CAB=23^\circ$ a současně<br>
+      a) $f=6\,\mathrm{cm}$ &nbsp;&nbsp; b) $f=5\,\mathrm{cm}$ &nbsp;&nbsp; c) $f=7\,\mathrm{cm}$.
+    </div>
+    <button class="toggle-btn" onclick="toggleHint(this)"><span>💡</span> Nápověda <span class="chevron">▶</span></button>
+    <div class="hint-box">Základem je trojúhelník s úhlopříčkou $AC=e$. Každou variantu řeš samostatně podle jiné délky druhé úhlopříčky $f$.</div>
+    <button class="toggle-btn" onclick="toggleSteps(this)" data-steps="3"><span>📝</span> Postup řešení (<span class="counter">0/3</span> kroků) <span class="chevron">▶</span></button>
+    <div class="steps-box">
+      <div class="step"><div class="step-label">Krok 1 / 3</div>Narýsuj $AC=e=7{,}5\,\mathrm{cm}$ a v bodě $A$ sestroj úhly $\angle DAC$ a $\angle CAB$.</div>
+      <div class="step"><div class="step-label">Krok 2 / 3</div>Na příslušném rameni urči bod $D$ z podmínky $AD=d=6{,}5\,\mathrm{cm}$.</div>
+      <div class="step"><div class="step-label">Krok 3 / 3</div>Bod $B$ dohledej podle délky $f$ (varianta a/b/c) a dokonči čtyřúhelník $ABCD$.</div>
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><button class="next-btn" onclick="nextStep(this)">Další krok →</button><button class="reset-btn" onclick="resetSteps(this)">↩️ Od začátku</button></div>
+      <div class="done-badge">✅ Kompletní řešení</div>
+    </div>
+  </div>
+
+  <div class="exercise" id="ex6">
+    <div class="exercise-header"><span class="num">6</span> Lichoběžník $ABCD$ ($AB\parallel CD$)</div>
+    <div class="zadani"><div class="zadani-label">📝 Zadání:</div>
+      $a=6\,\mathrm{cm}$, $\alpha=52^\circ$, $d=4\,\mathrm{cm}$ a současně<br>
+      a) $e=5{,}7\,\mathrm{cm}$ &nbsp;&nbsp; b) $e=3{,}5\,\mathrm{cm}$ &nbsp;&nbsp; c) $e=8\,\mathrm{cm}$.
+    </div>
+    <button class="toggle-btn" onclick="toggleHint(this)"><span>💡</span> Nápověda <span class="chevron">▶</span></button>
+    <div class="hint-box">Sestroj základnu $AB$ a směr rovnoběžné přímky pro $CD$. Úloha se liší podle délky úhlopříčky $e$.</div>
+    <button class="toggle-btn" onclick="toggleSteps(this)" data-steps="3"><span>📝</span> Postup řešení (<span class="counter">0/3</span> kroků) <span class="chevron">▶</span></button>
+    <div class="steps-box">
+      <div class="step"><div class="step-label">Krok 1 / 3</div>Narýsuj $AB=6\,\mathrm{cm}$, v bodě $A$ úhel $\alpha=52^\circ$ a určuj směr ramene $AD$.</div>
+      <div class="step"><div class="step-label">Krok 2 / 3</div>Na rameni vyznač $D$ tak, aby $AD=d=4\,\mathrm{cm}$. Bodem $D$ veď rovnoběžku s $AB$ (to je přímka $CD$).</div>
+      <div class="step"><div class="step-label">Krok 3 / 3</div>Bod $C$ urč jako průsečík této rovnoběžky s kružnicí se středem $A$ a poloměrem $e$ (pro a/b/c zvlášť).</div>
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><button class="next-btn" onclick="nextStep(this)">Další krok →</button><button class="reset-btn" onclick="resetSteps(this)">↩️ Od začátku</button></div>
+      <div class="done-badge">✅ Kompletní řešení</div>
+    </div>
+  </div>
+
+  <div class="exercise" id="ex7">
+    <div class="exercise-header"><span class="num">7</span> Pravoúhlý lichoběžník $EFGH$</div>
+    <div class="zadani"><div class="zadani-label">📝 Zadání:</div>
+      S pravým úhlem při vrcholu $F$ a se základnami $EF$ a $GH$: $|EF|=7{,}3\,\mathrm{cm}$, $|EH|=2{,}5\,\mathrm{cm}$, $|FH|=6{,}8\,\mathrm{cm}$.
+    </div>
+    <button class="toggle-btn" onclick="toggleHint(this)"><span>💡</span> Nápověda <span class="chevron">▶</span></button>
+    <div class="hint-box">Nejprve urči trojúhelník $EFH$ (znáš dvě strany a pravý úhel u $F$). Pak využij rovnoběžnost základen.</div>
+    <button class="toggle-btn" onclick="toggleSteps(this)" data-steps="3"><span>📝</span> Postup řešení (<span class="counter">0/3</span> kroků) <span class="chevron">▶</span></button>
+    <div class="steps-box">
+      <div class="step"><div class="step-label">Krok 1 / 3</div>Sestroj pravý úhel v bodě $F$ a na jednom rameni vyznač $E$ tak, aby $EF=7{,}3\,\mathrm{cm}$.</div>
+      <div class="step"><div class="step-label">Krok 2 / 3</div>Bod $H$ urči jako průsečík kružnic se středy $E$ a $F$ o poloměrech $2{,}5\,\mathrm{cm}$ a $6{,}8\,\mathrm{cm}$.</div>
+      <div class="step"><div class="step-label">Krok 3 / 3</div>Bodem $H$ veď přímku rovnoběžnou s $EF$ a dopočti/dourči bod $G$ podle definice lichoběžníku.</div>
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><button class="next-btn" onclick="nextStep(this)">Další krok →</button><button class="reset-btn" onclick="resetSteps(this)">↩️ Od začátku</button></div>
+      <div class="done-badge">✅ Kompletní řešení</div>
+    </div>
+  </div>
+
+  <div class="exercise" id="ex8">
+    <div class="exercise-header"><span class="num">8</span> Lichoběžník $ABCD$ ($AB\parallel CD$) – dvě varianty</div>
+    <div class="zadani"><div class="zadani-label">📝 Zadání:</div>
+      a) $a=4{,}8\,\mathrm{cm}$, $c=1{,}8\,\mathrm{cm}$, $v=3{,}2\,\mathrm{cm}$, $\delta=106^\circ$<br>
+      b) $c=7{,}5\,\mathrm{cm}$, $v=4\,\mathrm{cm}$, $e=4{,}8\,\mathrm{cm}$, $f=7{,}8\,\mathrm{cm}$.
+    </div>
+    <button class="toggle-btn" onclick="toggleHint(this)"><span>💡</span> Nápověda <span class="chevron">▶</span></button>
+    <div class="hint-box">Výška $v$ určuje vzdálenost rovnoběžných základen. Potom doplň body z délek stran/úhlopříček podle varianty.</div>
+    <button class="toggle-btn" onclick="toggleSteps(this)" data-steps="3"><span>📝</span> Postup řešení (<span class="counter">0/3</span> kroků) <span class="chevron">▶</span></button>
+    <div class="steps-box">
+      <div class="step"><div class="step-label">Krok 1 / 3</div>Sestroj jednu základnu a rovnoběžku ve vzdálenosti $v$ pro druhou základnu.</div>
+      <div class="step"><div class="step-label">Krok 2 / 3</div>V případě (a) využij délky $a,c$ a úhel $\delta$. V případě (b) využij úhlopříčky $e,f$ jako průsečíky kružnic.</div>
+      <div class="step"><div class="step-label">Krok 3 / 3</div>Dourči vrcholy, zkontroluj rovnoběžnost $AB\parallel CD$ a všechny zadané údaje.</div>
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><button class="next-btn" onclick="nextStep(this)">Další krok →</button><button class="reset-btn" onclick="resetSteps(this)">↩️ Od začátku</button></div>
+      <div class="done-badge">✅ Kompletní řešení</div>
+    </div>
+  </div>
+
+  <div class="exercise" id="ex9">
+    <div class="exercise-header"><span class="num">9</span> Rovnoramenný lichoběžník $ABCD$</div>
+    <div class="zadani"><div class="zadani-label">📝 Zadání:</div>
+      $AB\parallel CD$, $a=4{,}6\,\mathrm{cm}$, $d=6\,\mathrm{cm}$, $\beta=70^\circ$.
+    </div>
+    <button class="toggle-btn" onclick="toggleHint(this)"><span>💡</span> Nápověda <span class="chevron">▶</span></button>
+    <div class="hint-box">U rovnoramenného lichoběžníku platí $AD=BC$ a osová souměrnost podle osy základen. To výrazně zjednoduší konstrukci.</div>
+    <button class="toggle-btn" onclick="toggleSteps(this)" data-steps="3"><span>📝</span> Postup řešení (<span class="counter">0/3</span> kroků) <span class="chevron">▶</span></button>
+    <div class="steps-box">
+      <div class="step"><div class="step-label">Krok 1 / 3</div>Narýsuj základnu $AB$ délky $a$.</div>
+      <div class="step"><div class="step-label">Krok 2 / 3</div>V bodě $B$ sestroj vnitřní úhel $\beta=70^\circ$ a na jeho rameni vyznač bod $C$ tak, aby $BC=d=6\,\mathrm{cm}$.</div>
+      <div class="step"><div class="step-label">Krok 3 / 3</div>Z podmínky rovnoběžnosti a rovnoramennosti urč bod $D$, ověř $AD=BC$.</div>
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><button class="next-btn" onclick="nextStep(this)">Další krok →</button><button class="reset-btn" onclick="resetSteps(this)">↩️ Od začátku</button></div>
+      <div class="done-badge">✅ Kompletní řešení</div>
+    </div>
+  </div>
+
+  <div class="exercise" id="ex10">
+    <div class="exercise-header"><span class="num">10</span> Rovnoraamenný lichoběžník $ABCD$ (hvězdička)</div>
+    <div class="zadani"><div class="zadani-label">📝 Zadání:</div>
+      $AB\parallel CD$, $a=4{,}6\,\mathrm{cm}$, $c=4\,\mathrm{cm}$, $\beta=72^\circ$.
+    </div>
+    <button class="toggle-btn" onclick="toggleHint(this)"><span>💡</span> Nápověda <span class="chevron">▶</span></button>
+    <div class="hint-box">Opět využij osu souměrnosti rovnoramenného lichoběžníku. Kombinuj podmínky pro obě základny a úhel $\beta$.</div>
+    <button class="toggle-btn" onclick="toggleSteps(this)" data-steps="3"><span>📝</span> Postup řešení (<span class="counter">0/3</span> kroků) <span class="chevron">▶</span></button>
+    <div class="steps-box">
+      <div class="step"><div class="step-label">Krok 1 / 3</div>Narýsuj $AB=a$ a v bodě $B$ úhel $\beta=72^\circ$.</div>
+      <div class="step"><div class="step-label">Krok 2 / 3</div>Sestroj přímku rovnoběžnou s $AB$, na níž bude ležet základna $CD$ délky $c=4\,\mathrm{cm}$.</div>
+      <div class="step"><div class="step-label">Krok 3 / 3</div>Využij souměrnosti (rovnost ramen) pro definitivní určení $C,D$.</div>
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><button class="next-btn" onclick="nextStep(this)">Další krok →</button><button class="reset-btn" onclick="resetSteps(this)">↩️ Od začátku</button></div>
+      <div class="done-badge">✅ Kompletní řešení</div>
+    </div>
+  </div>
+
+  <div class="exercise" id="ex11">
+    <div class="exercise-header"><span class="num">11</span> Lichoběžník $ABCD$ ze čtyř stran</div>
+    <div class="zadani"><div class="zadani-label">📝 Zadání:</div>
+      $AB\parallel CD$, $a=8\,\mathrm{cm}$, $b=2{,}8\,\mathrm{cm}$, $c=4{,}7\,\mathrm{cm}$, $d=4\,\mathrm{cm}$.
+    </div>
+    <button class="toggle-btn" onclick="toggleHint(this)"><span>💡</span> Nápověda <span class="chevron">▶</span></button>
+    <div class="hint-box">Začni delší základnou $AB$. Vrcholy $C,D$ určuj jako průsečíky kružnic s danými poloměry při současné podmínce $CD\parallel AB$.</div>
+    <button class="toggle-btn" onclick="toggleSteps(this)" data-steps="3"><span>📝</span> Postup řešení (<span class="counter">0/3</span> kroků) <span class="chevron">▶</span></button>
+    <div class="steps-box">
+      <div class="step"><div class="step-label">Krok 1 / 3</div>Narýsuj základnu $AB=8\,\mathrm{cm}$.</div>
+      <div class="step"><div class="step-label">Krok 2 / 3</div>Sestroj pomocné kružnice pro délky ramen $AD=d$, $BC=b$ a horní základnu $CD=c$.</div>
+      <div class="step"><div class="step-label">Krok 3 / 3</div>Vyber průsečíky splňující rovnoběžnost $AB\parallel CD$ a dokonči lichoběžník.</div>
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><button class="next-btn" onclick="nextStep(this)">Další krok →</button><button class="reset-btn" onclick="resetSteps(this)">↩️ Od začátku</button></div>
+      <div class="done-badge">✅ Kompletní řešení</div>
+    </div>
+  </div>
+
+  <div class="exercise" id="ex12">
+    <div class="exercise-header"><span class="num">12</span> Rovnoběžník $ABCD$ – dvě varianty</div>
+    <div class="zadani"><div class="zadani-label">📝 Zadání:</div>
+      a) $a=4\,\mathrm{cm}$, $e=8\,\mathrm{cm}$, $f=7\,\mathrm{cm}$<br>
+      b) $e=4{,}2\,\mathrm{cm}$, $f=9{,}6\,\mathrm{cm}$, $\omega=110^\circ$.
+    </div>
+    <button class="toggle-btn" onclick="toggleHint(this)"><span>💡</span> Nápověda <span class="chevron">▶</span></button>
+    <div class="hint-box">V rovnoběžníku se úhlopříčky půlí. To je klíčové pro konstrukci z úhlopříček $e,f$ a případně úhlu $\omega$.</div>
+    <button class="toggle-btn" onclick="toggleSteps(this)" data-steps="3"><span>📝</span> Postup řešení (<span class="counter">0/3</span> kroků) <span class="chevron">▶</span></button>
+    <div class="steps-box">
+      <div class="step"><div class="step-label">Krok 1 / 3</div>Sestroj jednu úhlopříčku a její střed.</div>
+      <div class="step"><div class="step-label">Krok 2 / 3</div>Podle druhé úhlopříčky urči protilehlé vrcholy symetricky ke středu.</div>
+      <div class="step"><div class="step-label">Krok 3 / 3</div>Dopočti/ověř stranu $a$ (varianta a) nebo úhel $\omega$ (varianta b) a spoj vrcholy.</div>
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><button class="next-btn" onclick="nextStep(this)">Další krok →</button><button class="reset-btn" onclick="resetSteps(this)">↩️ Od začátku</button></div>
+      <div class="done-badge">✅ Kompletní řešení</div>
+    </div>
+  </div>
+
+  <div class="exercise" id="ex13">
+    <div class="exercise-header"><span class="num">13</span> Obdélník $ABCD$</div>
+    <div class="zadani"><div class="zadani-label">📝 Zadání:</div>
+      Sestrojte obdélník $ABCD$, jehož kratší strana měří $2{,}6\,\mathrm{cm}$ a úhlopříčka $7{,}8\,\mathrm{cm}$.
+    </div>
+    <button class="toggle-btn" onclick="toggleHint(this)"><span>💡</span> Nápověda <span class="chevron">▶</span></button>
+    <div class="hint-box">V obdélníku je pravý úhel a úhlopříčky jsou shodné. Využij pravoúhlý trojúhelník se známou odvěsnou a přeponou.</div>
+    <button class="toggle-btn" onclick="toggleSteps(this)" data-steps="3"><span>📝</span> Postup řešení (<span class="counter">0/3</span> kroků) <span class="chevron">▶</span></button>
+    <div class="steps-box">
+      <div class="step"><div class="step-label">Krok 1 / 3</div>Narýsuj stranu obdélníku délky $2{,}6\,\mathrm{cm}$.</div>
+      <div class="step"><div class="step-label">Krok 2 / 3</div>V jednom krajním bodě vztyč kolmici a bod protilehlého vrcholu urči z kružnice s poloměrem $7{,}8\,\mathrm{cm}$.</div>
+      <div class="step"><div class="step-label">Krok 3 / 3</div>Dopojuj zbývající vrcholy rovnoběžkami/kolmicemi a ověř pravoúhlost.</div>
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><button class="next-btn" onclick="nextStep(this)">Další krok →</button><button class="reset-btn" onclick="resetSteps(this)">↩️ Od začátku</button></div>
+      <div class="done-badge">✅ Kompletní řešení</div>
+    </div>
+  </div>
+
+  <div class="exercise" id="ex14">
+    <div class="exercise-header"><span class="num">14</span> Kosočtverec $MNOP$</div>
+    <div class="zadani"><div class="zadani-label">📝 Zadání:</div>
+      Sestrojte kosočtverec $MNOP$ s úhlopříčkou $MO$ délky $4\,\mathrm{cm}$ a výškou $3{,}7\,\mathrm{cm}$.
+    </div>
+    <button class="toggle-btn" onclick="toggleHint(this)"><span>💡</span> Nápověda <span class="chevron">▶</span></button>
+    <div class="hint-box">V kosočtverci jsou všechny strany stejné a protější strany rovnoběžné. Výška určuje vzdálenost mezi dvojicí rovnoběžných stran.</div>
+    <button class="toggle-btn" onclick="toggleSteps(this)" data-steps="3"><span>📝</span> Postup řešení (<span class="counter">0/3</span> kroků) <span class="chevron">▶</span></button>
+    <div class="steps-box">
+      <div class="step"><div class="step-label">Krok 1 / 3</div>Narýsuj úhlopříčku $MO=4\,\mathrm{cm}$.</div>
+      <div class="step"><div class="step-label">Krok 2 / 3</div>Sestroj směr jedné strany tak, aby vzdálenost protější rovnoběžné strany byla $3{,}7\,\mathrm{cm}$ (výška).</div>
+      <div class="step"><div class="step-label">Krok 3 / 3</div>Urči body $N$ a $P$ jako průsečíky odpovídajících rovnoběžek/kružnic a dokonči kosočtverec.</div>
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><button class="next-btn" onclick="nextStep(this)">Další krok →</button><button class="reset-btn" onclick="resetSteps(this)">↩️ Od začátku</button></div>
+      <div class="done-badge">✅ Kompletní řešení</div>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">Naděžda Hloušková · Projekt NPI – Výukové materiály</div>
+
+</div>
+
+<script>
+function switchSection(id, btn){
+  document.querySelectorAll('.section-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.section-panel').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('section-' + id).classList.add('active');
+}
+
+function toggleHint(btn){
+  btn.classList.toggle('open');
+  const box = btn.nextElementSibling;
+  box.classList.toggle('show');
+}
+
+function toggleSteps(btn){
+  btn.classList.toggle('open');
+  const box = btn.nextElementSibling;
+  if(!box.classList.contains('show')){
+    box.classList.add('show');
+    const steps = box.querySelectorAll('.step');
+    if(steps.length && !steps[0].classList.contains('visible')){
+      steps[0].classList.add('visible');
+      updateCounter(btn, 1);
+    }
+  } else {
+    box.classList.remove('show');
+  }
+}
+
+function nextStep(nextBtn){
+  const box = nextBtn.closest('.steps-box');
+  const steps = box.querySelectorAll('.step');
+  const toggleBtn = box.previousElementSibling;
+
+  let current = 0;
+  steps.forEach((s,i) => { if(s.classList.contains('visible')) current = i + 1; });
+
+  if(current < steps.length){
+    steps[current].classList.add('visible');
+    updateCounter(toggleBtn, current + 1);
+    if(window.renderMathInElement) renderMathInElement(steps[current]);
+  }
+
+  if(current + 1 >= steps.length){
+    nextBtn.disabled = true;
+    box.querySelector('.done-badge').classList.add('show');
+    box.querySelector('.reset-btn').classList.add('show');
+  }
+}
+
+function resetSteps(resetBtn){
+  const box = resetBtn.closest('.steps-box');
+  const steps = box.querySelectorAll('.step');
+  const toggleBtn = box.previousElementSibling;
+
+  steps.forEach(s => s.classList.remove('visible'));
+  steps[0].classList.add('visible');
+  box.querySelector('.next-btn').disabled = false;
+  box.querySelector('.done-badge').classList.remove('show');
+  resetBtn.classList.remove('show');
+  updateCounter(toggleBtn, 1);
+}
+
+function updateCounter(toggleBtn, shown){
+  const counter = toggleBtn.querySelector('.counter');
+  if(!counter) return;
+  const total = counter.textContent.split('/')[1];
+  counter.textContent = shown + '/' + total;
+}
+</script>
+</body>
+</html>
